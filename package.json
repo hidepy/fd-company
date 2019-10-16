@@ -1,6 +1,7 @@
 {
   "name": "fd-app",
   "version": "0.1.0",
+  "homepage": ".",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.3.1",
@@ -17,6 +18,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build-tasokori": "set PUBLIC_URL=/webapps/fd-app/&& react-scripts build && xcopy .\\build C:\\xampp\\htdocs\\tasokori_root\\webapps\\fd-app /Y /E",
+    "build-s3": "react-scripts build && xcopy .\\build C:\\xampp\\htdocs\\tasokori_root\\webapps\\fd-app /Y /E",
+    "build-s3tmp": "set PUBLIC_URL=&& react-scripts build && xcopy .\\build C:\\xampp\\htdocs\\tasokori_root\\webapps\\fd-app /Y /E",
+    "copy": "xcopy .\\build C:\\xampp\\htdocs\\tasokori_root\\webapps\\fd-app /Y /E",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

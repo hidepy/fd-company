@@ -13,6 +13,8 @@ function mapDispatchToProps(dispatch){
     showToast: (msg)=> {
       dispatch(getSomething(msg))
     },
+
+    
     
     
   }

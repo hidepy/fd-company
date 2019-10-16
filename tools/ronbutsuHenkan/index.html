@@ -1,0 +1,196 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+
+    <title>論物変換するよっ！</title>
+
+    <style>
+    .break{
+        display: block;
+    }
+    .wide-textarea{
+        width: 100%;
+        height: 30vh;
+    }
+    </style>
+</head>
+
+<body>
+
+    
+
+    <div>
+
+        <label>
+            対象テキスト(論理名):
+            <textarea id="ronri-text" class="wide-textarea"></textarea>
+        </label>
+    </div>
+
+    <div>
+        <button id="exec">変換！</button>
+    </div>
+
+    <div>
+        <label>
+            変換結果(物理名)
+            <textarea id="btr-text" class="wide-textarea"></textarea>
+        </label>
+    </div>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function(){
+
+        document.getElementById("exec").addEventListener("click", async function(){
+
+            const ROW_SEPARATOR = "\n"
+
+            let dicJson = {}
+
+            try{
+                dicJson = JSON.parse(dicJsonStr)
+            }
+            catch(e){
+                alert("JSONのパースに失敗しました...たぶんJSONテキストに問題有りです！")
+                return
+            }
+
+            const dicJsonArr = 
+                Object.keys(dicJson)
+                    .map(key=> { return { key, value: dicJson[key] } } )
+                    .sort((a, b)=> b.key.length - a.key.length)
+
+            const inputText = document.getElementById("ronri-text").value || ""
+            
+            const res = inputText
+                .split(ROW_SEPARATOR)
+                .map(s=> { 
+                    
+                    let res = s
+
+                    for(let i = 0; i < dicJsonArr.length; i++){
+
+                        if(false){
+                            // 全て置換完了していたら終了
+                        }
+
+                        res = res.replace(new RegExp("" + dicJsonArr[i].key, "g"), "_" + dicJsonArr[i].value).replace(/__/g, "_").replace(/^_/, "").replace(/_$/, "")
+
+                    }
+
+                    return res
+
+                })
+                .join("\n")
+
+            document.getElementById("btr-text").value = res
+            
+
+        })
+        
+    })
+
+
+
+const dicJsonStr = `
+{
+	"データ": "data",
+	"取込": "trkm",
+	"メール": "mail",
+	"ファイル": "file",
+	"（": "",
+	"）": "",
+	"PDF": "pdf",
+	"CSV": "csv",
+	"・": "",
+	"会社": "kish",
+	"コード": "cd",
+	"名": "nm",
+	"カナ": "kn",
+	"郵便": "zip",
+	"番号": "no",
+	"所在地": "shzich",
+	"担当者": "tntosh",
+	"担当": "tnto",
+	"電話": "tel",
+	"進む": "next",
+	"戻る": "back",
+	"荷物": "nmt",
+	"種別": "type",
+	"ユニットロード": "unitload",
+	"荷姿": "nsgt",
+	"梱包": "konpo",
+	"形態": "keti",
+	"その他": "snt",
+	" ": "",
+	"　": "",
+	"or": "",
+	"寸法": "snpo",
+	"重量": "juryo",
+	"個数": "kosu",
+	"集荷": "shuk",
+	"希望": "kibo",
+	"日時": "ntj",
+	"先": "sk",
+	"配送": "hiso",
+	"混載": "knsi",
+	"可否": "kh",
+	"積み重ね": "tmksn",
+	"積重ね": "tmksn",
+	"匂い": "nioi",
+	"の": "no",
+	"有無": "um",
+	"危険物": "kknbt",
+	"か": "ka",
+	"否か": "ink",
+	"積み込み": "tmkm",
+	"積込み": "tmkm",
+	"取卸し": "trors",
+	"棚入れ": "tnir",
+	"ラベル": "lbl",
+	"貼り": "hr",
+	"横持ち": "ykmt",
+	"縦持ち": "ttmt",
+	"はい作業": "hisgyo",
+	"条件": "jokn",
+	"金額": "kngk",
+	"確認": "kknn",
+	"修正": "edit",
+	"登録": "entry",
+	"ステータス": "sts",
+	"絞り込み": "sbrkm",
+	"検索": "knsk",
+	"フリー": "frr",
+	"テキスト": "txt",
+	"欄": "rn",
+	"見積": "mtmr",
+	"依頼": "iri",
+	"No.": "no",
+	"No": "no",
+	"回答": "kito",
+	"削除": "del",
+	"台数": "disu",
+	"数": "su",
+	"運賃": "untn",
+	"帯": "ob",
+	"距離": "kyori",
+	"燃料": "nnryo",
+	"サーチャージ": "scg",
+	"料": "ryo",
+	"附帯": "fti",
+	"作業": "sgyo",
+	"割引": "wrbk",
+	"合計": "goke",
+    "備考": "biko",
+    "要否": "yohi",
+    "音声": "onsi",
+    "入力": "input"
+}
+`
+
+</script>
+
+</body>
+
+</html>
