@@ -5,7 +5,7 @@ import Auth from "./Auth"
 import AppMain from "../AppMain"
 
 import OM0103 from "../OM0103"
-import OM0104 from "../OM0104"
+import OM0104 from "../../containers/OM0104"
 
 import SignIn from "../SignIn"
 import Portal from "../Portal"

@@ -36,7 +36,7 @@ export default class OM0104 extends React.Component{
 			stsSbrkm: "",
 			ftreeTxtKnskRn: "",
         }
-
+console.log(this.props)
         this.onHznClick = this.onHznClick.bind(this)
         this.onTextChange = onTextChange(this)
         this.onSelectChange = onSelectChange(this)
@@ -55,7 +55,7 @@ export default class OM0104 extends React.Component{
             },
 			//{ type: INPUT_FIELD_TYPE_BUTTON, id: "knskJokn", label: "検索条件", onChange: this.TODO_YOU_DEFINE_SOMETHING("knskJokn") },
 			{ type: INPUT_FIELD_TYPE_TEXT, id: "ftreeTxtKnskRn", label: "フリーテキスト検索欄", onChange: this.onTextChange("ftreeTxtKnskRn") },
-			{ type: INPUT_FIELD_TYPE_BUTTON, id: "knskBtn", label: "検索ボタン", onChange: this.TODO_YOU_DEFINE_SOMETHING("knskBtn") },
+			{ type: INPUT_FIELD_TYPE_BUTTON, id: "knskBtn", label: "検索ボタン", onChange: this.props.searchMtmrList },
             { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrIriTork", label: "見積依頼の登録", onChange: this.TODO_YOU_DEFINE_SOMETHING("mtmrIriTork") },
         ]
 
@@ -79,18 +79,18 @@ export default class OM0104 extends React.Component{
                         { type: INPUT_FIELD_TYPE_TEXT, id: "mtmrKngk", label: "見積金額", onChange: this.onTextChange("mtmrKngk") },
                     ],
                     items: [
-                        { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
-                        { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
-                        { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
-                        { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
-                        { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
-                        { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
-                        { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
-                        { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
-                        { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
-                        { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
-                        { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
-                        { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
+                        // { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
+                        // { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
+                        // { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
+                        // { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
+                        // { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
+                        // { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
+                        // { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
+                        // { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
+                        // { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
+                        // { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
+                        // { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
+                        // { mtmrNo: "8", mtmrIriShsi: "9", mtmrKito: "10", skj: "11", kitoSts: "12", kishNm: "13", nmtShbt: "14", nmtNm: "15", nsgt: "16", unitload: "17", shukKiboDatetime: "18", shukSkNm: "19", hisoKiboDatetime: "20", hisoSkNm: "21", mtmrKngk: "22" },
                     ]
             }
             /*

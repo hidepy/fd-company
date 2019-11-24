@@ -1,0 +1,1 @@
+export const API_MTMR_LIST = "/api/v1/mtmr_misi/"

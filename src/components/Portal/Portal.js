@@ -3,7 +3,7 @@ import React from 'react';
 import FetchUtils from "../../utils/FetchUtils"
 import {
   API_TGT_ROLES
-} from "../../constants/HttpRequest"
+} from "../../constants/httpRequest"
 
 export default class Portal extends React.Component{
 

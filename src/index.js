@@ -7,7 +7,8 @@ import Logger from "redux-logger"
 import AppRoot from "./containers/AppRoot"
 
 // Combine済のreducer(index.js)をimport
-import reducer from "./modules"
+//import reducer from "./modules"
+import reducer from "./reducers"
 
 // Middlewareを通してcreateStoreする(非同期requestと, debug用にstateのloggerを通す)
 const finalCreateStore = compose(applyMiddleware(Thunk, Logger))(createStore)
