@@ -27,9 +27,9 @@ import {
     onRadioChange,
 } from "../../utils/CommonUtils"
 import FetchUtils from '../../utils/FetchUtils'
-import { API_TGT_ROLES } from '../../constants/HttpRequest'
 
-export default class OM0101 extends React.Component{
+
+export default class OM0103 extends React.Component{
 
     static contextTypes = {
         router: PropTypes.object
