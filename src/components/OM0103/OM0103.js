@@ -12,22 +12,23 @@ import Paper from '@material-ui/core/Paper'
 import HznButton from "../commons/HznButton"
 import FieldItem from "../commons/FieldItem"
 import {
-    INPUT_FIELD_TYPE_TEXT,
-    INPUT_FIELD_TYPE_SELECT,
-    INPUT_FIELD_TYPE_CHECKBOX,
-    INPUT_FIELD_TYPE_CHECKBOXES,
-    INPUT_FIELD_TYPE_RADIO,
-    INPUT_FIELD_TYPE_BUTTON,
-    BREAK_LINE
-} from "../../constants/common"
-import {
     showAlertMsg,
     onTextChange,
     onSelectChange,
     onRadioChange,
 } from "../../utils/CommonUtils"
-import FetchUtils from '../../utils/FetchUtils'
+import {
+    getItemDef4PageHeader,
+    getItemDef4IrishContents,
+    getItemDef4NmtContents,
+    getItemDef4NtjHisoJknContents,
+    getMtmtIriAllContents
+} from "../../utils/MtmrIriUtils"
+import {
+    INPUT_AREA_TITLE_ARR
+} from "../../constants/MtmrIri"
 
+import FetchUtils from '../../utils/FetchUtils'
 
 export default class OM0103 extends React.Component{
 
@@ -47,7 +48,7 @@ export default class OM0103 extends React.Component{
             CONFIRM_PAGE: "3",
         }
 
-        this.PAGE_STATE_TITLE_ARR = ["依頼者の入力", "荷物の入力", "日時/場所/配送条件", "確認"]
+        this.PAGE_STATE_TITLE_ARR = [...INPUT_AREA_TITLE_ARR, "確認"]
 
         this.state = {
             pageState: this.PAGE_STATE_DEF.IRISH_PAGE,
@@ -108,14 +109,14 @@ export default class OM0103 extends React.Component{
         this.onRadioChange = onRadioChange(this)
         this.TODO_YOU_DEFINE_SOMETHING = function(){} // TODO: 
 
-        this.itemDef4PageHeader = [
+        this.itemDef4PageHeader = getItemDef4PageHeader(this) /*[
             //{ type: INPUT_FIELD_TYPE_BUTTON, id: "dataTrkm", label: "データ取込", onChange: this.TODO_YOU_DEFINE_SOMETHING("dataTrkm") },
 			// { type: INPUT_FIELD_TYPE_BUTTON, id: "onsiInput", label: "音声入力", onChange: this.TODO_YOU_DEFINE_SOMETHING("onsiInput") },
 			// { type: INPUT_FIELD_TYPE_BUTTON, id: "mailTrkm", label: "メール取込", onChange: this.TODO_YOU_DEFINE_SOMETHING("mailTrkm") },
 			// { type: INPUT_FIELD_TYPE_BUTTON, id: "fileTrkm", label: "ファイル（PDF・CSV）取込", onChange: this.TODO_YOU_DEFINE_SOMETHING("fileTrkm") },
-        ]
+        ]*/
 
-        this.itemDef4IrishContents = [
+        this.itemDef4IrishContents = getItemDef4IrishContents(this)/*[
 			{ type: INPUT_FIELD_TYPE_TEXT, id: "kishCd", label: "会社コード", onChange: this.onTextChange("kishCd") },
 			{ type: INPUT_FIELD_TYPE_TEXT, id: "kishNm", label: "会社名", onChange: this.onTextChange("kishNm") },
             { type: INPUT_FIELD_TYPE_TEXT, id: "kishNmKn", label: "会社名（カナ）", onChange: this.onTextChange("kishNmKn") },
@@ -128,9 +129,9 @@ export default class OM0103 extends React.Component{
             { type: BREAK_LINE },
 			{ type: INPUT_FIELD_TYPE_TEXT, id: "telNo", label: "電話番号", onChange: this.onTextChange("telNo") },
             { type: INPUT_FIELD_TYPE_TEXT, id: "mail", label: "メール", onChange: this.onTextChange("mail") },
-        ]
+        ]*/
 
-        this.itemDef4NmtContents = [
+        this.itemDef4NmtContents = getItemDef4NmtContents(this)/*[
             { type: INPUT_FIELD_TYPE_RADIO, id: "nmtType", label: "荷物種別", onChange: this.onRadioChange("nmtType"),
                 items: [
                     { value: "0", label: "種別0"},
@@ -159,8 +160,9 @@ export default class OM0103 extends React.Component{
 			{ type: INPUT_FIELD_TYPE_TEXT, id: "juryoUnitloadNsgt", label: "重量（ユニットロード or 荷姿）", onChange: this.onTextChange("juryoUnitloadNsgt") },
 			{ type: INPUT_FIELD_TYPE_TEXT, id: "kosuUnitloadNsgt", label: "個数（ユニットロード or 荷姿）", onChange: this.onTextChange("kosuUnitloadNsgt") },
         ]
+        */
 
-        this.itemDef4NtjHisoJknContents = [
+        this.itemDef4NtjHisoJknContents = getItemDef4NtjHisoJknContents(this)/*[
 			{ type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboDatetime", label: "集荷希望日時", onChange: this.onTextChange("shukKiboDatetime") },
 			{ type: INPUT_FIELD_TYPE_TEXT, id: "shukSk", label: "集荷先", onChange: this.onTextChange("shukSk") },
             { type: INPUT_FIELD_TYPE_TEXT, id: "shukSkNm", label: "集荷先名", onChange: this.onTextChange("shukSkNm") },
@@ -239,7 +241,7 @@ export default class OM0103 extends React.Component{
             { type: INPUT_FIELD_TYPE_TEXT, id: "sntJokn", label: "その他条件", onChange: this.onTextChange("sntJokn") },
             { type: BREAK_LINE },
 			{ type: INPUT_FIELD_TYPE_TEXT, id: "kiboKngk", label: "希望金額", onChange: this.onTextChange("kiboKngk") },
-        ]
+        ]*/
     }
 
     componentDidMount(){
@@ -258,15 +260,18 @@ export default class OM0103 extends React.Component{
 
     /**
      * ページ状態によって表示するコンテンツを制御
-     * @param {string} state 
+     * @param {object} state 
      */
-    getPageByState(state){
-        switch(state){
+    getPageByState(this_state){
+
+        const pageState = this_state.pageState
+
+        switch(pageState){
             case this.PAGE_STATE_DEF.IRISH_PAGE:
                 return (
                     <Paper className="page-contents-wrapper">
                         {
-                            this.itemDef4IrishContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this.state[v.id]} />))
+                            this.itemDef4IrishContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this_state[v.id]} />))
                         }
                     </Paper>
                 )  
@@ -275,7 +280,7 @@ export default class OM0103 extends React.Component{
                 return (
                     <Paper className="page-contents-wrapper">
                         {
-                            this.itemDef4NmtContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this.state[v.id]} />))
+                            this.itemDef4NmtContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this_state[v.id]} />))
                         }
                     </Paper>
                 )
@@ -284,50 +289,52 @@ export default class OM0103 extends React.Component{
                 return (
                     <Paper className="page-contents-wrapper">
                         {
-                            this.itemDef4NtjHisoJknContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this.state[v.id]} />))
+                            this.itemDef4NtjHisoJknContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this_state[v.id]} />))
                         }
                     </Paper>
                 )
 
             case this.PAGE_STATE_DEF.CONFIRM_PAGE:
-                return (
-                    <React.Fragment>
-                        <Paper className="page-contents-wrapper">
-                            <Typography variant="h6">
-                                {
-                                    this.PAGE_STATE_TITLE_ARR[0]
-                                }
-                            </Typography>
+                return getMtmtIriAllContents(this)
+                // TODO: さらにOM0105と共通化余地がある
+                // return (
+                //     <React.Fragment>
+                //         <Paper className="page-contents-wrapper">
+                //             <Typography variant="h6">
+                //                 {
+                //                     this.PAGE_STATE_TITLE_ARR[0]
+                //                 }
+                //             </Typography>
 
-                            {
-                                this.itemDef4IrishContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this.state[v.id]} />))
-                            }
-                        </Paper>
+                //             {
+                //                 this.itemDef4IrishContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this_state[v.id]} />))
+                //             }
+                //         </Paper>
 
-                        <Paper className="page-contents-wrapper">
-                            <Typography variant="h6">
-                                {
-                                    this.PAGE_STATE_TITLE_ARR[1]
-                                }
-                            </Typography>
-                            {
-                                this.itemDef4NmtContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this.state[v.id]} />))
-                            }
-                        </Paper>
+                //         <Paper className="page-contents-wrapper">
+                //             <Typography variant="h6">
+                //                 {
+                //                     this.PAGE_STATE_TITLE_ARR[1]
+                //                 }
+                //             </Typography>
+                //             {
+                //                 this.itemDef4NmtContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this_state[v.id]} />))
+                //             }
+                //         </Paper>
 
 
-                        <Paper className="page-contents-wrapper">
-                            <Typography variant="h6">
-                                {
-                                    this.PAGE_STATE_TITLE_ARR[2]
-                                }
-                            </Typography>
-                            {
-                                this.itemDef4NtjHisoJknContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this.state[v.id]} />))
-                            }
-                        </Paper>
-                    </React.Fragment>
-                )
+                //         <Paper className="page-contents-wrapper">
+                //             <Typography variant="h6">
+                //                 {
+                //                     this.PAGE_STATE_TITLE_ARR[2]
+                //                 }
+                //             </Typography>
+                //             {
+                //                 this.itemDef4NtjHisoJknContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this_state[v.id]} />))
+                //             }
+                //         </Paper>
+                //     </React.Fragment>
+                // )
         }
     }
 
@@ -457,7 +464,7 @@ export default class OM0103 extends React.Component{
 
                         {
                             // ページの状態によって表示コンテンツを制御
-                            this.getPageByState(this.state.pageState)
+                            this.getPageByState(this.state)
                         }
 
                         <div style={{textAlign: "right"}}>

@@ -8,7 +8,7 @@ import FormGroup from '@material-ui/core/FormGroup'
 export default function CommonCheckboxes(props){
 
     return (
-        <FormControl component="fieldset">
+        <FormControl component="fieldset" disabled={!!props.disabled}>
             <FormLabel component="legend">Assign responsibility</FormLabel>
             <FormGroup>
             {

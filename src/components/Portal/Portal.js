@@ -4,6 +4,7 @@ import FetchUtils from "../../utils/FetchUtils"
 import {
   API_TGT_ROLES
 } from "../../constants/httpRequest"
+import DashBoard from "./DashBoard/DashBoard"
 
 export default class Portal extends React.Component{
 
@@ -14,9 +15,9 @@ export default class Portal extends React.Component{
   render(){
     return(
       <div>
-        ここがTOPページ
+        <DashBoard />
 
-        <button onClick={this.onTestClick}>REST API テスト!!</button>
+        {/* <button onClick={this.onTestClick}>REST API テスト!!</button> */}
       </div>
     )
   }

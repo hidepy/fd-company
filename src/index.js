@@ -4,6 +4,7 @@ import {compose, applyMiddleware, createStore} from "redux"
 import {Provider} from "react-redux"
 import Thunk from "redux-thunk"
 import Logger from "redux-logger"
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import AppRoot from "./containers/AppRoot"
 
 // Combine済のreducer(index.js)をimport
@@ -18,9 +19,28 @@ const store = finalCreateStore(reducer)
 
 const rootElement = document.getElementById('root')
 
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: [
+      "Noto Sans JP",
+"游ゴシック体",
+"YuGothic",
+"游ゴシックMedium",
+"YuGothicMedium",
+"游ゴシック",
+"YuGothic",
+
+      'Noto Sans',
+      'sans-serif',
+    ].join(','),
+  },
+})
+
 ReactDOM.render(
   <Provider store={store}>
-    <AppRoot />
+    <MuiThemeProvider theme={theme}>
+      <AppRoot />
+    </MuiThemeProvider>
   </Provider>,
   rootElement
 )

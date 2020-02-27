@@ -70,7 +70,8 @@ import {
     INPUT_FIELD_TYPE_CHECKBOX,
     INPUT_FIELD_TYPE_CHECKBOXES,
     INPUT_FIELD_TYPE_RADIO,
-    INPUT_FIELD_TYPE_BUTTON 
+    INPUT_FIELD_TYPE_BUTTON,
+    OUTPUT_FIELD_TYPE_TEXT
 } from "../../constants/common"
 import {
     showAlertMsg,
@@ -104,6 +105,11 @@ ___ITEM_DEFS___
         ]
     }
 
+    // TODO: 
+    TODO_YOU_DEFINE_SOMETHING(){
+
+    }
+
     onHznClick(){
 
 		// TODO: 
@@ -131,28 +137,30 @@ ___ITEM_DEFS___
 }
 `
 
-            const COL_NUM = 9
+            const COL_NUM = 10
             const DELIMITER = "::::"
             const IDX_LOGICAL_NAME = 2
             const IDX_INPUT_TYPE = 3
             const IDX_VALIDATION = 6
             const IDX_NAME = 8
+            const IDX_SELECTION = 9
             const INDENT_FOR_ITEM_DEF = "\t\t\t"
             const INDENT_FOR_STATE_DEF = "\t\t\t"
 
             const INPUT_TYPE_MAPPER = {
-                "入力": "TEXT",
-                "選択(リスト)": "SELECT",
-                "チェックボックス": "CHECKBOX",
-                "選択(ラジオ)": "RADIO",
-                "ボタン": "BUTTON",
+                "入力": "INPUT_FIELD_TYPE_TEXT",
+                "選択(リスト)": "INPUT_FIELD_TYPE_SELECT",
+                "チェックボックス": "INPUT_FIELD_TYPE_CHECKBOX",
+                "選択(ラジオ)": "INPUT_FIELD_TYPE_RADIO",
+                "ボタン": "INPUT_FIELD_TYPE_BUTTON",
+                "表示": "OUTPUT_FIELD_TYPE_TEXT"
             }
             const EVENT_HANDLER_MAPPER = {
-                TEXT: "onTextChange",
-                SELECT: "onSelectChange",
-                CHECKBOX: "onCheckboxChange",
-                RADIO: "onRadioChange",
-                BUTTON: "TODO_YOU_DEFINE_SOMETHING"
+                INPUT_FIELD_TYPE_TEXT: "onTextChange",
+                INPUT_FIELD_TYPE_SELECT: "onSelectChange",
+                INPUT_FIELD_TYPE_CHECKBOX: "onCheckboxChange",
+                INPUT_FIELD_TYPE_RADIO: "onRadioChange",
+                INPUT_FIELD_TYPE_BUTTON: "TODO_YOU_DEFINE_SOMETHING"
             }
 
             const getArr = nums=> [...Array(nums).keys()]
@@ -164,15 +172,34 @@ ___ITEM_DEFS___
                 .map(v=> {
                     const row = v.replace(regExp, replacedStr).split(DELIMITER)
 
-console.log(row)
-
                     const type = INPUT_TYPE_MAPPER[row[IDX_INPUT_TYPE]]
                     const name = (row[IDX_NAME] || "").replace(/\n/g, " ")
                     const logicalName = row[IDX_LOGICAL_NAME]
                     const eventHandler = EVENT_HANDLER_MAPPER[type]
+                    const selection = (()=> {
+                        const selectionStr = row[IDX_SELECTION]
 
-                    return `${INDENT_FOR_ITEM_DEF}{ type: INPUT_FIELD_TYPE_${type}, id: "${name}", label: "${logicalName}", onChange: this.${eventHandler}("${name}") },`
+                        if(!selectionStr){ return null   } 
 
+                        const resArr = selectionStr
+                            .split(",")
+                            .map((s, i)=> {
+                                return {
+                                    value: "" + i,
+                                    label: "" + (s || "").replace(/\s/g, "")
+                                }
+                            })
+                        return resArr
+                    })()
+
+                    const resStr = `${INDENT_FOR_ITEM_DEF}{ type: ${type}, id: "${name}", label: "${logicalName}"`
+                         + (!!eventHandler ? `, onChange: this.${eventHandler}("${name}")` : "") 
+                         + (!!selection ? `, \n${INDENT_FOR_ITEM_DEF}\titems: ${JSON.stringify(selection)}\n${INDENT_FOR_ITEM_DEF}` : "")
+                         + "},"
+
+                    return resStr
+
+                    //return `${INDENT_FOR_ITEM_DEF}{ type: ${type}, id: "${name}", label: "${logicalName}", onChange: this.${eventHandler}("${name}") },`
 
                 })
 

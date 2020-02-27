@@ -18,7 +18,10 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { mainListItems, secondaryListItems } from './listItems';
-
+import Chart from './Chart';
+import Deposits from './Deposits';
+import Orders from './Orders';
+import Title from "./Title"
 
 
 const drawerWidth = 240;
@@ -102,7 +105,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Dashboard(props) {
+export default function DashBoard(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -115,71 +118,101 @@ export default function Dashboard(props) {
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
-      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
-        <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            { props.funcTitle }
-          </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
 
-      <Drawer
-        variant="permanent"
-        classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-        }}
-        open={open}
-      >
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-
-        <Divider />
-
-        <List>
-        {
-          mainListItems({
-            moveNextFunc: (nextFunc)=> ()=> props.history.push(nextFunc)
-          })
-        }
-        </List>
-
-        <Divider />
+      {/* <main className={classes.content}> */}
         
-        <List>{secondaryListItems}</List>
-
-      </Drawer>
-
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
+
           <Grid container spacing={3}>
 
-            <div className="contents-wrap" style={{width: "100%"}}>
-              { props.children }
-            </div>
+          <Grid item xs={12} md={4} lg={4}>
+              <Paper className={fixedHeightPaper}>
+                <React.Fragment>
+                  <Title>今月の利益</Title>
+                  <Typography component="p" variant="h4">
+                    198,798円
+                  </Typography>
+                  <Typography color="textSecondary" className={classes.depositContext}>
+                    2019/12/30
+                  </Typography>
+                  <div>
+                    <Link color="primary" href="javascript:;">
+                      詳細を見る
+                    </Link>
+                  </div>
+                </React.Fragment>
+              </Paper>
+            </Grid>
+
+            <Grid item xs={12} md={4} lg={4}>
+              <Paper className={fixedHeightPaper}>
+                <React.Fragment>
+                  <Title>今月の売上</Title>
+                  <Typography component="p" variant="h4">
+                    398,798円
+                  </Typography>
+                  <Typography color="textSecondary" className={classes.depositContext}>
+                    2019/12/30
+                  </Typography>
+                  <div>
+                    <Link color="primary" href="javascript:;">
+                      詳細を見る
+                    </Link>
+                  </div>
+                </React.Fragment>
+              </Paper>
+            </Grid>
+
+            <Grid item xs={12} md={4} lg={4}>
+              <Paper className={fixedHeightPaper}>
+                <React.Fragment>
+                  <Title>今月の費用</Title>
+                  <Typography component="p" variant="h4">
+                    200,000円
+                  </Typography>
+                  <Typography color="textSecondary" className={classes.depositContext}>
+                    2019/12/30
+                  </Typography>
+                  <div>
+                    <Link color="primary" href="javascript:;">
+                      詳細を見る
+                    </Link>
+                  </div>
+                </React.Fragment>
+              </Paper>
+            </Grid>
+
+
+            {/* Chart */}
+            <Grid item xs={12} md={6} lg={6}>
+              <Paper className={fixedHeightPaper}>
+                <Chart
+                  title={"本日"}
+                  yaxisLabel={"売上(円)"}
+                />
+              </Paper>
+            </Grid>
+
+            <Grid item xs={12} md={6} lg={6}>
+              <Paper className={fixedHeightPaper}>
+                <Chart
+                  title={"昨日"}
+                  yaxisLabel={"売上(円)"}
+                />
+              </Paper>
+            </Grid>
+            
+            <Grid item xs={12} md={12} lg={12}>
+              <Paper className={fixedHeightPaper}>
+                <Orders />
+              </Paper>
+            </Grid>
 
           </Grid>
+
         </Container>
 
-      </main>
+      {/* </main> */}
     </div>
   );
 }

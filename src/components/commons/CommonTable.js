@@ -5,14 +5,22 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import FieldItem from "./FieldItem";
+import {
+  INPUT_FIELD_TYPE_BUTTON,
+  INPUT_FIELD_TYPE_BUTTON_LINK
+} from "../../constants/common"
+
+import "./CommonTable.scss"
+
+const isInputComponent = type=> type === INPUT_FIELD_TYPE_BUTTON || type === INPUT_FIELD_TYPE_BUTTON_LINK
 
 export default function CommonTable(props){
 
   const { headerDef, items } = props
 
     return (
-        <Table size="small">
+        <Table size="small" className="common-table">
           <TableHead>
             <TableRow>
             {
@@ -30,7 +38,13 @@ export default function CommonTable(props){
               <TableRow key={row.id}>
                     {
                       (headerDef || []).map((v, index)=> (
-                        <TableCell key={index}>{row[v.id]}</TableCell>
+                        <TableCell key={index}>
+                          {
+                            isInputComponent(v.type)
+                              ? (<FieldItem {...v} type={v.type} value={row[v.id]} />)
+                                : row[v.id]
+                          }
+                        </TableCell>
                       ))
                         
                     }

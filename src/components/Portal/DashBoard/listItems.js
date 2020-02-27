@@ -33,8 +33,8 @@ export const mainListItems = (props)=> {
         </ListItemIcon>
         {/* <ListItemText primary="OM0103-見積依頼の登録(物事)" /> */}
 
-        <div className="MuiListItemText-root">
-          <span className="MuiTypography-root MuiListItemText-primary MuiTypography-body1">
+        <div class="MuiListItemText-root">
+          <span class="MuiTypography-root MuiListItemText-primary MuiTypography-body1">
             <Link to={`${process.env.PUBLIC_URL}/OM0103`}>OM0103-見積依頼の登録(物事)</Link>
           </span>
         </div>
@@ -45,44 +45,13 @@ export const mainListItems = (props)=> {
           <ShoppingCartIcon />
         </ListItemIcon>
         {/* <ListItemText primary="OM0104-見積一覧の確認(物事)" /> */}
-        <div className="MuiListItemText-root">
-          <span className="MuiTypography-root MuiListItemText-primary MuiTypography-body1">
+        <div class="MuiListItemText-root">
+          <span class="MuiTypography-root MuiListItemText-primary MuiTypography-body1">
             <Link to={`${process.env.PUBLIC_URL}/OM0104`}>OM0104-見積一覧の確認(物事)</Link>
           </span>
         </div>
       </ListItem>
       <ListItem button>
-        <ListItemIcon>
-          <ShoppingCartIcon />
-        </ListItemIcon>
-        <div className="MuiListItemText-root">
-          <span className="MuiTypography-root MuiListItemText-primary MuiTypography-body1">
-            <Link to={`${process.env.PUBLIC_URL}/OM0105`}>OM0105-見積回答の作成</Link>
-          </span>
-        </div>
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon>
-          <ShoppingCartIcon />
-        </ListItemIcon>
-        <div className="MuiListItemText-root">
-          <span className="MuiTypography-root MuiListItemText-primary MuiTypography-body1">
-            <Link to={`${process.env.PUBLIC_URL}/OM0401`}>OM0401-請求一覧</Link>
-          </span>
-        </div>
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon>
-          <ShoppingCartIcon />
-        </ListItemIcon>
-        <div className="MuiListItemText-root">
-          <span className="MuiTypography-root MuiListItemText-primary MuiTypography-body1">
-            <Link to={`${process.env.PUBLIC_URL}/OM0402`}>OM0402-請求書作成</Link>
-          </span>
-        </div>
-      </ListItem>
-
-      {/* <ListItem button>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
@@ -99,7 +68,7 @@ export const mainListItems = (props)=> {
           <LayersIcon />
         </ListItemIcon>
         <ListItemText primary="Integrations" />
-      </ListItem> */}
+      </ListItem>
     </div>
   )
 };

@@ -4,18 +4,20 @@ import Button from '@material-ui/core/Button';
 
 
 
-export default function CommonButton(props){
+export default function LinkButton(props){
 
-  const { onChange, label, ...rest} = props
+  const { onChange, label,  ...rest} = props
+
+  
 
   return (
-    <Button variant= "contained" onClick={onChange} {...rest}>
+    <Button onClick={onChange} {...rest}>
       {label}
     </Button>
   )
 }
 
-CommonButton.propTypes ={
+LinkButton.propTypes ={
     onChange: PropTypes.func.isRequired,
     label: PropTypes.string,
 }
