@@ -246,7 +246,19 @@ export default class OM0103 extends React.Component{
 
     componentDidMount(){
 
-        ;
+        this.setState({
+            knsiKh: "0",
+            tmksnKh: "0",
+            nioiUm: "0",
+            kknbtInk: "0",
+            tmkmYh: "0",
+            trorsYh: "0",
+            tnirYh: "0",
+            lblHrYh: "0",
+            ykmtYh: "0",
+            ttmtYh: "0",
+            hisgyoYh: "0",
+        })
 
     }
 

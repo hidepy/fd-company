@@ -57,10 +57,13 @@ export const getItemDef4IrishContents = props=>  [
  * @param {*} props 
  */
 export const getItemDef4NmtContents = props=> [
-    { type: INPUT_FIELD_TYPE_RADIO, id: "nmtType", label: "荷物種別", onChange: props.onRadioChange("nmtType"),
+    { type: INPUT_FIELD_TYPE_RADIO, id: "nmtType", label: "荷物種別", onChange: props.onRadioChange("nmtType"), style: {width: "100%"},
         items: [
-            { value: "0", label: "種別0"},
-            { value: "1", label: "種別1"},
+            { value: "0", label: "機械/機械部品"},
+            { value: "1", label: "繊維/衣類"},
+            { value: "2", label: "日用品"},
+            { value: "3", label: "食料品"},
+            { value: "4", label: "その他"},            
         ]
     },
     { type: BREAK_LINE },
@@ -68,15 +71,20 @@ export const getItemDef4NmtContents = props=> [
     { type: BREAK_LINE },
     { type: INPUT_FIELD_TYPE_RADIO, id: "unitload", label: "ユニットロード", onChange: props.onRadioChange("unitload"),
         items: [
-            { value: "0", label: "ユニットロード0"},
-            { value: "1", label: "ユニットロード1"},
+            { value: "0", label: "パレット"},
+            { value: "1", label: "コンテナ"},
+            { value: "2", label: "無し"},            
         ]
     },
     { type: BREAK_LINE },
     { type: INPUT_FIELD_TYPE_RADIO, id: "nisgtKonpoKeti", label: "荷姿（梱包形態）", onChange: props.onRadioChange("nisgtKonpoKeti"),
         items: [
-            { value: "0", label: "荷姿0"},
-            { value: "1", label: "荷姿1"},
+            { value: "0", label: "段ボール"},
+            { value: "1", label: "折り畳みコンテナ"},
+            { value: "2", label: "通い箱"},
+            { value: "3", label: "袋"},
+            { value: "4", label: "缶"},
+            { value: "5", label: "その他"},            
         ]
     },
     { type: INPUT_FIELD_TYPE_TEXT, id: "nisgtSnt", label: "荷姿（その他）", onChange: props.onTextChange("nisgtSnt") },
@@ -103,7 +111,7 @@ export const getItemDef4NtjHisoJknContents = props=> [
         items: [
             { value: "0", label: "可" },
             { value: "1", label: "否" },
-        ]
+        ],
     },
     { type: INPUT_FIELD_TYPE_RADIO, id: "tmksnKh", label: "積み重ね可否", onChange: props.onRadioChange("tmksnKh"),
         items: [
@@ -111,7 +119,7 @@ export const getItemDef4NtjHisoJknContents = props=> [
             { value: "1", label: "否" },
         ]
     },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "noiUm", label: "匂いの有無", onChange: props.onRadioChange("noiUm"),
+    { type: INPUT_FIELD_TYPE_RADIO, id: "nioiUm", label: "匂いの有無", onChange: props.onRadioChange("nioiUm"),
         items: [
             { value: "0", label: "有り" },
             { value: "1", label: "無し" },
@@ -123,13 +131,13 @@ export const getItemDef4NtjHisoJknContents = props=> [
             { value: "1", label: "危険物" },
         ]
     },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "tmkmKh", label: "積込み要否", onChange: props.onRadioChange("tmkmKh"),
+    { type: INPUT_FIELD_TYPE_RADIO, id: "tmkmYh", label: "積込み要否", onChange: props.onRadioChange("tmkmYh"),
         items: [
             { value: "0", label: "要" },
             { value: "1", label: "否" },
         ]
     },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "tnorsYh", label: "取卸し要否", onChange: props.onRadioChange("tnorsYh"),
+    { type: INPUT_FIELD_TYPE_RADIO, id: "trorsYh", label: "取卸し要否", onChange: props.onRadioChange("trorsYh"),
         items: [
             { value: "0", label: "要" },
             { value: "1", label: "否" },
@@ -159,7 +167,7 @@ export const getItemDef4NtjHisoJknContents = props=> [
             { value: "1", label: "否" },
         ]
     },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "hiSgyoYh", label: "はい作業要否", onChange: props.onRadioChange("hiSgyoYh"),
+    { type: INPUT_FIELD_TYPE_RADIO, id: "hisgyoYh", label: "はい作業要否", onChange: props.onRadioChange("hiSgyoYh"),
         items: [
             { value: "0", label: "要" },
             { value: "1", label: "否" },

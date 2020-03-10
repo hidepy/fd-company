@@ -9,17 +9,20 @@ import FormLabel from '@material-ui/core/FormLabel';
 
 export default function CommonRadio(props){
 
-    const _value = props.value || ""
+    //const _value = props.value || ""
+    const {value: _value, className, label, name, onChange, disabled, style } = props
+
+console.log(props)
 
     return (
-    <div className={`MuiFormControl-root ${props.className}`}>
-        <FormControl component="fieldset" disabled={!!props.disabled}>
-            <FormLabel component="legend">{props.label}</FormLabel>
+    <div className={`MuiFormControl-root ${className}`} style={style || {}}>
+        <FormControl component="fieldset" disabled={!!disabled}>
+            <FormLabel component="legend">{label}</FormLabel>
             <RadioGroup
-                aria-label={props.name}
-                name={props.name}
+                aria-label={name}
+                name={name}
                 value={_value}
-                onChange={props.onChange}
+                onChange={onChange}
                 row
             >
                 {
