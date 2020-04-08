@@ -20,6 +20,8 @@ import {
     onRadioChange,
 } from "../../utils/CommonUtils"
 import _ from "lodash"
+import FetchUtils from '../../utils/FetchUtils';
+import { API_MTMR_LIST } from '../../constants/apiPath';
 
 export default class OM0104 extends React.Component{
 
@@ -46,13 +48,14 @@ export default class OM0104 extends React.Component{
         this.itemDef4SearchCondition = [
             { type: INPUT_FIELD_TYPE_SELECT, id: "stsSbrkm", label: "ステータス絞り込み", onChange: this.onSelectChange("stsSbrkm"),
                 items: [
-                    { value: "01", label: "全て" },
-                    { value: "02", label: "未回答" },
-                    { value: "03", label: "回答中" },
-                    { value: "04", label: "回答済" },
+                    { value: "0", label: "全て" },
+                    { value: "1", label: "見積未登録"},
+                    { value: "2", label: "見積登録済"},
+                    { value: "3", label: "見積回答済"},
+                    { value: "4", label: "発注済"},
+                    { value: "5", label: "受注済"},
                 ]
             },
-			//{ type: INPUT_FIELD_TYPE_BUTTON, id: "knskJokn", label: "検索条件", onChange: this.TODO_YOU_DEFINE_SOMETHING("knskJokn") },
 			{ type: INPUT_FIELD_TYPE_TEXT, id: "ftreeTxtKnskRn", label: "フリーテキスト検索欄", onChange: this.onTextChange("ftreeTxtKnskRn") },
 			{ type: INPUT_FIELD_TYPE_BUTTON, id: "knskBtn", label: "検索ボタン", onChange: this.props.searchMtmrList },
             { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrIriTork", label: "見積依頼の登録", onChange: this.TODO_YOU_DEFINE_SOMETHING("mtmrIriTork") },
@@ -61,37 +64,22 @@ export default class OM0104 extends React.Component{
         this.itemDef4SearchedList = [{
                 type: OUTPUT_FIELD_TYPE_TABLE, id: "mtmrLst", label: "見積一覧",
                     headerDef: [
-                        // { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrNo", label: "見積No.", onClick: this.openDetail },
-                        // { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrIriShsi", label: "見積依頼の修正", onChange: this.TODO_YOU_DEFINE_SOMETHING("mtmrIriShsi") },
-                        // { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrKito", label: "見積回答", onChange: this.TODO_YOU_DEFINE_SOMETHING("mtmrKito") },
-                        // { type: INPUT_FIELD_TYPE_BUTTON, id: "skj", label: "削除", onChange: this.TODO_YOU_DEFINE_SOMETHING("skj") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "kitoSts", label: "回答ステータス", onChange: this.onTextChange("kitoSts") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "kishNm", label: "会社名", onChange: this.onTextChange("kishNm") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "nmtShbt", label: "荷物種別", onChange: this.onTextChange("nmtShbt") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "nmtNm", label: "荷物名", onChange: this.onTextChange("nmtNm") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "nsgt", label: "荷姿", onChange: this.onTextChange("nsgt") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "unitload", label: "ユニットロード", onChange: this.onTextChange("unitload") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboDatetime", label: "集荷希望日時", onChange: this.onTextChange("shukKiboDatetime") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "shukSkNm", label: "集荷先名", onChange: this.onTextChange("shukSkNm") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "hisoKiboDatetime", label: "配送希望日時", onChange: this.onTextChange("hisoKiboDatetime") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "hisoSkNm", label: "配送先名", onChange: this.onTextChange("hisoSkNm") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "mtmrKngk", label: "見積金額", onChange: this.onTextChange("mtmrKngk") },
-
-                        { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmr_iri_cd", label: "見積No.", onClick: this.openDetail },
+                        { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmr_iri_cd", label: "見積・受注No.", onClick: this.openDetail },
                         { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrIriShsi", label: "見積依頼の修正", onChange: this.TODO_YOU_DEFINE_SOMETHING("mtmrIriShsi") },
                         { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrKito", label: "見積回答", onChange: this.TODO_YOU_DEFINE_SOMETHING("mtmrKito") },
                         { type: INPUT_FIELD_TYPE_BUTTON, id: "skj", label: "削除", onChange: this.TODO_YOU_DEFINE_SOMETHING("skj") },
-                        { type: INPUT_FIELD_TYPE_TEXT, id: "kitoSts", label: "回答ステータス", onChange: this.onTextChange("kitoSts") },
-                        { type: INPUT_FIELD_TYPE_TEXT, id: "kishNm", label: "会社名", onChange: this.onTextChange("kishNm") },
-                        { type: INPUT_FIELD_TYPE_TEXT, id: "nmt_sbt_cd", label: "荷物種別", onChange: this.onTextChange("nmtShbt") },
-                        { type: INPUT_FIELD_TYPE_TEXT, id: "nmt_nm", label: "荷物名", onChange: this.onTextChange("nmtNm") },
-                        { type: INPUT_FIELD_TYPE_TEXT, id: "nsgt_cd", label: "荷姿", onChange: this.onTextChange("nsgt") },
-                        { type: INPUT_FIELD_TYPE_TEXT, id: "unitload_sbt_cd", label: "ユニットロード", onChange: this.onTextChange("unitload") },
-                        { type: INPUT_FIELD_TYPE_TEXT, id: "shuk_kibo_datetime", label: "集荷希望日時", onChange: this.onTextChange("shukKiboDatetime") },
-                        { type: INPUT_FIELD_TYPE_TEXT, id: "shukSkNm", label: "集荷先名", onChange: this.onTextChange("shukSkNm") },
-                        { type: INPUT_FIELD_TYPE_TEXT, id: "hiso_kibo_datetime", label: "配送希望日時", onChange: this.onTextChange("hisoKiboDatetime") },
-                        { type: INPUT_FIELD_TYPE_TEXT, id: "hiso_sk_nm", label: "配送先名", onChange: this.onTextChange("hisoSkNm") },
-                        { type: INPUT_FIELD_TYPE_TEXT, id: "kibo_kngk", label: "見積金額", onChange: this.onTextChange("mtmrKngk") },
+                        { type: INPUT_FIELD_TYPE_BUTTON, id: "chohyoDl", label: "帳票DL", onChange: this.TODO_YOU_DEFINE_SOMETHING("chohyoDl") },
+                        { type: INPUT_FIELD_TYPE_TEXT, id: "kitoSts", label: "ステータス", onChange: this.onTextChange("kitoSts") },
+                        // { type: INPUT_FIELD_TYPE_TEXT, id: "kishNm", label: "会社名", onChange: this.onTextChange("kishNm") },
+                        // { type: INPUT_FIELD_TYPE_TEXT, id: "nmt_sbt_cd", label: "荷物種別", onChange: this.onTextChange("nmtShbt") },
+                        // { type: INPUT_FIELD_TYPE_TEXT, id: "nmt_nm", label: "荷物名", onChange: this.onTextChange("nmtNm") },
+                        // { type: INPUT_FIELD_TYPE_TEXT, id: "nsgt_cd", label: "荷姿", onChange: this.onTextChange("nsgt") },
+                        // { type: INPUT_FIELD_TYPE_TEXT, id: "unitload_sbt_cd", label: "ユニットロード", onChange: this.onTextChange("unitload") },
+                        // { type: INPUT_FIELD_TYPE_TEXT, id: "shuk_kibo_datetime", label: "集荷希望日時", onChange: this.onTextChange("shukKiboDatetime") },
+                        // { type: INPUT_FIELD_TYPE_TEXT, id: "shukSkNm", label: "集荷先名", onChange: this.onTextChange("shukSkNm") },
+                        // { type: INPUT_FIELD_TYPE_TEXT, id: "hiso_kibo_datetime", label: "配送希望日時", onChange: this.onTextChange("hisoKiboDatetime") },
+                        // { type: INPUT_FIELD_TYPE_TEXT, id: "hiso_sk_nm", label: "配送先名", onChange: this.onTextChange("hisoSkNm") },
+                        // { type: INPUT_FIELD_TYPE_TEXT, id: "kibo_kngk", label: "見積金額", onChange: this.onTextChange("mtmrKngk") },
                     ],
                     items: []
             }
@@ -99,6 +87,22 @@ export default class OM0104 extends React.Component{
         ]
     }
 
+
+    componentDidMount(){
+        this.searchMtmrLst()
+    }
+
+    async searchMtmrLst(){
+
+        const res = await FetchUtils.getFromFdApi(API_MTMR_LIST)
+
+console.log(res)
+
+        //this.itemDef4SearchedList[0].items = items
+
+        
+        
+    }
 
 
     onHznClick(){

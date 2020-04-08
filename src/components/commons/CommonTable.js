@@ -8,12 +8,22 @@ import TableRow from '@material-ui/core/TableRow';
 import FieldItem from "./FieldItem";
 import {
   INPUT_FIELD_TYPE_BUTTON,
-  INPUT_FIELD_TYPE_BUTTON_LINK
+  INPUT_FIELD_TYPE_BUTTON_LINK,
+  INPUT_FIELD_TYPE_ICON_LINK,
+  INPUT_FIELD_TYPE_CHECKBOX
 } from "../../constants/common"
+
+import {
+  toCommaStr
+} from "../../utils/CommonUtils"
 
 import "./CommonTable.scss"
 
-const isInputComponent = type=> type === INPUT_FIELD_TYPE_BUTTON || type === INPUT_FIELD_TYPE_BUTTON_LINK
+const isInputComponent = type=> 
+  type === INPUT_FIELD_TYPE_BUTTON 
+  || type === INPUT_FIELD_TYPE_BUTTON_LINK 
+  || type === INPUT_FIELD_TYPE_ICON_LINK 
+  || type === INPUT_FIELD_TYPE_CHECKBOX
 
 export default function CommonTable(props){
 
@@ -37,15 +47,21 @@ export default function CommonTable(props){
             {items.map(row => (
               <TableRow key={row.id}>
                     {
-                      (headerDef || []).map((v, index)=> (
-                        <TableCell key={index}>
+                      (headerDef || []).map((v, index)=> {
+
+                        let val = row[v.id]
+
+                        if(v.withComma) val = toCommaStr(val)
+
+                        return (
+                        <TableCell key={index} style={{textAlign: v.align || "left"}}>
                           {
                             isInputComponent(v.type)
-                              ? (<FieldItem {...v} type={v.type} value={row[v.id]} />)
-                                : row[v.id]
+                              ? (<FieldItem {...v} type={v.type} value={val} />)
+                                : val
                           }
                         </TableCell>
-                      ))
+                      )})
                         
                     }
               </TableRow>

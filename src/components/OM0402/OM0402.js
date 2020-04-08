@@ -4,6 +4,8 @@ import PropTypes from "prop-types"
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
+import Modal from '@material-ui/core/Modal';
+
 import HznButton from "../commons/HznButton"
 import FieldItem from "../commons/FieldItem"
 import {
@@ -24,8 +26,31 @@ import {
     onSelectChange,
     onRadioChange,
     lpad,
+    toCommaStr
 } from "../../utils/CommonUtils"
 import { TextField } from '@material-ui/core';
+
+import OM0403 from "../OM0403"
+
+function getModalStyle() {
+    //const top = 50 + (Math.round(Math.random() * 20) - 10)
+    //const left = 50 + (Math.round(Math.random() * 20) - 10)
+    const top = 5
+    const left = 5
+    
+  
+    return {
+      // top: `${top}%`,
+      // left: `${left}%`,
+      top: "auto",
+      left: "5%",
+      bottom: "auto",
+      right: "5%",
+       transform: `translate(${top}%, ${left}%)`,
+      width: "90%",
+      height: "680px"
+    };
+  }
 
 export default class OM0402 extends React.Component{
 
@@ -54,13 +79,17 @@ export default class OM0402 extends React.Component{
 			nmtNm: "",
 			hkkoD: "",
 			shriKgn: "",
-			biko: "",
+            biko: "",
+            
+            isAnkenDetailPopupShown: false,
         }
 
         this.onHznClick = this.onHznClick.bind(this)
         this.onTextChange = onTextChange(this)
         this.onSelectChange = onSelectChange(this)
         this.onRadioChange = onRadioChange(this)
+        this.onMove2Om0403Click = this.onMove2Om0403Click.bind(this)
+        this.onPopupCloseClick = this.onPopupCloseClick.bind(this)
         this.TODO_YOU_DEFINE_SOMETHING = function(){} // TODO: 
 
         this.itemDef4SeikyuskInf = [
@@ -80,13 +109,14 @@ export default class OM0402 extends React.Component{
             label: "受注案件一覧",
             headerDef: [
                 //{ type: OUTPUT_FIELD_TYPE_TEXT, id: "seikyuKngkGoke", label: "請求金額合計"},
+                { type: INPUT_FIELD_TYPE_CHECKBOX, id: "check", label: "", onChange: this.onRowCheckChange },
                 { type: OUTPUT_FIELD_TYPE_TEXT, id: "mtmrJuchuNo", label: "見積・受注No."},
-                { type: INPUT_FIELD_TYPE_BUTTON_LINK, id: "shosi", label: "詳細", onChange: this.TODO_YOU_DEFINE_SOMETHING("shosi"), color: "primary"},
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "kngk", label: "金額"},
-                { type: INPUT_FIELD_TYPE_TEXT, id: "seikyubn", label: "請求分", onChange: this.onTextChange("seikyubn")},
+                { type: OUTPUT_FIELD_TYPE_TEXT, id: "kngk", label: "金額(円)", withComma: true, align: "right" },
+                { type: INPUT_FIELD_TYPE_TEXT, id: "seikyubn", label: "請求分(円)", withComma: true, align: "right", onChange: this.onTextChange("seikyubn")},
                 { type: OUTPUT_FIELD_TYPE_TEXT, id: "hisoD", label: "配送日"},
                 { type: OUTPUT_FIELD_TYPE_TEXT, id: "hisosk", label: "配送先"},
                 { type: OUTPUT_FIELD_TYPE_TEXT, id: "nmtNm", label: "荷物名"},
+                { type: INPUT_FIELD_TYPE_BUTTON_LINK, id: "shosi", label: "詳細", onChange: this.onMove2Om0403Click, color: "primary"},
             ]
         }]
 
@@ -104,6 +134,9 @@ export default class OM0402 extends React.Component{
         console.log(this)
     }
 
+    onRowCheckChange(event){
+        console.log(event)
+    }
 
     juchuTableCreator(){
 
@@ -144,6 +177,18 @@ export default class OM0402 extends React.Component{
 
     }
 
+    onMove2Om0403Click(){
+        this.setState({
+            isAnkenDetailPopupShown: true
+        })
+    }
+
+    onPopupCloseClick(){
+        this.setState({
+            isAnkenDetailPopupShown: false
+        })
+    }
+
     onHznClick(){
 
 		// TODO: 
@@ -166,7 +211,7 @@ export default class OM0402 extends React.Component{
                     <Typography variant="h5" gutterBottom>受注案件一覧</Typography>
 
                     <div>
-                        <TextField className="field-item" disabled={true} defaultValue={this.state.seikyuKngkGoke} label={"請求額合計"} />
+                        <TextField className="field-item" disabled={true} defaultValue={ toCommaStr(this.state.seikyuKngkGoke) } label={"請求額合計(円)"} />
                     </div>
 
                     {
@@ -184,6 +229,22 @@ export default class OM0402 extends React.Component{
                     <HznButton text="確認" onClick={this.onHznClick} />
                 </Grid>
                 
+                <Modal
+                    open={this.state.isAnkenDetailPopupShown}
+                    onClose={this.onPopupCloseClick}
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                >
+                {
+                <div style={getModalStyle()} className="contents-wrap">
+
+                    <OM0403 style={{ height: "100%", overflowY: "scroll", padding: "8px", backgroundColor: "#fff"}} />
+
+                  </div>
+                    
+                }
+                </Modal>
+
             </div>
         )
     }

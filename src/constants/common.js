@@ -41,6 +41,11 @@ export const INPUT_FIELD_TYPE_BUTTON = "INPUT_FIELD_TYPE_BUTTON"
 export const INPUT_FIELD_TYPE_BUTTON_LINK = "INPUT_FIELD_TYPE_BUTTON_LINK"
 
 /**
+ * 入力項目種別 ボタン(アイコン)
+ */
+export const INPUT_FIELD_TYPE_ICON_LINK = "INPUT_FIELD_TYPE_ICON_LINK"
+
+/**
  * 出力項目種別 テキスト
  */
 export const OUTPUT_FIELD_TYPE_TEXT = "OUTPUT_FIELD_TYPE_TEXT"

@@ -5,6 +5,10 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
+import MenuIcon from '@material-ui/icons/Menu';
+import IconButton from '@material-ui/core/IconButton';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import EditIcon from '@material-ui/icons/Edit';
 
 import Paper from '@material-ui/core/Paper'
 import Divider from '@material-ui/core/Divider';
@@ -22,6 +26,7 @@ import {
     INPUT_FIELD_TYPE_SELECT,
     INPUT_FIELD_TYPE_DATE,
     INPUT_FIELD_TYPE_BUTTON,
+    INPUT_FIELD_TYPE_ICON_LINK,
     OUTPUT_FIELD_TYPE_TEXT,
     OUTPUT_FIELD_TYPE_TABLE,
     BREAK_LINE,
@@ -83,19 +88,23 @@ export default class OM0401 extends React.Component{
             label: "請求一覧",
             headerDef: [
                 { type: OUTPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNm", label: "取引先会社名"},
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "zipNo", label: "郵便番号"},
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "address", label: "住所"},
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "telNo", label: "電話番号"},
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "mail", label: "メール"},
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "tk", label: "月"},
+                // { type: OUTPUT_FIELD_TYPE_TEXT, id: "zipNo", label: "郵便番号"},
+                // { type: OUTPUT_FIELD_TYPE_TEXT, id: "address", label: "住所"},
+                // { type: OUTPUT_FIELD_TYPE_TEXT, id: "telNo", label: "電話番号"},
+                // { type: OUTPUT_FIELD_TYPE_TEXT, id: "mail", label: "メール"},
+                // { type: OUTPUT_FIELD_TYPE_TEXT, id: "tk", label: "月"},
                 { type: OUTPUT_FIELD_TYPE_TEXT, id: "seikyuNo", label: "請求No."},
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "seikyuKngk", label: "請求金額"},
-                { type: INPUT_FIELD_TYPE_BUTTON, id: "seikyuSts", label: "請求ステータス", onChange: this.TODO_YOU_DEFINE_SOMETHING("seikyuSts"), 
+                { type: OUTPUT_FIELD_TYPE_TEXT, id: "hkkoD", label: "発行日"},
+                { type: OUTPUT_FIELD_TYPE_TEXT, id: "shriKjt", label: "支払期日"},
+                { type: OUTPUT_FIELD_TYPE_TEXT, id: "seikyuKngk", label: "請求金額(円)"},
+                { type: INPUT_FIELD_TYPE_BUTTON_LINK, id: "seikyuSts", label: "請求ステータス", onChange: this.TODO_YOU_DEFINE_SOMETHING("seikyuSts"), color: "primary",
                     items: [{"value":"0","label":"未請求"},{"value":"1","label":"請求中"},{"value":"2","label":"領収"},{"value":"3","label":"領収後処理"},{"value":"4","label":"完了"}]
                 },
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "shriKjt", label: "支払期日"},
-                { type: INPUT_FIELD_TYPE_BUTTON_LINK, id: "seikyushoDL", label: "請求書DL", onChange: this.TODO_YOU_DEFINE_SOMETHING("seikyushoDL"), color: "primary"},
-                { type: INPUT_FIELD_TYPE_BUTTON_LINK, id: "seikyushoNoKosn", label: "請求書の更新", onChange: this.onMove2SeikyushoSkse, color: "primary"},
+                //{ type: INPUT_FIELD_TYPE_BUTTON_LINK, id: "seikyushoDL", label: "請求書DL", onChange: this.TODO_YOU_DEFINE_SOMETHING("seikyushoDL"), color: "primary"},
+                { type: INPUT_FIELD_TYPE_ICON_LINK, icon: (<GetAppIcon />), id: "seikyushoDL", label: "請求書DL", onChange: this.TODO_YOU_DEFINE_SOMETHING("seikyushoDL"), color: "primary"},
+                //{ type: INPUT_FIELD_TYPE_BUTTON_LINK, id: "seikyushoNoKosn", label: "請求書の更新", onChange: this.onMove2SeikyushoSkse, color: "primary"},
+                { type: INPUT_FIELD_TYPE_ICON_LINK, icon: (<EditIcon />), id: "seikyushoNoKosn", label: "請求書の更新", onChange: this.onMove2SeikyushoSkse},
+
             ],
             items: []
         }]
@@ -106,7 +115,7 @@ export default class OM0401 extends React.Component{
 
     onMove2SeikyushoSkse(event){
 
-        this.props.history.push("/OM0402", {seikyushoId: ""})
+        this.props.history.push(`${process.env.PUBLIC_URL}/OM0402`, {seikyushoId: ""})
 
     }
 
@@ -127,6 +136,8 @@ export default class OM0401 extends React.Component{
                 hisoD: "2020/01/" + lpad(i + 1, 2),
                 hisosk: "配送先" + i,
                 nmtNm: "荷物名" + i,
+                seikyuKngk: (i + 2) * 1234,
+                seikyuNo: "SKN" + lpad(i, 7),
             }
         })
 
@@ -163,7 +174,7 @@ const classes = {}
                             請求一覧
                         </Typography>
 
-                        <CommonButton label="請求書の作成" onChange={()=> this.props.history.push("/OM0402", {seikyushoId: ""})} />
+                        <CommonButton label="請求書の作成" onChange={()=> this.props.history.push(`${process.env.PUBLIC_URL}/OM0402`, {seikyushoId: ""})} />
 
                         <DividerMargin />
 

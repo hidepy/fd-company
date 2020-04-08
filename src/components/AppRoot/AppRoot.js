@@ -12,8 +12,9 @@ import SignIn from "../SignIn"
 import Portal from "../Portal"
 
 import "./AppRoot.scss"
-import OM0401 from '../OM0401/OM0401'
-import OM0402 from '../OM0402/OM0402'
+import OM0401 from '../OM0401'
+import OM0402 from '../OM0402'
+import OM0403 from "../OM0403"
 import DateFnsUtils from '@date-io/date-fns';
 import {
     MuiPickersUtilsProvider
@@ -33,7 +34,7 @@ export default class AppRoot extends React.Component{
                             <Route exact path={`${process.env.PUBLIC_URL}/`} component={SignIn} />
 
                             <Auth isAuthenticated={true}> 
-                            {/* TODO: Auth状態 */}
+                            
                                 <AppMain funcTitle={"fd-app-mock"}>
                                     <Switch>
 
@@ -46,14 +47,13 @@ export default class AppRoot extends React.Component{
 
                                         <Route path={`${process.env.PUBLIC_URL}/OM0401`} component={OM0401} />
                                         <Route path={`${process.env.PUBLIC_URL}/OM0402`} component={OM0402} />
+                                        <Route path={`${process.env.PUBLIC_URL}/OM0403`} component={OM0403} />
 
                                     </Switch>
                                 </AppMain>
                             </Auth>
                         </Switch>
                     </BrowserRouter>
-                    
-                {/* </Dashboard> */}
 
             </div>
 

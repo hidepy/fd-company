@@ -19,7 +19,8 @@ import {
 import {
     INPUT_AREA_TITLE_IRISH,
     INPUT_AREA_TITLE_NMT,
-    INPUT_AREA_TITLE_NTJ_HISO_JKN
+    INPUT_AREA_TITLE_NTJ,
+    INPUT_AREA_TITLE_HISO_JKN
 } from "../constants/MtmrIri"
 
 /**
@@ -38,18 +39,18 @@ export const getItemDef4PageHeader = props=> [
  * @param {*} props 
  */
 export const getItemDef4IrishContents = props=>  [
-    { type: INPUT_FIELD_TYPE_TEXT, id: "kishCd", label: "会社コード", onChange: props.onTextChange("kishCd") },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "kishNm", label: "会社名", onChange: props.onTextChange("kishNm") },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "kishNmKn", label: "会社名（カナ）", onChange: props.onTextChange("kishNmKn") },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "kishCd", label: "会社コード", onChange: props.onTextChange("kishCd"), required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "kishNm", label: "会社名", onChange: props.onTextChange("kishNm") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "kishNmKn", label: "会社名（カナ）", onChange: props.onTextChange("kishNmKn") , required: true },
     { type: BREAK_LINE },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "yubnNo", label: "郵便番号", onChange: props.onTextChange("yubnNo") },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "address", label: "所在地", onChange: props.onTextChange("address") },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "yubnNo", label: "郵便番号", onChange: props.onTextChange("yubnNo") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "address", label: "所在地", onChange: props.onTextChange("address") , required: true },
     { type: BREAK_LINE },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "tntoshNm", label: "担当者名", onChange: props.onTextChange("tntoshNm") },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "tntoshNmKn", label: "担当者名（カナ）", onChange: props.onTextChange("tntoshNmKn") },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "tntoshNm", label: "担当者名", onChange: props.onTextChange("tntoshNm") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "tntoshNmKn", label: "担当者名（カナ）", onChange: props.onTextChange("tntoshNmKn") , required: true },
     { type: BREAK_LINE },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "telNo", label: "電話番号", onChange: props.onTextChange("telNo") },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "mail", label: "メール", onChange: props.onTextChange("mail") },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "telNo", label: "電話番号", onChange: props.onTextChange("telNo") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "mail", label: "メール", onChange: props.onTextChange("mail") , required: true },
 ]
 
 /**
@@ -57,7 +58,7 @@ export const getItemDef4IrishContents = props=>  [
  * @param {*} props 
  */
 export const getItemDef4NmtContents = props=> [
-    { type: INPUT_FIELD_TYPE_RADIO, id: "nmtType", label: "荷物種別", onChange: props.onRadioChange("nmtType"), style: {width: "100%"},
+    { type: INPUT_FIELD_TYPE_RADIO, id: "nmtType", label: "荷物種別", onChange: props.onRadioChange("nmtType"), style: {width: "100%"},　required: true,
         items: [
             { value: "0", label: "機械/機械部品"},
             { value: "1", label: "繊維/衣類"},
@@ -67,9 +68,9 @@ export const getItemDef4NmtContents = props=> [
         ]
     },
     { type: BREAK_LINE },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "nmtNm", label: "荷物名", onChange: props.onTextChange("nmtNm") },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "nmtNm", label: "荷物名", onChange: props.onTextChange("nmtNm") , required: true },
     { type: BREAK_LINE },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "unitload", label: "ユニットロード", onChange: props.onRadioChange("unitload"),
+    { type: INPUT_FIELD_TYPE_RADIO, id: "unitload", label: "ユニットロード", onChange: props.onRadioChange("unitload"), required: true,
         items: [
             { value: "0", label: "パレット"},
             { value: "1", label: "コンテナ"},
@@ -77,7 +78,7 @@ export const getItemDef4NmtContents = props=> [
         ]
     },
     { type: BREAK_LINE },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "nisgtKonpoKeti", label: "荷姿（梱包形態）", onChange: props.onRadioChange("nisgtKonpoKeti"),
+    { type: INPUT_FIELD_TYPE_RADIO, id: "nisgtKonpoKeti", label: "荷姿（梱包形態）", onChange: props.onRadioChange("nisgtKonpoKeti"), required: true,
         items: [
             { value: "0", label: "段ボール"},
             { value: "1", label: "折り畳みコンテナ"},
@@ -89,85 +90,89 @@ export const getItemDef4NmtContents = props=> [
     },
     { type: INPUT_FIELD_TYPE_TEXT, id: "nisgtSnt", label: "荷姿（その他）", onChange: props.onTextChange("nisgtSnt") },
     { type: BREAK_LINE },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "snpoUnitloadNsgt", label: "寸法（ユニットロード or 荷姿）", onChange: props.onTextChange("snpoUnitloadNsgt") },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "juryoUnitloadNsgt", label: "重量（ユニットロード or 荷姿）", onChange: props.onTextChange("juryoUnitloadNsgt") },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "kosuUnitloadNsgt", label: "個数（ユニットロード or 荷姿）", onChange: props.onTextChange("kosuUnitloadNsgt") },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "snpoUnitloadNsgt", label: "寸法（ユニットロード or 荷姿）", onChange: props.onTextChange("snpoUnitloadNsgt") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "juryoUnitloadNsgt", label: "重量（ユニットロード or 荷姿）", onChange: props.onTextChange("juryoUnitloadNsgt") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "kosuUnitloadNsgt", label: "個数（ユニットロード or 荷姿）", onChange: props.onTextChange("kosuUnitloadNsgt") , required: true },
 ]
 
 /**
  * 見積 日時/場所/配送条件 入力の定義
  * @param {*} props 
  */
-export const getItemDef4NtjHisoJknContents = props=> [
-    { type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboDatetime", label: "集荷希望日時", onChange: props.onTextChange("shukKiboDatetime") },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "shukSk", label: "集荷先", onChange: props.onTextChange("shukSk") },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "shukSkNm", label: "集荷先名", onChange: props.onTextChange("shukSkNm") },
+export const getItemDef4NtjContents = props=> [
+    { type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboDatetime", label: "集荷希望日時", onChange: props.onTextChange("shukKiboDatetime") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "shukSk", label: "集荷先", onChange: props.onTextChange("shukSk") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "shukSkNm", label: "集荷先名", onChange: props.onTextChange("shukSkNm") , required: true },
     { type: BREAK_LINE },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "hisoKiboDatetime", label: "配送希望日時", onChange: props.onTextChange("hisoKiboDatetime") },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "hisoSk", label: "配送先", onChange: props.onTextChange("hisoSk") },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "hisoSkNm", label: "配送先名", onChange: props.onTextChange("hisoSkNm") },
-    { type: BREAK_LINE },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "knsiKh", label: "混載可否", onChange: props.onRadioChange("knsiKh"),
+    { type: INPUT_FIELD_TYPE_TEXT, id: "hisoKiboDatetime", label: "配送希望日時", onChange: props.onTextChange("hisoKiboDatetime") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "hisoSk", label: "配送先", onChange: props.onTextChange("hisoSk") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "hisoSkNm", label: "配送先名", onChange: props.onTextChange("hisoSkNm") , required: true },
+]
+
+    //{ type: BREAK_LINE },
+
+export const getItemDef4HisoJknContents = props=> [
+    { type: INPUT_FIELD_TYPE_RADIO, id: "knsiKh", label: "混載可否", onChange: props.onRadioChange("knsiKh"), required: true,
         items: [
             { value: "0", label: "可" },
             { value: "1", label: "否" },
         ],
     },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "tmksnKh", label: "積み重ね可否", onChange: props.onRadioChange("tmksnKh"),
+    { type: INPUT_FIELD_TYPE_RADIO, id: "tmksnKh", label: "積み重ね可否", onChange: props.onRadioChange("tmksnKh"), required: true,
         items: [
             { value: "0", label: "可" },
             { value: "1", label: "否" },
         ]
     },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "nioiUm", label: "匂いの有無", onChange: props.onRadioChange("nioiUm"),
+    { type: INPUT_FIELD_TYPE_RADIO, id: "nioiUm", label: "匂いの有無", onChange: props.onRadioChange("nioiUm"), required: true,
         items: [
             { value: "0", label: "有り" },
             { value: "1", label: "無し" },
         ]
     },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "kknbtInk", label: "危険物", onChange: props.onRadioChange("kknbtInk"),
+    { type: INPUT_FIELD_TYPE_RADIO, id: "kknbtInk", label: "危険物", onChange: props.onRadioChange("kknbtInk"), required: true,
         items: [
             { value: "0", label: "一般" },
             { value: "1", label: "危険物" },
         ]
     },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "tmkmYh", label: "積込み要否", onChange: props.onRadioChange("tmkmYh"),
+    { type: INPUT_FIELD_TYPE_RADIO, id: "tmkmYh", label: "積込み要否", onChange: props.onRadioChange("tmkmYh"), required: true,
         items: [
             { value: "0", label: "要" },
             { value: "1", label: "否" },
         ]
     },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "trorsYh", label: "取卸し要否", onChange: props.onRadioChange("trorsYh"),
+    { type: INPUT_FIELD_TYPE_RADIO, id: "trorsYh", label: "取卸し要否", onChange: props.onRadioChange("trorsYh"), required: true,
         items: [
             { value: "0", label: "要" },
             { value: "1", label: "否" },
         ]
     },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "tnirYh", label: "棚入れ要否", onChange: props.onRadioChange("tnirYh"),
+    { type: INPUT_FIELD_TYPE_RADIO, id: "tnirYh", label: "棚入れ要否", onChange: props.onRadioChange("tnirYh"), required: true,
         items: [
             { value: "0", label: "要" },
             { value: "1", label: "否" },
         ]
     },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "lblHrYh", label: "ラベル貼り要否", onChange: props.onRadioChange("lblHrYh"),
+    { type: INPUT_FIELD_TYPE_RADIO, id: "lblHrYh", label: "ラベル貼り要否", onChange: props.onRadioChange("lblHrYh"), required: true,
         items: [
             { value: "0", label: "要" },
             { value: "1", label: "否" },
         ]
     },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "ykmtYh", label: "横持ち要否", onChange: props.onRadioChange("ykmtYh"),
+    { type: INPUT_FIELD_TYPE_RADIO, id: "ykmtYh", label: "横持ち要否", onChange: props.onRadioChange("ykmtYh"), required: true,
         items: [
             { value: "0", label: "要" },
             { value: "1", label: "否" },
         ]
     },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "ttmtYh", label: "縦持ち要否", onChange: props.onRadioChange("ttmtYh"),
+    { type: INPUT_FIELD_TYPE_RADIO, id: "ttmtYh", label: "縦持ち要否", onChange: props.onRadioChange("ttmtYh"), required: true,
         items: [
             { value: "0", label: "要" },
             { value: "1", label: "否" },
         ]
     },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "hisgyoYh", label: "はい作業要否", onChange: props.onRadioChange("hiSgyoYh"),
+    { type: INPUT_FIELD_TYPE_RADIO, id: "hisgyoYh", label: "はい作業要否", onChange: props.onRadioChange("hiSgyoYh"), required: true,
         items: [
             { value: "0", label: "要" },
             { value: "1", label: "否" },
@@ -183,38 +188,47 @@ export const getItemDef4NtjHisoJknContents = props=> [
  * 見積依頼の全入力(or出力)表示項目を取得する
  * @param {object} this_state 
  */
-export const getMtmtIriAllContents = (_this)=> {
+export const getMtmtIriAllContents = (_this, disabled = false)=> {
 
     const this_state = _this.state
 
     return (
         <React.Fragment>
-            <Paper className="page-contents-wrapper">
+            <Paper className="page-contents-wrapper mtmr-iri-irish">
                 <Typography variant="h6">
                     {INPUT_AREA_TITLE_IRISH}
                 </Typography>
 
                 {
-                    _this.itemDef4IrishContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this_state[v.id]} />))
+                    _this.itemDef4IrishContents.map((v, i)=> (<FieldItem key={i} disabled={disabled} {...v} xs={12} md={4} value={this_state[v.id]} />))
                 }
             </Paper>
 
-            <Paper className="page-contents-wrapper">
+            <Paper className="page-contents-wrapper mtmr-iri-nmt">
                 <Typography variant="h6">
                     {INPUT_AREA_TITLE_NMT}
                 </Typography>
                 {
-                    _this.itemDef4NmtContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this_state[v.id]} />))
+                    _this.itemDef4NmtContents.map((v, i)=> (<FieldItem key={i} disabled={disabled} {...v} xs={12} md={4} value={this_state[v.id]} />))
                 }
             </Paper>
 
 
-            <Paper className="page-contents-wrapper">
+            <Paper className="page-contents-wrapper mtmr-iri-ntj">
                 <Typography variant="h6">
-                    {INPUT_AREA_TITLE_NTJ_HISO_JKN}
+                    {INPUT_AREA_TITLE_NTJ}
                 </Typography>
                 {
-                    _this.itemDef4NtjHisoJknContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this_state[v.id]} />))
+                    _this.itemDef4NtjContents.map((v, i)=> (<FieldItem key={i} disabled={disabled} {...v} xs={12} md={4} value={this_state[v.id]} />))
+                }
+            </Paper>
+
+            <Paper className="page-contents-wrapper mtmr-iri-jkn">
+                <Typography variant="h6">
+                    {INPUT_AREA_TITLE_HISO_JKN}
+                </Typography>
+                {
+                    _this.itemDef4HisoJknContents.map((v, i)=> (<FieldItem key={i} disabled={disabled} {...v} xs={12} md={4} value={this_state[v.id]} />))
                 }
             </Paper>
         </React.Fragment>

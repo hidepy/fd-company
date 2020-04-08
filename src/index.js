@@ -7,6 +7,8 @@ import Logger from "redux-logger"
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import AppRoot from "./containers/AppRoot"
 
+import AppTest from "./components/AppTest"
+
 // Combine済のreducer(index.js)をimport
 //import reducer from "./modules"
 import reducer from "./reducers"
@@ -40,6 +42,14 @@ ReactDOM.render(
   <Provider store={store}>
     <MuiThemeProvider theme={theme}>
       <AppRoot />
+
+
+
+
+{/* <AppTest /> */}
+
+
+      
     </MuiThemeProvider>
   </Provider>,
   rootElement

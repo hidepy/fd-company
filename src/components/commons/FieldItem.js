@@ -6,6 +6,7 @@ import Checkboxes from "./CommonChechboxes"
 import Radio from "./CommonRadio"
 import Button from "./CommonButton"
 import LinkButton from "./LinkButton"
+import IconButton from "./CommonIconButton"
 import Table from "./CommonTable"
 import DateFnsUtils from '@date-io/date-fns';
 import {
@@ -23,6 +24,7 @@ import {
     INPUT_FIELD_TYPE_RADIO,
     INPUT_FIELD_TYPE_BUTTON,
     INPUT_FIELD_TYPE_BUTTON_LINK,
+    INPUT_FIELD_TYPE_ICON_LINK,
     OUTPUT_FIELD_TYPE_TEXT,
     OUTPUT_FIELD_TYPE_TABLE,
     BREAK_LINE
@@ -36,6 +38,7 @@ const INPUT_TYPE_DEF = {
     [INPUT_FIELD_TYPE_RADIO]: Radio,
     [INPUT_FIELD_TYPE_BUTTON]: Button,
     [INPUT_FIELD_TYPE_BUTTON_LINK]: LinkButton,
+    [INPUT_FIELD_TYPE_ICON_LINK]: IconButton,
 }
 
 const FieldItem = (props)=> {

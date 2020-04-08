@@ -3,4 +3,8 @@ table.MuiTable-root{
     button.field-item{
         width: auto !important;
     }
+
+    .MuiTableCell-root.align-right{
+        text-align: right;
+    }
 }

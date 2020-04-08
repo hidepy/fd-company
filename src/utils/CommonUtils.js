@@ -44,7 +44,12 @@ export const lpad = (n, keta, padStr = "0")=>{
     for(let i = 0; i < keta; i++){ leftStr = leftStr + padStr }
 
     return (leftStr + nn).slice(-keta)
-
-
 }
 
+export const toCommaStr = n=> {
+    const val = Number(n)
+
+    console.log(val)
+
+    return isNaN(val) ? val : val.toLocaleString()
+}

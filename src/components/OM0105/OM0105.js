@@ -5,6 +5,13 @@ import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import HznButton from "../commons/HznButton"
 import FieldItem from "../commons/FieldItem"
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
+
 import {
     INPUT_FIELD_TYPE_TEXT,
     INPUT_FIELD_TYPE_SELECT,
@@ -23,7 +30,7 @@ import {
 } from "../../utils/CommonUtils"
 
 import "./OM0105.scss"
-import { getMtmtIriAllContents, getItemDef4IrishContents, getItemDef4NmtContents, getItemDef4NtjHisoJknContents } from '../../utils/MtmrIriUtils'
+import { getMtmtIriAllContents, getItemDef4IrishContents, getItemDef4NmtContents, getItemDef4NtjContents, getItemDef4HisoJknContents } from '../../utils/MtmrIriUtils'
 import { Typography } from '@material-ui/core'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -60,6 +67,8 @@ export default class OM0105 extends React.PureComponent{
         super(props)
 
         this.state = {
+            isMtmrIriDetailOpen: false,
+
             truckInfLst: [],
             tiouKh: "0",
             calcHoho: "0",
@@ -102,43 +111,22 @@ export default class OM0105 extends React.PureComponent{
         this.onTruckAddButtonClick = this.onTruckAddButtonClick.bind(this)
         this.onSwitchTruckTypeButtonClick = this.onSwitchTruckTypeButtonClick.bind(this)
         this.onTruckDeleteButtonClick = this.onTruckDeleteButtonClick.bind(this)
+        
 
-        this.itemDef4Head = [
-            { type: INPUT_FIELD_TYPE_RADIO, id: "tiouKh", label: "対応可否", onChange: this.onRadioChange("tiouKh"),
-                items: [{"value":"0","label":"可"},{"value":"1","label":"否"}]
-            },
-            { type: BREAK_LINE },
-            { type: INPUT_FIELD_TYPE_RADIO, id: "calcHoho", label: "計算方法（車両貸しor混載）", onChange: this.onRadioChange("calcHoho"), 
-                items: [{"value":"0","label":"車両貸し"},{"value":"1","label":"混載"}]
-            },
-        ]
+        // this.itemDef4Head = [
+        //     // { type: INPUT_FIELD_TYPE_RADIO, id: "tiouKh", label: "対応可否", onChange: this.onRadioChange("tiouKh"),
+        //     //     items: [{"value":"0","label":"可"},{"value":"1","label":"否"}]
+        //     // },
+        //     { type: BREAK_LINE },
+        //     { type: INPUT_FIELD_TYPE_RADIO, id: "calcHoho", label: "計算方法", onChange: this.onRadioChange("calcHoho"), 
+        //         items: [{"value":"0","label":"車両貸し"},{"value":"1","label":"混載"}]
+        //     },
+        // ]
 
         this.itemDef4trkInf = [
-            // { type: INPUT_FIELD_TYPE_RADIO, id: "type", label: "種別", onChange: this.onRadioChange("type"), 
-            //     items: [{"value":"0","label":"2t"},{"value":"1","label":"4t"},{"value":"2","label":"10t"}],
-            //     customComponent: (
-            //         <div style={{display: "inline-block"}}>
-            //             {
-            //                 [{"value":"0","label":"2t"},{"value":"1","label":"4t"},{"value":"2","label":"10t"}]
-            //                     .map((v, i)=> (
-            //                         <Fab 
-            //                             key={i} 
-            //                             size="small" 
-            //                             color={("" + i) === this.state.truckType ? "primary" : "default"} 
-            //                             aria-label="add" 
-            //                             variant="extended" 
-            //                             style={{width: "128px", height: "64px", margin: "8px"}}
-            //                             onClick={()=> this.onSwitchTruckTypeButtonClick(v.value)}
-            //                         >
-            //                             <LocalShippingIcon />
-            //                     <span>{v.label}-{this.state.truckType}-{i}</span>
-            //                         </Fab>
-                          
-            //                     ))
-            //             }
-            //         </div>
-            //     )
-            // },
+            { type: INPUT_FIELD_TYPE_RADIO, id: "calcHoho", label: "計算方法", onChange: this.onRadioChange("calcHoho"), 
+                items: [{"value":"0","label":"車両貸し"},{"value":"1","label":"混載"}]
+            },
             { type: INPUT_FIELD_TYPE_TEXT, id: "disu", label: "台数", onChange: this.onTextChange("disu")},
 			{ type: INPUT_FIELD_TYPE_BUTTON, id: "add", label: "追加", onChange: this.onTruckAddButtonClick, style: {margin: "16px"} },
         ]
@@ -190,8 +178,6 @@ export default class OM0105 extends React.PureComponent{
         ]
 
         this.itemDef4footer = [
-			// { type: INPUT_FIELD_TYPE_BUTTON, id: "kknn", label: "確認", onChange: this.TODO_YOU_DEFINE_SOMETHING},
-			// { type: INPUT_FIELD_TYPE_BUTTON, id: "edit", label: "修正", onChange: this.TODO_YOU_DEFINE_SOMETHING},
 			{ type: INPUT_FIELD_TYPE_BUTTON, id: "entry", label: "登録", color: "secondary", onChange: this.TODO_YOU_DEFINE_SOMETHING},
 			{ type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrshDL", label: "見積書DL", color: "primary", onChange: this.TODO_YOU_DEFINE_SOMETHING},
         ]
@@ -199,7 +185,12 @@ export default class OM0105 extends React.PureComponent{
         // 見積依頼用
         this.itemDef4IrishContents = getItemDef4IrishContents(this).map(v=> { return { ...v, disabled: true} })
         this.itemDef4NmtContents = getItemDef4NmtContents(this).map(v=> { return { ...v, disabled: true} })
-        this.itemDef4NtjHisoJknContents = getItemDef4NtjHisoJknContents(this).map(v=> { return { ...v, disabled: true} })
+        this.itemDef4NtjContents = getItemDef4NtjContents(this).map(v=> { return { ...v, disabled: true} })
+        this.itemDef4HisoJknContents = getItemDef4HisoJknContents(this)
+
+        this.onOpenIriDetailClick = this.onOpenIriDetailClick.bind(this)
+        this.onCloseIriDetailClick = this.onCloseIriDetailClick.bind(this)
+
     }
 
 
@@ -247,6 +238,21 @@ export default class OM0105 extends React.PureComponent{
 
     }
 
+    /**
+     * 見積依頼の詳細ポップアップを開く
+     */
+    onOpenIriDetailClick(){
+        this.setState({
+            isMtmrIriDetailOpen: true
+        })
+    }
+
+    onCloseIriDetailClick(){
+        this.setState({
+            isMtmrIriDetailOpen: false
+        })
+    }
+
     // TODO: 
     TODO_YOU_DEFINE_SOMETHING(key){
         console.log(key)
@@ -261,106 +267,213 @@ export default class OM0105 extends React.PureComponent{
     }
 
     render(){
-console.log("[OM0105] rendering")
+
+        const split = { display: "inline-block", verticalAlign: "top", margin: "6px"}
+
         return (
             <div className="OM0105-wrapper inner-wrapper">
 
-    <ExpansionPanel className="iri-niyo-wrapper">
-        <ExpansionPanelSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="iri-niyo-body"
-          id="iri-niyo-header"
-        >
-          <Typography variant="h5"><DescriptionIcon />依頼内容</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-            <Paper>
-            {
-                getMtmtIriAllContents(this)
-            }
-            </Paper>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+                <Grid container spacing={3} 
+                    container
+                    direction="row"
+                    justify="center"
+                    alignItems="stretch"
+                >
 
-                {/* <Paper>
-                    <Typography variant="h5">依頼内容</Typography>
+                    <Grid item xs={7}>
+                        <Paper>
+                            <Typography variant="h5"><EditIcon />回答作成</Typography>
+
+                            {/* <Paper className="input-items-wrapper">
+                                {
+                                    this.itemDef4Head.map((v, i)=> (<FieldItem key={`head-item-${i}`} {...v} xs={12} md={4} value={this.state[v.id]} />))
+                                }
+                            </Paper> */}
+            
+
+                            <Paper className="input-items-wrapper">
+                                <Typography variant="h6">トラック情報</Typography>
+
+                                <div>
+                                {
+                                    [{"value":"0","label":"2t"},{"value":"1","label":"4t"},{"value":"2","label":"10t"}]
+                                        .map((v, i)=> (
+                                            <Fab 
+                                                key={i} 
+                                                size="small" 
+                                                color={("" + i) === this.state.truckType ? "primary" : "default"} 
+                                                aria-label="add" 
+                                                variant="extended" 
+                                                style={{width: "128px", height: "64px", margin: "8px"}}
+                                                onClick={()=> this.onSwitchTruckTypeButtonClick(v.value)}
+                                            >
+                                                <LocalShippingIcon />
+                                                <span>{v.label}</span>
+                                            </Fab>
+
+                                        ))
+                                }
+
+                                {
+                                    this.itemDef4trkInf.map((v, i)=> (<FieldItem key={`trhk-item-${i}`} {...v} xs={12} md={4} value={this.state[v.id]} />))
+                                }
+
+                                </div>
+
+                                {
+                                    (this.state.truckInfLst || [])
+                                        .map((v, i)=> (
+                                            <Chip
+                                                icon={<LocalShippingIcon />}
+                                                label={` Xトントラック ${v.disu}台`}
+                                                onDelete={()=> this.onTruckDeleteButtonClick(v, i)}
+                                                color="primary"
+                                            />
+                                        ))
+                                }
+                            </Paper>
+                        </Paper>
+                    </Grid>
+
+                    <Grid item xs={5}>
+                        <Paper className="iri-niyo-wrapper">
+                            <Typography variant="h5"><DescriptionIcon />依頼内容</Typography>
+                            {/* {
+                                getMtmtIriAllContents(this)
+                            } */}
+                            <Paper className="mtmr-iri-irish">
+                                <Typography variant="h5">依頼者</Typography>
+                                {
+                                    [
+                                        { type: INPUT_FIELD_TYPE_TEXT, id: "kishNm", label: "会社名" },
+                                    ]
+                                        .map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={"会社名XXX"} />))
+                                }
+                            </Paper>
+
+                            <Paper className="mtmr-iri-nmt">
+                                <Typography variant="h5">荷物</Typography>
+
+                                {
+                                    [
+                                        { type: INPUT_FIELD_TYPE_RADIO, id: "nmtType", label: "荷物種別",
+                                        items: [
+                                            { value: "0", label: "種別0"},
+                                            { value: "1", label: "種別1"},
+                                        ]
+                                        },
+                                        { type: BREAK_LINE },
+                                        { type: INPUT_FIELD_TYPE_TEXT, id: "nmtNm", label: "荷物名", },
+                                        { type: BREAK_LINE },
+                                        { type: INPUT_FIELD_TYPE_TEXT, id: "snpoUnitloadNsgt", label: "寸法（ユニットロード or 荷姿）" },
+                                        { type: INPUT_FIELD_TYPE_TEXT, id: "juryoUnitloadNsgt", label: "重量（ユニットロード or 荷姿）" },
+                                        { type: INPUT_FIELD_TYPE_TEXT, id: "kosuUnitloadNsgt", label: "個数（ユニットロード or 荷姿）" },
+                                    
+                                    ]
+                                        .map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={"会社名XXX"} />))
+                                }
+
+                            </Paper>
+
+                            <Button variant="outlined" color="primary" onClick={this.onOpenIriDetailClick}>詳細</Button>
+                        </Paper>
+                    </Grid>
+
+
+                    <Grid item xs={7}>
+                        <Paper className="input-items-wrapper">
+                            <Typography variant="h6">ルート情報</Typography>
+                            {
+                                this.itemDef4rtInf.map((v, i)=> (<FieldItem key={`rt-item-${i}`} {...v} xs={12} md={4} value={this.state[v.id]} />))
+                            }
+                        </Paper>
+                    </Grid>
+
+
+                    <Grid item xs={5}>
+                        <Paper className="input-items-wrapper">
+                            <Typography variant="h6">日時・場所</Typography>
+                            {
+                                [
+                                    { type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboDatetime", label: "集荷希望日時" },
+                                    { type: INPUT_FIELD_TYPE_TEXT, id: "hisoKiboDatetime", label: "配送希望日時" },
+                                ]
+                                    .map((v, i)=> (<FieldItem key={`rt-item-${i}`} {...v} xs={12} md={4} value={this.state[v.id]} />))
+                            }
+                            <Button variant="outlined" color="primary" onClick={this.onOpenIriDetailClick}>詳細</Button>
+                        </Paper>
+                    </Grid>
+
+                    <Grid item xs={7}>
+                        <Paper className="input-items-wrapper">
+                            <Typography variant="h6">見積金額</Typography> 
+                            {
+                                this.itemDef4mtmrKngk.map((v, i)=> (<FieldItem key={`mtmr-kngk-item-${i}`} {...v} xs={12} md={4} value={this.state[v.id]} />))
+                            }
+                        </Paper>
+                    </Grid>
+                    
+
+                    <Grid item xs={5}>
+                        <Paper className="input-items-wrapper">
+                            <Typography variant="h6">配送条件</Typography> 
+                            {
+                                [
+                                    { type: INPUT_FIELD_TYPE_TEXT, id: "sntJokn", label: "その他条件"},
+                                    { type: INPUT_FIELD_TYPE_TEXT, id: "kiboKngk", label: "希望金額"}
+                                ]
+                                    .map((v, i)=> (<FieldItem key={`mtmr-kngk-item-${i}`} {...v} xs={12} md={4} value={this.state[v.id]} />))
+                            }
+                            <Button variant="outlined" color="primary" onClick={this.onOpenIriDetailClick}>詳細</Button>
+                        </Paper>
+                    </Grid>
+
+                    
+
+                    <Grid item xs={12} className="footer-buttons">
                     {
-                        getMtmtIriAllContents(this)
+                        this.itemDef4footer.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this.state[v.id]} />))
                     }
-                </Paper> */}
-
-
-                <Paper>
-                    <Typography variant="h5"><EditIcon />回答作成</Typography>
-
-                    <Paper className="input-items-wrapper">
-                        {
-                            this.itemDef4Head.map((v, i)=> (<FieldItem key={`head-item-${i}`} {...v} xs={12} md={4} value={this.state[v.id]} />))
-                        }
-                    </Paper>
-      
-
-                    <Paper className="input-items-wrapper">
-                        <Typography variant="h6">トラック情報</Typography>
-
-                        <div>
-                        {
-[{"value":"0","label":"2t"},{"value":"1","label":"4t"},{"value":"2","label":"10t"}]
-.map((v, i)=> (
-    <Fab 
-        key={i} 
-        size="small" 
-        color={("" + i) === this.state.truckType ? "primary" : "default"} 
-        aria-label="add" 
-        variant="extended" 
-        style={{width: "128px", height: "64px", margin: "8px"}}
-        onClick={()=> this.onSwitchTruckTypeButtonClick(v.value)}
-    >
-        <LocalShippingIcon />
-<span>{v.label}</span>
-    </Fab>
-
-))
-                        }
-                        {
-                            this.itemDef4trkInf.map((v, i)=> (<FieldItem key={`trhk-item-${i}`} {...v} xs={12} md={4} value={this.state[v.id]} />))
-                        }
-                        </div>
-                        {
-                            (this.state.truckInfLst || [])
-                                .map((v, i)=> (
-<Chip
-    icon={<LocalShippingIcon />}
-    label={` Xトントラック ${v.disu}台`}
-    onDelete={()=> this.onTruckDeleteButtonClick(v, i)}
-    color="primary"
-/>
-                                ))
-                        }
-                    </Paper>
-
-                    <Paper className="input-items-wrapper">
-                        <Typography variant="h6">ルート情報</Typography>
-                        {
-                            this.itemDef4rtInf.map((v, i)=> (<FieldItem key={`rt-item-${i}`} {...v} xs={12} md={4} value={this.state[v.id]} />))
-                        }
-                    </Paper>
-
-                    <Paper className="input-items-wrapper">
-                        <Typography variant="h6">見積金額</Typography> 
-                        {
-                            this.itemDef4mtmrKngk.map((v, i)=> (<FieldItem key={`mtmr-kngk-item-${i}`} {...v} xs={12} md={4} value={this.state[v.id]} />))
-                        }
-                    </Paper>
-                </Paper>
-
-{/* <HznButton text="確認" onClick={this.onHznClick} /> */}
-                <Grid item xs={12} className="footer-buttons">
-                {
-                    this.itemDef4footer.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this.state[v.id]} />))
-                }
+                    </Grid>
                 </Grid>
-                
+
+
+
+
+
+    <React.Fragment>
+      {/* <Button variant="outlined" color="primary" onClick={this.onOpenIriDetailClick}>
+        Open max-width dialog
+      </Button> */}
+      <Dialog
+        fullWidth={600}
+        maxWidth={600}
+        open={this.state.isMtmrIriDetailOpen}
+        onClose={this.onCloseIriDetailClick}
+        aria-labelledby="max-width-dialog-title"
+      >
+        <DialogTitle id="max-width-dialog-title">依頼内容</DialogTitle>
+        <DialogContent>
+          {/* <DialogContentText>
+            You can set my maximum width and whether to adapt or not.
+          </DialogContentText> */}
+
+          {
+              getMtmtIriAllContents(this, true)
+          }
+
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.onCloseIriDetailClick} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
+
+
+
+
             </div>
         )
     }
