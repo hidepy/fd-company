@@ -8,6 +8,7 @@ import Button from "./CommonButton"
 import LinkButton from "./LinkButton"
 import IconButton from "./CommonIconButton"
 import Table from "./CommonTable"
+import Link from "./CommonLink"
 import DateFnsUtils from '@date-io/date-fns';
 import {
     MuiPickersUtilsProvider,
@@ -26,6 +27,7 @@ import {
     INPUT_FIELD_TYPE_BUTTON_LINK,
     INPUT_FIELD_TYPE_ICON_LINK,
     OUTPUT_FIELD_TYPE_TEXT,
+    OUTPUT_FIELD_TYPE_LINK,
     OUTPUT_FIELD_TYPE_TABLE,
     BREAK_LINE
 } from "../../constants/common"
@@ -39,6 +41,7 @@ const INPUT_TYPE_DEF = {
     [INPUT_FIELD_TYPE_BUTTON]: Button,
     [INPUT_FIELD_TYPE_BUTTON_LINK]: LinkButton,
     [INPUT_FIELD_TYPE_ICON_LINK]: IconButton,
+    [OUTPUT_FIELD_TYPE_LINK]: Link
 }
 
 const FieldItem = (props)=> {

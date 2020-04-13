@@ -29,13 +29,14 @@ import {
     INPUT_AREA_TITLE_ARR
 } from "../../constants/MtmrIri"
 
-import FetchUtils from '../../utils/FetchUtils'
-import { API_MTMR_LIST } from '../../constants/apiPath';
-
 export default class OM0103 extends React.Component{
 
     static contextTypes = {
         router: PropTypes.object
+    }
+
+    static propTypes = {
+        mtmrMisiId: PropTypes.string,
     }
 
     constructor(props){
@@ -318,7 +319,7 @@ export default class OM0103 extends React.Component{
 
 
         return (
-            <div className="OM0101-wrapper inner-wrapper">
+            <div className="OM0103-wrapper inner-wrapper" style={this.props.style}>
                 <Paper className="page-header-wrapper">
 
                     <Typography variant="h5" gutterBottom>
@@ -334,6 +335,8 @@ export default class OM0103 extends React.Component{
                             ))
                         }
                     </Stepper>
+
+                    { this.props.mtmrMisiId }
 
                     <React.Fragment>
 

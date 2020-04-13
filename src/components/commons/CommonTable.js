@@ -10,7 +10,8 @@ import {
   INPUT_FIELD_TYPE_BUTTON,
   INPUT_FIELD_TYPE_BUTTON_LINK,
   INPUT_FIELD_TYPE_ICON_LINK,
-  INPUT_FIELD_TYPE_CHECKBOX
+  INPUT_FIELD_TYPE_CHECKBOX,
+  OUTPUT_FIELD_TYPE_LINK
 } from "../../constants/common"
 
 import {
@@ -24,6 +25,7 @@ const isInputComponent = type=>
   || type === INPUT_FIELD_TYPE_BUTTON_LINK 
   || type === INPUT_FIELD_TYPE_ICON_LINK 
   || type === INPUT_FIELD_TYPE_CHECKBOX
+  || type === OUTPUT_FIELD_TYPE_LINK
 
 export default function CommonTable(props){
 
@@ -44,24 +46,26 @@ export default function CommonTable(props){
           </TableHead>
 
           <TableBody>
-            {items.map(row => (
-              <TableRow key={row.id}>
+            {items.map((row, rowIndex) => (
+              <TableRow key={`${row.id}-${rowIndex}`}>
                     {
                       (headerDef || []).map((v, index)=> {
 
                         let val = row[v.id]
+                        const onChange = (v.onChange || function(){}).bind({...v, rowIndex, value: val })
 
                         if(v.withComma) val = toCommaStr(val)
 
                         return (
-                        <TableCell key={index} style={{textAlign: v.align || "left"}}>
-                          {
-                            isInputComponent(v.type)
-                              ? (<FieldItem {...v} type={v.type} value={val} />)
-                                : val
-                          }
-                        </TableCell>
-                      )})
+                          <TableCell key={index} style={{textAlign: v.align || "left", ...v.style}}>
+                            {
+                              isInputComponent(v.type)
+                                ? (<FieldItem {...v} onChange={onChange} type={v.type} value={val} />)
+                                  : val
+                            }
+                          </TableCell>
+                        )
+                      })
                         
                     }
               </TableRow>
@@ -73,5 +77,5 @@ export default function CommonTable(props){
 
 CommonTable.propTypes ={
     headerDef: PropTypes.array.isRequired,
-    items: PropTypes.func.isRequired,
+    items: PropTypes.array.isRequired,
 }

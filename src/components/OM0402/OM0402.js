@@ -5,7 +5,6 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import Modal from '@material-ui/core/Modal';
-
 import HznButton from "../commons/HznButton"
 import FieldItem from "../commons/FieldItem"
 import {
@@ -29,28 +28,9 @@ import {
     toCommaStr
 } from "../../utils/CommonUtils"
 import { TextField } from '@material-ui/core';
+import { getModalStyle } from "../../utils/CommonUtils"
 
 import OM0403 from "../OM0403"
-
-function getModalStyle() {
-    //const top = 50 + (Math.round(Math.random() * 20) - 10)
-    //const left = 50 + (Math.round(Math.random() * 20) - 10)
-    const top = 5
-    const left = 5
-    
-  
-    return {
-      // top: `${top}%`,
-      // left: `${left}%`,
-      top: "auto",
-      left: "5%",
-      bottom: "auto",
-      right: "5%",
-       transform: `translate(${top}%, ${left}%)`,
-      width: "90%",
-      height: "680px"
-    };
-  }
 
 export default class OM0402 extends React.Component{
 
@@ -155,16 +135,6 @@ export default class OM0402 extends React.Component{
                 nmtNm: "荷物名" + i,
             }
         })
-
-/*
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "mtmrJuchuNo", label: "見積・受注No."},
-                { type: INPUT_FIELD_TYPE_BUTTON, id: "shosi", label: "詳細", onChange: this.TODO_YOU_DEFINE_SOMETHING("shosi")},
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "kngk", label: "金額"},
-                { type: INPUT_FIELD_TYPE_TEXT, id: "seikyubn", label: "請求分", onChange: this.onTextChange("seikyubn")},
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "hisoD", label: "配送日"},
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "hisosk", label: "配送先"},
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "nmtNm", label: "荷物名"},
-*/
 
         this.itemDef4JuchuInfLst[0].items = _dummyData
 

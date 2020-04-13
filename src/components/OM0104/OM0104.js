@@ -4,6 +4,8 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper'
 import HznButton from "../commons/HznButton"
 import FieldItem from "../commons/FieldItem"
+import { getModalStyle } from "../../utils/CommonUtils"
+import Modal from '@material-ui/core/Modal';
 import {
     INPUT_FIELD_TYPE_TEXT,
     INPUT_FIELD_TYPE_SELECT,
@@ -11,115 +13,157 @@ import {
     INPUT_FIELD_TYPE_CHECKBOXES,
     INPUT_FIELD_TYPE_RADIO,
     INPUT_FIELD_TYPE_BUTTON,
-    OUTPUT_FIELD_TYPE_TABLE
+    INPUT_FIELD_TYPE_ICON_LINK,
+    OUTPUT_FIELD_TYPE_LINK,
+    OUTPUT_FIELD_TYPE_TABLE,
+    INPUT_FIELD_TYPE_BUTTON_LINK
 } from "../../constants/common"
 import {
     showAlertMsg,
     onTextChange,
     onSelectChange,
     onRadioChange,
+    convServerDatetimeStr2ClientDateTimeStr,
 } from "../../utils/CommonUtils"
 import _ from "lodash"
 import FetchUtils from '../../utils/FetchUtils';
 import { API_MTMR_LIST } from '../../constants/apiPath';
 
-export default class OM0104 extends React.Component{
+import GetAppIcon from '@material-ui/icons/GetApp';
+import DeleteIcon from '@material-ui/icons/Delete';
+
+import OM0103 from "../OM0103"
+
+export default class OM0104 extends React.Component {
 
     static contextTypes = {
         router: PropTypes.object
     }
 
-    constructor(props){
+    constructor(props) {
 
         super(props)
 
         this.state = {
-			stsSbrkm: "",
-			ftreeTxtKnskRn: "",
+            stsSbrkm: "",
+            ftreeTxtKnskRn: "",
+            mtmrList: [],
+            isMtmrDetailPopupShown: false,
+            selectedMtmrMisiId: "",
         }
 
         this.onHznClick = this.onHznClick.bind(this)
         this.onTextChange = onTextChange(this)
         this.onSelectChange = onSelectChange(this)
         this.onRadioChange = onRadioChange(this)
-        this.openDetail = this.openDetail.bind(this)
-        this.TODO_YOU_DEFINE_SOMETHING = function(){} // TODO: 
+        this.onPopupOpenClick = this.onPopupOpenClick.bind(this)
+        this.onPopupCloseClick = this.onPopupCloseClick.bind(this)
+        this.TODO_YOU_DEFINE_SOMETHING = function () { } // TODO: 
 
         this.itemDef4SearchCondition = [
-            { type: INPUT_FIELD_TYPE_SELECT, id: "stsSbrkm", label: "ステータス絞り込み", onChange: this.onSelectChange("stsSbrkm"),
+            {
+                type: INPUT_FIELD_TYPE_SELECT, id: "stsSbrkm", label: "ステータス絞り込み", onChange: this.onSelectChange("stsSbrkm"),
                 items: [
                     { value: "0", label: "全て" },
-                    { value: "1", label: "見積未登録"},
-                    { value: "2", label: "見積登録済"},
-                    { value: "3", label: "見積回答済"},
-                    { value: "4", label: "発注済"},
-                    { value: "5", label: "受注済"},
+                    { value: "1", label: "見積未登録" },
+                    { value: "2", label: "見積登録済" },
+                    { value: "3", label: "見積回答済" },
+                    { value: "4", label: "発注済" },
+                    { value: "5", label: "受注済" },
                 ]
             },
-			{ type: INPUT_FIELD_TYPE_TEXT, id: "ftreeTxtKnskRn", label: "フリーテキスト検索欄", onChange: this.onTextChange("ftreeTxtKnskRn") },
-			{ type: INPUT_FIELD_TYPE_BUTTON, id: "knskBtn", label: "検索ボタン", onChange: this.props.searchMtmrList },
-            { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrIriTork", label: "見積依頼の登録", onChange: this.TODO_YOU_DEFINE_SOMETHING("mtmrIriTork") },
+            { type: INPUT_FIELD_TYPE_TEXT, id: "ftreeTxtKnskRn", label: "フリーテキスト検索欄", onChange: this.onTextChange("ftreeTxtKnskRn") },
+            { type: INPUT_FIELD_TYPE_BUTTON, id: "knskBtn", label: "検索ボタン", onChange: this.searchMtmrLst },
+            { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrIriTork", label: "見積依頼の登録", onChange: this.TODO_YOU_DEFINE_SOMETHING },
         ]
+
+        const _onMtmrNoClick = this.onMtmrNoClick.bind(this)
 
         this.itemDef4SearchedList = [{
-                type: OUTPUT_FIELD_TYPE_TABLE, id: "mtmrLst", label: "見積一覧",
-                    headerDef: [
-                        { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmr_iri_cd", label: "見積・受注No.", onClick: this.openDetail },
-                        { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrIriShsi", label: "見積依頼の修正", onChange: this.TODO_YOU_DEFINE_SOMETHING("mtmrIriShsi") },
-                        { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrKito", label: "見積回答", onChange: this.TODO_YOU_DEFINE_SOMETHING("mtmrKito") },
-                        { type: INPUT_FIELD_TYPE_BUTTON, id: "skj", label: "削除", onChange: this.TODO_YOU_DEFINE_SOMETHING("skj") },
-                        { type: INPUT_FIELD_TYPE_BUTTON, id: "chohyoDl", label: "帳票DL", onChange: this.TODO_YOU_DEFINE_SOMETHING("chohyoDl") },
-                        { type: INPUT_FIELD_TYPE_TEXT, id: "kitoSts", label: "ステータス", onChange: this.onTextChange("kitoSts") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "kishNm", label: "会社名", onChange: this.onTextChange("kishNm") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "nmt_sbt_cd", label: "荷物種別", onChange: this.onTextChange("nmtShbt") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "nmt_nm", label: "荷物名", onChange: this.onTextChange("nmtNm") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "nsgt_cd", label: "荷姿", onChange: this.onTextChange("nsgt") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "unitload_sbt_cd", label: "ユニットロード", onChange: this.onTextChange("unitload") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "shuk_kibo_datetime", label: "集荷希望日時", onChange: this.onTextChange("shukKiboDatetime") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "shukSkNm", label: "集荷先名", onChange: this.onTextChange("shukSkNm") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "hiso_kibo_datetime", label: "配送希望日時", onChange: this.onTextChange("hisoKiboDatetime") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "hiso_sk_nm", label: "配送先名", onChange: this.onTextChange("hisoSkNm") },
-                        // { type: INPUT_FIELD_TYPE_TEXT, id: "kibo_kngk", label: "見積金額", onChange: this.onTextChange("mtmrKngk") },
-                    ],
-                    items: []
-            }
-
-        ]
+            type: OUTPUT_FIELD_TYPE_TABLE, id: "mtmrLst", label: "見積一覧",
+            headerDef: [
+                { type: OUTPUT_FIELD_TYPE_LINK, id: "anknMisiId", label: "見積・受注No.", onChange: function(){ _onMtmrNoClick(this.value) }, style: { width: "100px" } },
+                { type: INPUT_FIELD_TYPE_TEXT, id: "anknStsCd", label: "ステータス", onChange: this.onTextChange("anknStsCd") },
+                { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNm", label: "会社名", onChange: this.onTextChange("trhkSkKishNm") },
+                { type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboNtj", label: "集荷希望日時", onChange: this.onTextChange("shukKiboNtj") },
+                { type: INPUT_FIELD_TYPE_TEXT, id: "shukskNm", label: "集荷先名", onChange: this.onTextChange("shukskNm") },
+                { type: INPUT_FIELD_TYPE_TEXT, id: "hisoKiboNtj", label: "配送希望日時", onChange: this.onTextChange("hisoKiboNtj") },
+                { type: INPUT_FIELD_TYPE_TEXT, id: "hisoskNm", label: "配送先名", onChange: this.onTextChange("hisoskNm") },
+                { type: INPUT_FIELD_TYPE_TEXT, id: "gokeKngk", label: "金額", onChange: this.onTextChange("gokeKngk") },
+                { type: INPUT_FIELD_TYPE_ICON_LINK, icon: (<GetAppIcon />), id: "seikyushoDL", label: "請求書DL", onChange: this.mytest, color: "primary" },
+                { type: INPUT_FIELD_TYPE_BUTTON_LINK, id: "mtmrIriShsi", label: "修正", onChange: this.onMtmrIriShsiClick, color: "primary" },
+                { type: INPUT_FIELD_TYPE_BUTTON_LINK, id: "mtmrKito", label: "見積回答", onChange: this.onMtmrKitoClick, color: "primary" },
+                { type: INPUT_FIELD_TYPE_ICON_LINK, icon: (<DeleteIcon />), id: "skj", label: "", onChange: this.onSkjClick, color: "primary" },
+                { type: INPUT_FIELD_TYPE_ICON_LINK, icon: (<GetAppIcon />), id: "chohyoDl", label: "", onChange: this.onChohyoDlClick, color: "primary" },
+            ],
+            items: []
+        }]
     }
 
+    mytest(event) {
+        console.log(event, this)
+    }
 
-    componentDidMount(){
+    onMtmrNoClick(mtmrNo){
+        this.setState({
+            selectedMtmrMisiId: mtmrNo,
+            isMtmrDetailPopupShown: true,
+        })
+    }
+
+    onMtmrIriShsiClick(event) {
+        console.log(event, this)
+    }
+
+    onMtmrKitoClick(event) {
+        console.log(event, this)
+    }
+
+    onSkjClick(event) {
+        console.log(event, this)
+    }
+
+    onChohyoDlClick(event) {
+        console.log(event, this)
+    }
+
+    componentDidMount() {
         this.searchMtmrLst()
     }
 
-    async searchMtmrLst(){
+    async searchMtmrLst() {
 
         const res = await FetchUtils.getFromFdApi(API_MTMR_LIST)
-
-console.log(res)
-
-        //this.itemDef4SearchedList[0].items = items
-
-        
-        
+        console.log(res)
+        this.setState({
+            mtmrList: res || []
+        })
     }
 
 
-    onHznClick(){
+    onHznClick() {
 
-		// TODO: 
-
-    }
-
-    openDetail(){
-
-        // 
+        // TODO: 
 
     }
 
-    mtmrTableCreator(items){
+    onPopupOpenClick() {
+        this.setState({
+            isMtmrDetailPopupShown: true
+        })
 
-        this.itemDef4SearchedList[0].items = items
+    }
+
+    
+    onPopupCloseClick(){
+        this.setState({
+            isMtmrDetailPopupShown: false
+        })
+    }
+
+    mtmrTableCreator(items) {
+
+        this.itemDef4SearchedList[0].items = items || []
 
         return this.itemDef4SearchedList
 
@@ -127,7 +171,7 @@ console.log(res)
 
 
 
-    render(){
+    render() {
 
         return (
             <div className="OM0104-wrapper inner-wrapper">
@@ -139,14 +183,33 @@ console.log(res)
                         </Typography>
 
                         {
-                            this.itemDef4SearchCondition.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this.state[v.id]} />))
+                            this.itemDef4SearchCondition.map((v, i) => (<FieldItem key={i} {...v} xs={12} md={4} value={this.state[v.id]} />))
                         }
 
                         {
-                            this.mtmrTableCreator(_.get(this.props, "OM0104.mtmrList", [])).map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} />))
+                            this.mtmrTableCreator(_.get(this.state, "mtmrList", [])).map((v, i) => (<FieldItem key={i} {...v} xs={12} md={4} />))
                         }
                     </React.Fragment>
                 </Paper>
+
+                <Modal
+                    open={this.state.isMtmrDetailPopupShown}
+                    onClose={this.onPopupCloseClick}
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                >
+                    {
+                        <div style={getModalStyle()} className="contents-wrap">
+
+                            <OM0103
+                                mtmrMisiId={this.state.selectedMtmrMisiId}
+                                style={{ height: "100%", overflowY: "scroll", padding: "8px", backgroundColor: "#fff" }}
+                            />
+
+                        </div>
+
+                    }
+                </Modal>
 
             </div>
         )

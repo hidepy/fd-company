@@ -51,6 +51,11 @@ export const INPUT_FIELD_TYPE_ICON_LINK = "INPUT_FIELD_TYPE_ICON_LINK"
 export const OUTPUT_FIELD_TYPE_TEXT = "OUTPUT_FIELD_TYPE_TEXT"
 
 /**
+ * 出力項目種別 リンク
+ */
+export const OUTPUT_FIELD_TYPE_LINK = "OUTPUT_FIELD_TYPE_LINK"
+
+/**
  * 出力項目種別 テーブル
  */
 export const OUTPUT_FIELD_TYPE_TABLE = "OUTPUT_FIELD_TYPE_TABLE"

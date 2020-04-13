@@ -2,6 +2,7 @@
 import {
     API_BASE_URI
 } from "../constants/httpRequest"
+import { convSnakeKeyObj2CamelKeyObj, convSnakeKeyArr2CamelKeyArr } from "./CommonUtils"
 
 
 export default class FetchUtils{
@@ -32,7 +33,15 @@ export default class FetchUtils{
      * @param {*} apiId 
      */
     static async getFromFdApi(apiId){
-        return FetchUtils.get(`${API_BASE_URI}${apiId}`)
+        const res = await FetchUtils.get(`${API_BASE_URI}${apiId}`)
+
+        if(!res) return res
+
+        if(Array.isArray(res)) return convSnakeKeyArr2CamelKeyArr(res)
+
+        if( (typeof res) === "object" ) return convSnakeKeyObj2CamelKeyObj(res)
+
+        return res
     }
 
 }
