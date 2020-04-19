@@ -22,6 +22,7 @@ import Chart from './Chart';
 import Deposits from './Deposits';
 import Orders from './Orders';
 import Title from "./Title"
+import UragRekPaper from "./UragRekPaper"
 
 
 const drawerWidth = 240;
@@ -119,98 +120,164 @@ export default function DashBoard(props) {
   return (
     <div className={classes.root}>
 
-      {/* <main className={classes.content}> */}
-        
-        <Container maxWidth="lg" className={classes.container}>
+      <Container maxWidth="lg" className={classes.container}>
 
-          <Grid container spacing={3}>
+        <Grid container spacing={3}>
 
-          <Grid item xs={12} md={4} lg={4}>
-              <Paper className={fixedHeightPaper}>
-                <React.Fragment>
-                  <Title>今月の利益</Title>
-                  <Typography component="p" variant="h4">
-                    198,798円
-                  </Typography>
-                  <Typography color="textSecondary" className={classes.depositContext}>
-                    2019/12/30
-                  </Typography>
-                  <div>
-                    <Link color="primary" href="javascript:;">
-                      詳細を見る
-                    </Link>
-                  </div>
-                </React.Fragment>
-              </Paper>
-            </Grid>
+          <Grid item xs={12} md={12} lg={12}>
+            <Paper className={classes.paper}>
+              <React.Fragment>
+                <Title>レコメンド</Title>
 
-            <Grid item xs={12} md={4} lg={4}>
-              <Paper className={fixedHeightPaper}>
-                <React.Fragment>
-                  <Title>今月の売上</Title>
-                  <Typography component="p" variant="h4">
-                    398,798円
-                  </Typography>
-                  <Typography color="textSecondary" className={classes.depositContext}>
-                    2019/12/30
-                  </Typography>
-                  <div>
-                    <Link color="primary" href="javascript:;">
-                      詳細を見る
-                    </Link>
-                  </div>
-                </React.Fragment>
-              </Paper>
-            </Grid>
-
-            <Grid item xs={12} md={4} lg={4}>
-              <Paper className={fixedHeightPaper}>
-                <React.Fragment>
-                  <Title>今月の費用</Title>
-                  <Typography component="p" variant="h4">
-                    200,000円
-                  </Typography>
-                  <Typography color="textSecondary" className={classes.depositContext}>
-                    2019/12/30
-                  </Typography>
-                  <div>
-                    <Link color="primary" href="javascript:;">
-                      詳細を見る
-                    </Link>
-                  </div>
-                </React.Fragment>
-              </Paper>
-            </Grid>
-
-
-            {/* Chart */}
-            <Grid item xs={12} md={6} lg={6}>
-              <Paper className={fixedHeightPaper}>
-                <Chart
-                  title={"本日"}
-                  yaxisLabel={"売上(円)"}
-                />
-              </Paper>
-            </Grid>
-
-            <Grid item xs={12} md={6} lg={6}>
-              <Paper className={fixedHeightPaper}>
-                <Chart
-                  title={"昨日"}
-                  yaxisLabel={"売上(円)"}
-                />
-              </Paper>
-            </Grid>
-            
-            <Grid item xs={12} md={12} lg={12}>
-              <Paper className={fixedHeightPaper}>
-                <Orders />
-              </Paper>
-            </Grid>
-
+                <div>
+                  <ul>
+                    <li>
+                      2/21の案件実績を確認しましょう。請求金額の見直しの余地がありそうです。
+                    </li>
+                    <li>
+                      XXX
+                    </li>
+                  </ul>
+                </div>
+              </React.Fragment>
+            </Paper>
           </Grid>
 
-        </Container>
+          <Grid item xs={12} md={6} lg={6}>
+            <Paper className={classes.paper}>
+              <UragRekPaper title={"今月の売上"} leadComment={"あと1,500,000円で目標達成です！"} />
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={6}>
+            <Paper className={classes.paper}>
+              <UragRekPaper title={"今月の利益"} />
+            </Paper>
+          </Grid>
+          
+{/* 
+          <Grid item xs={12} md={4} lg={4}>
+            <Paper className={fixedHeightPaper}>
+              <React.Fragment>
+                <Title>今月の売上</Title>
+                <Typography component="p" variant="h4">
+                  198,798円
+                    </Typography>
+                <Typography color="textSecondary" className={classes.depositContext}>
+                  2019/12/30
+                    </Typography>
+                <div>
+                  <Link color="primary" href="javascript:;">
+                    詳細を見る
+                      </Link>
+                </div>
+              </React.Fragment>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} md={4} lg={4}>
+            <Paper className={fixedHeightPaper}>
+              <React.Fragment>
+                <Title>今月の利益</Title>
+                <Typography component="p" variant="h4">
+                  198,798円
+                    </Typography>
+                <Typography color="textSecondary" className={classes.depositContext}>
+                  2019/12/30
+                    </Typography>
+                <div>
+                  <Link color="primary" href="javascript:;">
+                    詳細を見る
+                      </Link>
+                </div>
+              </React.Fragment>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} md={4} lg={4}>
+            <Paper className={fixedHeightPaper}>
+              <React.Fragment>
+                <Title>今月の利益</Title>
+                <Typography component="p" variant="h4">
+                  198,798円
+                  </Typography>
+                <Typography color="textSecondary" className={classes.depositContext}>
+                  2019/12/30
+                  </Typography>
+                <div>
+                  <Link color="primary" href="javascript:;">
+                    詳細を見る
+                    </Link>
+                </div>
+              </React.Fragment>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} md={4} lg={4}>
+            <Paper className={fixedHeightPaper}>
+              <React.Fragment>
+                <Title>今月の売上</Title>
+                <Typography component="p" variant="h4">
+                  398,798円
+                  </Typography>
+                <Typography color="textSecondary" className={classes.depositContext}>
+                  2019/12/30
+                  </Typography>
+                <div>
+                  <Link color="primary" href="javascript:;">
+                    詳細を見る
+                    </Link>
+                </div>
+              </React.Fragment>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} md={4} lg={4}>
+            <Paper className={fixedHeightPaper}>
+              <React.Fragment>
+                <Title>今月の費用</Title>
+                <Typography component="p" variant="h4">
+                  200,000円
+                  </Typography>
+                <Typography color="textSecondary" className={classes.depositContext}>
+                  2019/12/30
+                  </Typography>
+                <div>
+                  <Link color="primary" href="javascript:;">
+                    詳細を見る
+                    </Link>
+                </div>
+              </React.Fragment>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={6}>
+            <Paper className={fixedHeightPaper}>
+              <Chart
+                title={"本日"}
+                yaxisLabel={"売上(円)"}
+              />
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={6}>
+            <Paper className={fixedHeightPaper}>
+              <Chart
+                title={"昨日"}
+                yaxisLabel={"売上(円)"}
+              />
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} md={12} lg={12}>
+            <Paper className={fixedHeightPaper}>
+              <Orders />
+            </Paper>
+          </Grid> */}
+
+        </Grid>
+
+      </Container>
 
       {/* </main> */}
     </div>

@@ -58,6 +58,7 @@ export default class OM0104 extends React.Component {
         this.onRadioChange = onRadioChange(this)
         this.onPopupOpenClick = this.onPopupOpenClick.bind(this)
         this.onPopupCloseClick = this.onPopupCloseClick.bind(this)
+        this.onMove2MtmrIriTork = this.onMove2MtmrIriTork.bind(this)
         this.TODO_YOU_DEFINE_SOMETHING = function () { } // TODO: 
 
         this.itemDef4SearchCondition = [
@@ -73,8 +74,8 @@ export default class OM0104 extends React.Component {
                 ]
             },
             { type: INPUT_FIELD_TYPE_TEXT, id: "ftreeTxtKnskRn", label: "フリーテキスト検索欄", onChange: this.onTextChange("ftreeTxtKnskRn") },
-            { type: INPUT_FIELD_TYPE_BUTTON, id: "knskBtn", label: "検索ボタン", onChange: this.searchMtmrLst },
-            { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrIriTork", label: "見積依頼の登録", onChange: this.TODO_YOU_DEFINE_SOMETHING },
+            { type: INPUT_FIELD_TYPE_BUTTON, id: "knskBtn", label: "検索ボタン", onChange: this.searchMtmrLsto, color: "primary" },
+            { type: INPUT_FIELD_TYPE_BUTTON_LINK, id: "mtmrIriTork", label: "見積依頼の登録", onChange: this.onMove2MtmrIriTork },
         ]
 
         const _onMtmrNoClick = this.onMtmrNoClick.bind(this)
@@ -125,6 +126,10 @@ export default class OM0104 extends React.Component {
 
     onChohyoDlClick(event) {
         console.log(event, this)
+    }
+
+    onMove2MtmrIriTork(){
+        this.props.history.push(`${process.env.PUBLIC_URL}/OM0105`, {id: ""})
     }
 
     componentDidMount() {
