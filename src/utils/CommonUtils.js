@@ -1,4 +1,6 @@
 import { format } from 'date-fns'
+import KeyCaseConvUtils from "./KeyCaseConvUtils"
+import _ from "lodash"
 
 /**
  * 表示ダイアログのwrapper (メッセージ表示方法の変更対応を見据えて)
@@ -52,6 +54,13 @@ export const toCommaStr = n => {
     return isNaN(val) ? val : val.toLocaleString()
 }
 
+
+
+
+
+
+
+
 export const conv2Camel = p => {
     //_+小文字を大文字にする(例:_a を A)
     return p.replace(/_./g,
@@ -70,48 +79,56 @@ export const conv2Snake = p => {
     )
 }
 
+
+
+
+
 /**
  * スネークケースのキーを持つオブジェクトを、キャメルケースのキーを持つオブジェクトに変換する
  * @param {*} obj 
  */
-export const convSnakeKeyObj2CamelKeyObj = obj => convObjKeyCase(obj, conv2Camel)
+export const convSnakeKeyObj2CamelKeyObj = obj=> KeyCaseConvUtils.localizeKeys(obj, _.camelCase)
+// export const convSnakeKeyObj2CamelKeyObj = obj => convObjKeyCase(obj, conv2Camel)
 
 /**
  * キャメルケースのキーを持つオブジェクトを、スネークケースのキーを持つオブジェクトに変換する
  * @param {*} obj 
  */
-export const convCamelKeyObj2SnakeKeyObj = obj => convObjKeyCase(obj, conv2Snake)
+export const convCamelKeyObj2SnakeKeyObj = obj=> KeyCaseConvUtils.localizeKeys(obj, _.snakeCase)
+// export const convCamelKeyObj2SnakeKeyObj = obj => convObjKeyCase(obj, conv2Snake)
 
 /**
  * オブジェクトのケースを変換する
  * @param {*} obj 
  * @param {*} func 
  */
-export const convObjKeyCase = (obj, func) => {
-    const res = Object.keys(obj)
+// export const convObjKeyCase = (obj, func) => {
+//     const res = Object.keys(obj)
 
-        .reduce((p, c) => {
-            const newKey = func(c)
-            return {
-                ...p,
-                [newKey]: obj[c]
-            }
-        }, {})
+//         .reduce((p, c) => {
+//             const newKey = func(c)
+//             return {
+//                 ...p,
+//                 [newKey]: obj[c]
+//             }
+//         }, {})
 
-    return res
-}
+//     return res
+// }
+
+
 
 /**
  * スネークケースのキーを持つ配列を、キャメルケースのキーを持つ配列に変換する
  * @param {*} obj 
  */
-export const convSnakeKeyArr2CamelKeyArr = arr => (arr || []).map(v => convSnakeKeyObj2CamelKeyObj(v))
+// export const convSnakeKeyArr2CamelKeyArr = arr => (arr || []).map(v => convSnakeKeyObj2CamelKeyObj(v))
 
 /**
  * キャメルケースのキーを持つ配列を、スネークケースのキーを持つ配列に変換する
  * @param {*} obj 
  */
-export const convCamelKeyArr2SnakeKeyArr = arr => (arr || []).map(v => convCamelKeyObj2SnakeKeyObj(v))
+// export const convCamelKeyArr2SnakeKeyArr = arr => (arr || []).map(v => convCamelKeyObj2SnakeKeyObj(v))
 
 /**
  * サーバから返却された日付文字列を、jsのDateオブジェクトに変換する

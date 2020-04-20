@@ -46,11 +46,19 @@ const INPUT_TYPE_DEF = {
 
 const FieldItem = (props)=> {
 
-    const { type, ...rest } = props 
+    const { type, customComponent, ...rest } = props 
     const Component = INPUT_TYPE_DEF[type] || (()=> <span />)
 
-    if(!!props.customComponent){
-        return props.customComponent
+    if(!!customComponent){
+        const CC = props.customComponent
+
+        return (
+            <div { ...rest }>
+            {
+                CC
+            }
+            </div>
+        )
     }
 
     if(type === BREAK_LINE){

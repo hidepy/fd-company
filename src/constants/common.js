@@ -61,3 +61,20 @@ export const OUTPUT_FIELD_TYPE_LINK = "OUTPUT_FIELD_TYPE_LINK"
 export const OUTPUT_FIELD_TYPE_TABLE = "OUTPUT_FIELD_TYPE_TABLE"
 
 export const BREAK_LINE = "BREAK_LINE"
+
+
+
+/**
+ * 更新系ボタン押下時種別 新規
+ */
+export const BUTTON_OPERATION_TYPE__ENTRY = "BUTTON_OPERATION_TYPE__ENTRY"
+
+/**
+ * 更新系ボタン押下時種別 更新
+ */
+export const BUTTON_OPERATION_TYPE__UPDATE = "BUTTON_OPERATION_TYPE__UPDATE"
+
+/**
+ * 更新系ボタン押下時種別 削除
+ */
+export const BUTTON_OPERATION_TYPE__DELETE = "BUTTON_OPERATION_TYPE__DELETE"

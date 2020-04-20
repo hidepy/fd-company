@@ -28,6 +28,10 @@ import {
 import {
     INPUT_AREA_TITLE_ARR
 } from "../../constants/MtmrIri"
+import { BUTTON_OPERATION_TYPE__ENTRY, BUTTON_OPERATION_TYPE__UPDATE } from '../../constants/common';
+import { API_MTMR_DETAIL } from '../../constants/apiPath';
+import FetchUtils from '../../utils/FetchUtils';
+import _ from "lodash"
 
 export default class OM0103 extends React.Component{
 
@@ -36,13 +40,13 @@ export default class OM0103 extends React.Component{
     }
 
     static propTypes = {
-        mtmrMisiId: PropTypes.string,
+        ankenId: PropTypes.string, // 前画面からあ渡された案件ID
+        openAsUpd: PropTypes.bool, // 本画面の起動方式 更新参照画面として開く場合はtrue
     }
 
     constructor(props){
 
         super(props)
-
 
         this.PAGE_STATE_DEF = {
             IRISH_PAGE: "0",
@@ -50,12 +54,14 @@ export default class OM0103 extends React.Component{
             NTJ_BSH: "2",
             HISO_JOKN: "3",
             CONFIRM_PAGE: "4",
+            UPD_ALL_PAGE: "9", // 他画面から呼び出しの場合
         }
 
         this.PAGE_STATE_TITLE_ARR = [...INPUT_AREA_TITLE_ARR, "確認"]
 
         this.state = {
-            pageState: this.PAGE_STATE_DEF.IRISH_PAGE,
+            // pageStateは, 新規 or 更新の場合で変わる
+            pageState: this.props.openAsUpd ? this.PAGE_STATE_DEF.UPD_ALL_PAGE : this.PAGE_STATE_DEF.IRISH_PAGE,
 
 			dataTrkm: "",
 			onsiInput: "",
@@ -79,8 +85,6 @@ export default class OM0103 extends React.Component{
 			snpoUnitloadNsgt: "",
 			juryoUnitloadNsgt: "",
 			kosuUnitloadNsgt: "",
-//			: "",
-//			: "",
 			shukKiboDatetime: "",
 			shukSk: "",
 			shukSkNm: "",
@@ -100,7 +104,6 @@ export default class OM0103 extends React.Component{
 			hiSgyoYh: "",
 			sntJokn: "",
 			kiboKngk: "",
-//			: "",
 			confirm: "",
 			edit: "",
 			entry: "",
@@ -108,6 +111,7 @@ export default class OM0103 extends React.Component{
 
         this.updatePageState = this.updatePageState.bind(this)
         this.onHznClick = this.onHznClick.bind(this)
+        this.onUpdClick = this.onUpdClick.bind(this)
         this.onTextChange = onTextChange(this)
         this.onSelectChange = onSelectChange(this)
         this.onRadioChange = onRadioChange(this)
@@ -126,32 +130,65 @@ export default class OM0103 extends React.Component{
 
     }
 
-    componentDidMount(){
+    async componentDidMount(){
 
-        // TODO: 参照画面として開かれた場合のみ下記を実行。そうでない場合は、APIから取得したものをまま表示
+        // デフォルト値設定
 
-        this.setState({
-            knsiKh: "0",
-            tmksnKh: "0",
-            nioiUm: "1",
-            kknbtInk: "1",
-            tmkmYh: "1",
-            trorsYh: "1",
-            tnirYh: "1",
-            lblHrYh: "1",
-            ykmtYh: "1",
-            ttmtYh: "1",
-            hisgyoYh: "1",
-        })
+        if(this.props.openAsUpd){
+
+            const ankenId = this.props.ankenId
+
+            console.log(ankenId)
+
+            // APIコール
+            const res = await FetchUtils.getFromFdApi(`${API_MTMR_DETAIL}/${ankenId}`)
+            
+            console.log(res)
+
+            const mtmrMisiData = _.get(res, "trnAnknMisi[0]", {})
+
+            console.log(mtmrMisiData)
+
+            this.setState({
+                ...mtmrMisiData
+            })
+
+        }
+        else{
+            this.setState({
+                knsiKh: "0",
+                tmksnKh: "0",
+                nioiUm: "1",
+                kknbtInk: "1",
+                tmkmYh: "1",
+                trorsYh: "1",
+                tnirYh: "1",
+                lblHrYh: "1",
+                ykmtYh: "1",
+                ttmtYh: "1",
+                hisgyoYh: "1",
+            })
+        }
 
     }
 
-    onHznClick(){
+    /**
+     * 保存ボタン押下時処理
+     * @param {*} opType 保存ボタン押下種別(デフォルトは新規)
+     */
+    onHznClick(opType = BUTTON_OPERATION_TYPE__ENTRY){
 
         // TODO: 
         
         alert("保存しました")
 
+    }
+
+    /**
+     * 更新ボタン押下時処理
+     */
+    onUpdClick(){
+        this.onHznClick(BUTTON_OPERATION_TYPE__UPDATE)
     }
 
     /**
@@ -201,6 +238,9 @@ export default class OM0103 extends React.Component{
 
             case this.PAGE_STATE_DEF.CONFIRM_PAGE:
                 return getMtmtIriAllContents(this, true)
+
+            case this.PAGE_STATE_DEF.UPD_ALL_PAGE:
+                return getMtmtIriAllContents(this)
         }
     }
 
@@ -296,6 +336,19 @@ export default class OM0103 extends React.Component{
                         </Button>
                     </React.Fragment>
                 )
+
+            case this.PAGE_STATE_DEF.UPD_ALL_PAGE:
+                return (
+                    <div style={{textAlign: "center"}}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={this.onUpdClick}
+                        >
+                            修正
+                        </Button>
+                    </div>
+                )
                 
         }
     }
@@ -326,17 +379,22 @@ export default class OM0103 extends React.Component{
                             見積登録
                     </Typography>
 
-                    <Stepper activeStep={Number(this.state.pageState)}>
-                        {
-                            this.PAGE_STATE_TITLE_ARR.map(label => (
-                                <Step key={label}>
-                                    <StepLabel>{label}</StepLabel>
-                                </Step>
-                            ))
-                        }
-                    </Stepper>
+                    {
+                        this.state.pageState !== this.PAGE_STATE_DEF.UPD_ALL_PAGE
+                            && (
+                                <Stepper activeStep={Number(this.state.pageState)}>
+                                    {
+                                        this.PAGE_STATE_TITLE_ARR.map(label => (
+                                            <Step key={label}>
+                                                <StepLabel>{label}</StepLabel>
+                                            </Step>
+                                        ))
+                                    }
+                                </Stepper>
+                            )
+                    }
 
-                    { this.props.mtmrMisiId }
+                    { this.props.ankenId }
 
                     <React.Fragment>
 

@@ -8,11 +8,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 
 
 export default function CommonRadio(props){
-
-    //const _value = props.value || ""
     const {value: _value, className, label, name, onChange, disabled, style, required } = props
-
-console.log(props)
 
     return (
     <div className={`MuiFormControl-root ${className}`} style={style || {}}>

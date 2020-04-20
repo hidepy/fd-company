@@ -15,7 +15,7 @@ import {
 } from "../../constants/common"
 
 import {
-  toCommaStr
+  toCommaStr, convServerDatetimeStr2ClientDateTimeStr
 } from "../../utils/CommonUtils"
 
 import "./CommonTable.scss"
@@ -26,6 +26,8 @@ const isInputComponent = type=>
   || type === INPUT_FIELD_TYPE_ICON_LINK 
   || type === INPUT_FIELD_TYPE_CHECKBOX
   || type === OUTPUT_FIELD_TYPE_LINK
+
+const isCustomComponent = v=> !!v.customComponent
 
 export default function CommonTable(props){
 
@@ -56,11 +58,13 @@ export default function CommonTable(props){
 
                         if(v.withComma) val = toCommaStr(val)
 
+                        if(v.withConvServerDatetimeStr2ClientDateTimeStr) val = convServerDatetimeStr2ClientDateTimeStr(val)
+
                         return (
-                          <TableCell key={index} style={{textAlign: v.align || "left", ...v.style}}>
+                          <TableCell key={index} rowindex={rowIndex} style={{textAlign: v.align || "left", ...v.style}}>
                             {
-                              isInputComponent(v.type)
-                                ? (<FieldItem {...v} onChange={onChange} type={v.type} value={val} />)
+                              isInputComponent(v.type) || isCustomComponent(v)
+                                ? (<FieldItem {...v} rowindex={rowIndex} onChange={onChange} type={v.type} value={val} />)
                                   : val
                             }
                           </TableCell>

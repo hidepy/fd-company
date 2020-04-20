@@ -37,7 +37,7 @@ export default class FetchUtils{
 
         if(!res) return res
 
-        if(Array.isArray(res)) return convSnakeKeyArr2CamelKeyArr(res)
+        // if(Array.isArray(res)) return convSnakeKeyArr2CamelKeyArr(res)
 
         if( (typeof res) === "object" ) return convSnakeKeyObj2CamelKeyObj(res)
 
