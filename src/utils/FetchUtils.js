@@ -39,9 +39,11 @@ export default class FetchUtils{
 
         // if(Array.isArray(res)) return convSnakeKeyArr2CamelKeyArr(res)
 
-        if( (typeof res) === "object" ) return convSnakeKeyObj2CamelKeyObj(res)
+        const keyFormattedRes = convSnakeKeyObj2CamelKeyObj(res)
 
-        return res
+        
+
+        return keyFormattedRes
     }
 
 }

@@ -66,7 +66,7 @@ const FieldItem = (props)=> {
     }
 
     if(type === OUTPUT_FIELD_TYPE_TEXT){
-        return (<TextField className="field-item" disabled={true} {...rest} />)
+        return (<TextField className="field-item" disabled={true} {...rest} value={rest.value || undefined} />)
     }
 
     if(type === OUTPUT_FIELD_TYPE_TABLE){
@@ -96,7 +96,9 @@ const FieldItem = (props)=> {
     }
 
 
-    return (<Component {...rest} className={"field-item"} />)
+    return (<Component {...rest} InputLabelProps={{
+        shrink: true,
+      }} className={"field-item"} value={rest.value || ""} />) // TODO: ""でいいのか...
 }
 
 export default FieldItem
