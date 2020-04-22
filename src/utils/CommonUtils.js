@@ -130,6 +130,43 @@ export const convCamelKeyObj2SnakeKeyObj = obj=> KeyCaseConvUtils.localizeKeys(o
  */
 // export const convCamelKeyArr2SnakeKeyArr = arr => (arr || []).map(v => convCamelKeyObj2SnakeKeyObj(v))
 
+export const convNestedObjProp2Plain = (obj, plainizeKeyArr)=> {
+
+    const tmp = (plainizeKeyArr || [])
+        .reduce((p, c)=> {
+
+            const tmpp = obj[c]
+
+            const rres = Object.keys(tmpp).reduce((pp, cc)=> {
+                const newKey = c + "__" + cc
+                return {
+                    ...pp,
+                    [newKey]: obj[c][cc]
+                }
+            }, {})
+
+            return {
+                ...p,
+                ...rres
+            }
+        }, obj)
+
+    return tmp
+}
+
+/**
+ * ネストされた配列の中の、とあるネストされたObjectをplainizeする
+ * @param {*} arr 
+ * @param {*} plainizeKeyArr 
+ */
+export const convNestedArrProp2Plain = (arr, plainizeKeyArr)=> {
+    if(!arr || arr.length < 0) return []
+
+    return arr.map(v=> convNestedObjProp2Plain(v, plainizeKeyArr))
+}
+
+
+
 /**
  * サーバから返却された日付文字列を、jsのDateオブジェクトに変換する
  * @param {*} datetimeStr 
@@ -172,3 +209,4 @@ export const getModalStyle = () => {
         height: "680px"
     };
 }
+

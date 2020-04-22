@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper'
 import HznButton from "../commons/HznButton"
 import FieldItem from "../commons/FieldItem"
-import { getModalStyle } from "../../utils/CommonUtils"
+import { getModalStyle, convNestedObjProp2Plain, convNestedArrProp2Plain } from "../../utils/CommonUtils"
 import Modal from '@material-ui/core/Modal';
 import {
     INPUT_FIELD_TYPE_TEXT,
@@ -96,7 +96,7 @@ export default class OM0104 extends React.Component {
                 // { type: OUTPUT_FIELD_TYPE_LINK, id: "anknNo", label: "見積・受注No.", onChange: function(){ console.log(this);_openAnkenDetail(this.value) }, style: { width: "100px" } },
                 { type: OUTPUT_FIELD_TYPE_LINK, id: "anknNo", label: "見積・受注No.", onChange: this.onMtmrNoClick, style: { width: "100px" } },
                 { type: INPUT_FIELD_TYPE_TEXT, id: "anknStsCdDesc01", label: "ステータス", onChange: this.onTextChange("anknStsCd") },
-                { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNm", label: "会社名", onChange: this.onTextChange("trhkSkKishNm") },
+                { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKish__trhkSkKishNm", label: "会社名", onChange: this.onTextChange("trhkSkKish__trhkSkKishNm") },
                 { type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboNtj", label: "集荷希望日時", onChange: this.onTextChange("shukKiboNtj"), withConvServerDatetimeStr2ClientDateTimeStr: true},
                 { type: INPUT_FIELD_TYPE_TEXT, id: "shukskNm", label: "集荷先名", onChange: this.onTextChange("shukskNm") },
                 { type: INPUT_FIELD_TYPE_TEXT, id: "hisoKiboNtj", label: "配送希望日時", onChange: this.onTextChange("hisoKiboNtj"), withConvServerDatetimeStr2ClientDateTimeStr: true},
@@ -193,8 +193,12 @@ export default class OM0104 extends React.Component {
 
         const res = await FetchUtils.getFromFdApi(API_MTMR_LIST)
 
+
+        // console.log(convNestedArrProp2Plain(res, ["trhkSkKish"]) )
+
+        // plainizeした値をセット
         this.setState({
-            mtmrList: res || []
+            mtmrList: convNestedArrProp2Plain(res, ["trhkSkKish"]) || []
         })
     }
 

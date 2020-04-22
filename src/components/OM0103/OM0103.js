@@ -16,6 +16,7 @@ import {
     onTextChange,
     onSelectChange,
     onRadioChange,
+    convCamelKeyObj2SnakeKeyObj,
 } from "../../utils/CommonUtils"
 import {
     getItemDef4PageHeader,
@@ -112,6 +113,11 @@ export default class OM0103 extends React.Component{
 			// entry: "",
         }
 
+
+        console.log(mtmrIriStates)
+        console.log(convCamelKeyObj2SnakeKeyObj(mtmrIriStates))
+
+
         this.updatePageState = this.updatePageState.bind(this)
         this.onHznClick = this.onHznClick.bind(this)
         this.onUpdClick = this.onUpdClick.bind(this)
@@ -148,11 +154,14 @@ export default class OM0103 extends React.Component{
             
             console.log(res)
 
+            const trhkskKishData = _.get(res, "trhkSkKish", {})
+
             const mtmrMisiData = _.get(res, "trnAnknMisi[0]", {})
 
             console.log(mtmrMisiData)
 
             this.setState({
+                ...trhkskKishData,
                 ...mtmrMisiData
             })
 
@@ -179,11 +188,96 @@ export default class OM0103 extends React.Component{
      * 保存ボタン押下時処理
      * @param {*} opType 保存ボタン押下種別(デフォルトは新規)
      */
-    onHznClick(opType = BUTTON_OPERATION_TYPE__ENTRY){
+    async onHznClick(opType = BUTTON_OPERATION_TYPE__UPDATE){
 
-        // TODO: 
+        // 送信パラメータ全体
+        const params = {}
+
+        // パラメータ明細
+        const paramsMisi = Object.keys(mtmrIriStates).reduce((p, key)=> {
+            return {
+                ...p,
+                [key]: this.state[key]
+            }
+        }, {})
+
+        const paramsKish = {}
+        paramsKish["trhkSkKishNm"] = this.state.trhkSkKishNm || "hogehoge"
+        paramsKish["trhkSkKishNmKn"] = this.state.trhkSkKishNmKn || "hogehoge"
+        
+
+        // TODO: ゴミ項目 一旦値セット
+        paramsMisi["ankn"] = this.state.ankn || "GM"
+        paramsMisi["juchuFlg"] = this.state.juchuFlg || false
+
+        paramsMisi["trhkSkTntoshNm"] = this.state.trhkSkTntoshNm || "000"
+        paramsMisi["nmtTypeCd"] = this.state.nmtTypeCd || "000"
+        paramsMisi["knsiKhCd"] = this.state.knsiKhCd || "000"
+        paramsMisi["unitloadTypeCd"] = this.state.unitloadTypeCd || "000"
+        paramsMisi["kknbtUmCd"] = this.state.kknbtUmCd || "000"
+        paramsMisi["nsgtTypeCd"] = this.state.nsgtTypeCd || "000"
+        paramsMisi["snpo"] = this.state.snpo || "000"
+        paramsMisi["juryo"] = this.state.juryo || "000"
+        paramsMisi["kosu"] = this.state.kosu || "000"
+        paramsMisi["shukKiboNtj"] = this.state.shukKiboNtj || "" + (new Date()).toISOString()
+        paramsMisi["hisoKiboNtj"] = this.state.hisoKiboNtj || "" + (new Date()).toISOString()
+        paramsMisi["kiboKngk"] = this.state.kiboKngk || "000"
+        paramsMisi["calcHohoCd"] = this.state.calcHohoCd || "000"
+        paramsMisi["trkTypeCd"] = this.state.trkTypeCd || "000"
+        paramsMisi["juryotaiCd"] = this.state.juryotaiCd || "000"
+        paramsMisi["kyoritaiCd"] = this.state.kyoritaiCd || "000"
+
+        
+
+        
+
+        // // TODO: 暫定
+        // params["ankn_sts_cd"] = "001"
+
+        // // TODO: 依頼元入力種別を固定で「001」セット
+        // params["irimt_input_type_cd"] = "001"
+        
+        // // TODO: 案件番号を一旦テキトーに値セット
+        // params["ankn_no"] = "ankenno000"
+
+        // params["trn_ankn_misi"] = [ paramsMisi ]
+        // TODO: 暫定
+        params["anknStsCd"] = "001"
+        paramsMisi["anknStsCd"] = "001"
+
+        // TODO: 依頼元入力種別を固定で「001」セット
+        params["irimtInputTypeCd"] = "001"
+        
+        // TODO: 案件番号を一旦テキトーに値セット
+        params["anknNo"] = "ankenno000"
+
+        params["trhkSkKish"] = paramsKish
+        params["trnAnknMisi"] = [ paramsMisi ]
+
+
+        console.log(params)
+
+        // UPDATEの場合は更新としてPUT
+        if(opType === BUTTON_OPERATION_TYPE__UPDATE){
+            console.log("更新")
+
+            const res = await FetchUtils.put2FdApi(`${API_MTMR_DETAIL}/`, this.props.ankenId, params)
+
+            console.log(res)
+
+
+        }
+        // それ以外は新規登録
+        else{
+            console.log("新規登録")
+
+            const res = await FetchUtils.post2FdApi(`${API_MTMR_DETAIL}/`, params)
+
+            console.log(res)
+        }
         
         alert("保存しました")
+        
 
     }
 
