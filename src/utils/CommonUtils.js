@@ -3,9 +3,21 @@ import KeyCaseConvUtils from "./KeyCaseConvUtils"
 import _ from "lodash"
 
 /**
- * 表示ダイアログのwrapper (メッセージ表示方法の変更対応を見据えて)
+ * 表示ダイアログのwrapper (メッセージ表示方法の変更対応を見据えて)TODO: 
  */
 export const showAlertMsg = (msg) => window.alert(msg)
+
+/**
+ * エラーダイアログのwrapper TODO: 
+ * @param {*} msg 
+ */
+export const showErrMsg = msg=> window.alert(msg)
+
+/**
+ * 確認ダイアログのwrapper TODO:
+ * @param {*} msg 
+ */
+export const showConfirmMsg = msg=> window.confirm(msg)
 
 /**
  * 入力テキスト変更時イベントハンドラ

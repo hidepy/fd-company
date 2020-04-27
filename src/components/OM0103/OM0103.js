@@ -17,6 +17,7 @@ import {
     onSelectChange,
     onRadioChange,
     convCamelKeyObj2SnakeKeyObj,
+    showErrMsg,
 } from "../../utils/CommonUtils"
 import {
     getItemDef4PageHeader,
@@ -25,7 +26,8 @@ import {
     getItemDef4NtjContents,
     getItemDef4HisoJknContents,
     getMtmtIriAllContents,
-    mtmrIriStates
+    mtmrIriStates,
+    getSisnMtmrIri
 } from "../../utils/MtmrIriUtils"
 import {
     INPUT_AREA_TITLE_ARR
@@ -34,6 +36,7 @@ import { BUTTON_OPERATION_TYPE__ENTRY, BUTTON_OPERATION_TYPE__UPDATE } from '../
 import { API_MTMR_DETAIL } from '../../constants/apiPath';
 import FetchUtils from '../../utils/FetchUtils';
 import _ from "lodash"
+import { SUCCESS_MSG__HZN, ERR_MSG__FETCH, ERR_MSG__HZN } from '../../constants/message';
 
 export default class OM0103 extends React.Component{
 
@@ -154,16 +157,22 @@ export default class OM0103 extends React.Component{
             
             console.log(res)
 
-            const trhkskKishData = _.get(res, "trhkSkKish", {})
+            if(res.success){
+                const anknData = _.get(res, "data", {})
 
-            const mtmrMisiData = _.get(res, "trnAnknMisi[0]", {})
+                //const trhkskKishData = _.get(anknData, "trhkSkKish", {})
 
-            console.log(mtmrMisiData)
+                const mtmrMisiData = getSisnMtmrIri(_.get(anknData, "trnAnknMisi"))
 
-            this.setState({
-                ...trhkskKishData,
-                ...mtmrMisiData
-            })
+                this.setState({
+                    //...trhkskKishData,
+                    ...anknData,
+                    ...mtmrMisiData
+                })
+            }
+            else{
+                showErrMsg(ERR_MSG__FETCH)
+            }
 
         }
         else{
@@ -201,9 +210,9 @@ export default class OM0103 extends React.Component{
             }
         }, {})
 
-        const paramsKish = {}
-        paramsKish["trhkSkKishNm"] = this.state.trhkSkKishNm || "hogehoge"
-        paramsKish["trhkSkKishNmKn"] = this.state.trhkSkKishNmKn || "hogehoge"
+        // const paramsKish = {}
+        // paramsKish["trhkSkKishNm"] = this.state.trhkSkKishNm || "hogehoge"
+        // paramsKish["trhkSkKishNmKn"] = this.state.trhkSkKishNmKn || "hogehoge"
         
 
         // TODO: ゴミ項目 一旦値セット
@@ -240,6 +249,10 @@ export default class OM0103 extends React.Component{
         // // TODO: 案件番号を一旦テキトーに値セット
         // params["ankn_no"] = "ankenno000"
 
+        params["trhkSkKishId"] = this.state.trhkSkKishId
+        params["trhkSkKishNm"] = this.state.trhkSkKishNm
+        params["trhkSkKishNmKn"] = this.state.trhkSkKishNmKn
+
         // params["trn_ankn_misi"] = [ paramsMisi ]
         // TODO: 暫定
         params["anknStsCd"] = "001"
@@ -251,32 +264,46 @@ export default class OM0103 extends React.Component{
         // TODO: 案件番号を一旦テキトーに値セット
         params["anknNo"] = "ankenno000"
 
-        params["trhkSkKish"] = paramsKish
+        // params["trhkSkKish"] = paramsKish
         params["trnAnknMisi"] = [ paramsMisi ]
 
 
         console.log(params)
 
-        // UPDATEの場合は更新としてPUT
-        if(opType === BUTTON_OPERATION_TYPE__UPDATE){
-            console.log("更新")
-
-            const res = await FetchUtils.put2FdApi(`${API_MTMR_DETAIL}/`, this.props.ankenId, params)
-
-            console.log(res)
+        const res = (opType === BUTTON_OPERATION_TYPE__UPDATE)
+            ? await FetchUtils.put2FdApi(`${API_MTMR_DETAIL}`, this.props.ankenId, params)
+                : await FetchUtils.post2FdApi(`${API_MTMR_DETAIL}`, params)
 
 
-        }
-        // それ以外は新規登録
-        else{
-            console.log("新規登録")
+        // // UPDATEの場合は更新としてPUT
+        // if(opType === BUTTON_OPERATION_TYPE__UPDATE){
+        //     console.log("更新")
 
-            const res = await FetchUtils.post2FdApi(`${API_MTMR_DETAIL}/`, params)
+        //     const res = await FetchUtils.put2FdApi(`${API_MTMR_DETAIL}hogehoge`, this.props.ankenId, params)
 
-            console.log(res)
-        }
+        //     console.log(res)
+
+
+        // }
+        // // それ以外は新規登録
+        // else{
+        //     console.log("新規登録")
+
+        //     const res = await FetchUtils.post2FdApi(`${API_MTMR_DETAIL}`, params)
+
+        //     console.log(res)
+        // }
         
-        alert("保存しました")
+        console.log(res)
+
+        if(res.success){
+            showAlertMsg(SUCCESS_MSG__HZN)
+        }
+        else{
+            showErrMsg(ERR_MSG__HZN + "\n" + JSON.stringify(_.get(res, "data", {})))
+        }
+
+        
         
 
     }

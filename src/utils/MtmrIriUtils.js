@@ -5,6 +5,7 @@ import React from 'react'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import FieldItem from "../components/commons/FieldItem"
+import _ from "lodash"
 
 import {
     INPUT_FIELD_TYPE_TEXT,
@@ -81,7 +82,7 @@ export const getItemDef4PageHeader = props=> [
  * @param {*} props 
  */
 export const getItemDef4IrishContents = props=>  [
-    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkId", label: "会社コード", onChange: props.onTextChange("trhkSkId"), required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishId", label: "会社コード", onChange: props.onTextChange("trhkSkKishId"), required: true },
     { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNm", label: "会社名", onChange: props.onTextChange("trhkSkKishNm") , required: true },
     { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNmKn", label: "会社名（カナ）", onChange: props.onTextChange("trhkSkKishNmKn") , required: true },
     { type: BREAK_LINE },
@@ -276,3 +277,10 @@ export const getMtmtIriAllContents = (_this, disabled = false)=> {
         </React.Fragment>
     )
 }
+
+
+/**
+ * 最新1件の見積明細を取得する TODO: 
+ * @param {*} mtmrMisiArr 
+ */
+export const getSisnMtmrIri = mtmrMisiArr=> _.get(mtmrMisiArr, "[0]", {})

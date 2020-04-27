@@ -24,9 +24,30 @@ export default class FetchUtils{
         // body部が存在する場合はJSON#stringifyして送る
         if(body) params["body"] = JSON.stringify(body)
 
+        let res = { success: false, data: null }
 
-        const res = await fetch(url, params)
-                .then(httpRes=> httpRes.json())
+        try{
+            res = await fetch(url, params)
+                .then(async httpRes=> {
+
+                    let json = null
+
+                    try{
+                        json = await httpRes.json()
+                    }
+                    catch(exception){
+                        ;
+                    }
+
+                    return {
+                        success: !!httpRes.ok,
+                        data: json
+                    }
+                })
+        }
+        catch(exception){
+            ;
+        }
 
         return res
 
@@ -40,23 +61,32 @@ export default class FetchUtils{
 
         let res = {}
 
-        try{
+        /*try{
             const bodyKeyConved = convCamelKeyObj2SnakeKeyObj(body)
-            res = await FetchUtils.send(`${API_BASE_URI}${apiId}${pk ? `/${pk}` : ""}`, method, bodyKeyConved)
+            res = await FetchUtils.send(`${API_BASE_URI}${apiId}${pk ? `/${pk}` : ""}/`, method, bodyKeyConved)
 
             console.log(res)
         }
         catch(exception){
             console.log(exception)
 
-            return { error: true }
-        }
+            return { success: false }
+        }*/
+
+        // try-catchはsend内でしっかりやっているのでここでは不要
+        const bodyKeyConved = convCamelKeyObj2SnakeKeyObj(body)
+        res = await FetchUtils.send(`${API_BASE_URI}${apiId}${pk ? `/${pk}` : ""}/`, method, bodyKeyConved)
 
         if(!res) return res
 
         const keyFormattedRes = convSnakeKeyObj2CamelKeyObj(res)
 
         return keyFormattedRes
+
+        // return {
+        //     data: keyFormattedRes,
+        //     success: true
+        // }
     }
 
     /**

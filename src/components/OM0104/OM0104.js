@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper'
 import HznButton from "../commons/HznButton"
 import FieldItem from "../commons/FieldItem"
-import { getModalStyle, convNestedObjProp2Plain, convNestedArrProp2Plain } from "../../utils/CommonUtils"
+import { getModalStyle, convNestedObjProp2Plain, convNestedArrProp2Plain, showErrMsg, showConfirmMsg } from "../../utils/CommonUtils"
 import Modal from '@material-ui/core/Modal';
 import {
     INPUT_FIELD_TYPE_TEXT,
@@ -27,7 +27,7 @@ import {
 } from "../../utils/CommonUtils"
 import _ from "lodash"
 import FetchUtils from '../../utils/FetchUtils';
-import { API_MTMR_LIST } from '../../constants/apiPath';
+import { API_ANKN } from '../../constants/apiPath';
 
 import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -37,6 +37,7 @@ import { Button } from '@material-ui/core';
 import CommonButton from '../commons/CommonButton';
 import CommonIconButton from "../commons/CommonIconButton"
 import LinkButton from '../commons/LinkButton';
+import { ERR_MSG__FETCH, MSG__DELETE_CONFIRM, ERR_MSG__DELETE } from '../../constants/message';
 
 
 export default class OM0104 extends React.Component {
@@ -58,7 +59,6 @@ export default class OM0104 extends React.Component {
         }
 
         this.searchMtmrLst = this.searchMtmrLst.bind(this)
-        this.onHznClick = this.onHznClick.bind(this)
         this.onTextChange = onTextChange(this)
         this.onSelectChange = onSelectChange(this)
         this.onRadioChange = onRadioChange(this)
@@ -70,6 +70,8 @@ export default class OM0104 extends React.Component {
         this.getRowObjByBindParam = this.getRowObjByBindParam.bind(this)
         this.getRowObjByIndex = this.getRowObjByIndex.bind(this)
         this.onMtmrNoClick = this.onMtmrNoClick.bind(this)
+        this.onSkjClick = this.onSkjClick.bind(this)
+        this.onMtmrKitoClick = this.onMtmrKitoClick.bind(this)
 
         this.itemDef4SearchCondition = [
             {
@@ -96,7 +98,8 @@ export default class OM0104 extends React.Component {
                 // { type: OUTPUT_FIELD_TYPE_LINK, id: "anknNo", label: "見積・受注No.", onChange: function(){ console.log(this);_openAnkenDetail(this.value) }, style: { width: "100px" } },
                 { type: OUTPUT_FIELD_TYPE_LINK, id: "anknNo", label: "見積・受注No.", onChange: this.onMtmrNoClick, style: { width: "100px" } },
                 { type: INPUT_FIELD_TYPE_TEXT, id: "anknStsCdDesc01", label: "ステータス", onChange: this.onTextChange("anknStsCd") },
-                { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKish__trhkSkKishNm", label: "会社名", onChange: this.onTextChange("trhkSkKish__trhkSkKishNm") },
+                // { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKish__trhkSkKishNm", label: "会社名", onChange: this.onTextChange("trhkSkKish__trhkSkKishNm") },
+                { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNm", label: "会社名", onChange: this.onTextChange("trhkSkKishNm") },
                 { type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboNtj", label: "集荷希望日時", onChange: this.onTextChange("shukKiboNtj"), withConvServerDatetimeStr2ClientDateTimeStr: true},
                 { type: INPUT_FIELD_TYPE_TEXT, id: "shukskNm", label: "集荷先名", onChange: this.onTextChange("shukskNm") },
                 { type: INPUT_FIELD_TYPE_TEXT, id: "hisoKiboNtj", label: "配送希望日時", onChange: this.onTextChange("hisoKiboNtj"), withConvServerDatetimeStr2ClientDateTimeStr: true},
@@ -163,18 +166,46 @@ export default class OM0104 extends React.Component {
         })
     }
 
+    /**
+     * 見積依頼修正ボタンクリック時イベントハンドラ
+     * @param {*} event 
+     */
     onMtmrIriShsiClick(event) {
         const rowObj = this.getRowObjByBindParam(event)
 
         this.openAnkenDetail(rowObj.anknId)
     }
 
+
+    /**
+     * 見積回答へ遷移ボタン押下時イベントハンドラ
+     * @param {*} event 
+     */
     onMtmrKitoClick(event) {
-        console.log(event, this)
+        const rowObj = this.getRowObjByBindParam(event)
+
+        this.props.history.push(`${process.env.PUBLIC_URL}/OM0105`, {anknId: rowObj.anknId})
     }
 
-    onSkjClick(event) {
-        console.log(event, this)
+    /**
+     * 削除ボタンクリック時イベントハンドラ
+     * @param {*}} event 
+     */
+    async onSkjClick(event) {
+        const rowObj = this.getRowObjByBindParam(event)
+
+        if(showConfirmMsg(MSG__DELETE_CONFIRM)){
+            const res = await FetchUtils.delete2FdApi(`${API_ANKN}`, rowObj.anknId)
+
+            // 成功時は再検索実行
+            if(res.success){
+                this.searchMtmrLst()
+            }
+            else{
+                showErrMsg(ERR_MSG__DELETE)
+            }
+        }
+        
     }
 
     onChohyoDlClick(event) {
@@ -182,7 +213,7 @@ export default class OM0104 extends React.Component {
     }
 
     onMove2MtmrIriTork(){
-        this.props.history.push(`${process.env.PUBLIC_URL}/OM0105`, {id: ""})
+        this.props.history.push(`${process.env.PUBLIC_URL}/OM0103`, {id: ""})
     }
 
     componentDidMount() {
@@ -191,22 +222,21 @@ export default class OM0104 extends React.Component {
 
     async searchMtmrLst() {
 
-        const res = await FetchUtils.getFromFdApi(API_MTMR_LIST)
+        const res = await FetchUtils.getFromFdApi(API_ANKN)
 
+        // fetch successなら
+        if(res.success){
+            // plainizeした値をセット
+            this.setState({
+                // mtmrList: convNestedArrProp2Plain(_.get(res, "data"), ["trhkSkKish"]) || []
+                mtmrList: _.get(res, "data", [])
+            })
+        }
+        else{
+            showErrMsg(ERR_MSG__FETCH)
+        }
 
-        // console.log(convNestedArrProp2Plain(res, ["trhkSkKish"]) )
-
-        // plainizeした値をセット
-        this.setState({
-            mtmrList: convNestedArrProp2Plain(res, ["trhkSkKish"]) || []
-        })
-    }
-
-
-    onHznClick() {
-
-        // TODO: 
-
+        
     }
 
     onPopupOpenClick() {

@@ -10,6 +10,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Modal from '@material-ui/core/Modal';
+import OM0103 from "../OM0103"
 
 
 import {
@@ -27,10 +29,12 @@ import {
     onTextChange,
     onSelectChange,
     onRadioChange,
+    showErrMsg,
+    getModalStyle,
 } from "../../utils/CommonUtils"
 
 import "./OM0105.scss"
-import { getMtmtIriAllContents, getItemDef4IrishContents, getItemDef4NmtContents, getItemDef4NtjContents, getItemDef4HisoJknContents } from '../../utils/MtmrIriUtils'
+import { getMtmtIriAllContents, getItemDef4IrishContents, getItemDef4NmtContents, getItemDef4NtjContents, getItemDef4HisoJknContents, mtmrIriStates, getSisnMtmrIri } from '../../utils/MtmrIriUtils'
 import { Typography } from '@material-ui/core'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -51,7 +55,10 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import Chip from '@material-ui/core/Chip';
-
+import FetchUtils from '../../utils/FetchUtils'
+import { API_MTMR_DETAIL } from '../../constants/apiPath'
+import { ERR_MSG__FETCH } from '../../constants/message'
+import _ from "lodash"
 
 
 
@@ -67,7 +74,11 @@ export default class OM0105 extends React.PureComponent{
         super(props)
 
         this.state = {
-            isMtmrIriDetailOpen: false,
+            isMtmrDetailPopupShown: false,
+
+            mtmrIriInf: {
+                ...mtmrIriStates
+            },
 
             truckInfLst: [],
             tiouKh: "0",
@@ -76,10 +87,10 @@ export default class OM0105 extends React.PureComponent{
 			disu: "",
 			add: "",
 			shukNtj: "",
-			shukSk: "集荷先です",
+			shukSk: "",
 			hisoNtj: "",
 			hisoSk: "",
-			untn: "19800",
+			untn: "",
 			juryoOb: "",
 			kyoriOb: "",
 			nnryoScg: "",
@@ -188,11 +199,45 @@ export default class OM0105 extends React.PureComponent{
         this.itemDef4NtjContents = getItemDef4NtjContents(this).map(v=> { return { ...v, disabled: true} })
         this.itemDef4HisoJknContents = getItemDef4HisoJknContents(this)
 
-        this.onOpenIriDetailClick = this.onOpenIriDetailClick.bind(this)
-        this.onCloseIriDetailClick = this.onCloseIriDetailClick.bind(this)
-
+        this.onPopupCloseClick = this.onPopupCloseClick.bind(this)
+        this.openAnkenDetail = this.openAnkenDetail.bind(this)
     }
 
+    async componentDidMount(){
+
+        const anknId = _.get(this.props, "location.state.anknId")
+
+        console.log(anknId)
+
+        if(!!anknId){
+            // APIコール
+            const res = await FetchUtils.getFromFdApi(`${API_MTMR_DETAIL}/${anknId}`)
+                                
+            console.log(res)
+
+            if(res.success){
+                const anknData = _.get(res, "data", {})
+
+                //const trhkskKishData = _.get(anknData, "trhkSkKish", {})
+
+                const mtmrMisiData = getSisnMtmrIri(_.get(anknData, "trnAnknMisi"))
+
+                this.setState({
+                    mtmrIriInf: {
+                        //...trhkskKishData,
+                        ...anknData,
+                        ...mtmrMisiData
+                    }
+                })
+            }
+            else{
+                showErrMsg(ERR_MSG__FETCH)
+            }
+
+        }
+
+        
+    }
 
     /**
      * トラック情報削除ボタン押下時
@@ -238,21 +283,6 @@ export default class OM0105 extends React.PureComponent{
 
     }
 
-    /**
-     * 見積依頼の詳細ポップアップを開く
-     */
-    onOpenIriDetailClick(){
-        this.setState({
-            isMtmrIriDetailOpen: true
-        })
-    }
-
-    onCloseIriDetailClick(){
-        this.setState({
-            isMtmrIriDetailOpen: false
-        })
-    }
-
     // TODO: 
     TODO_YOU_DEFINE_SOMETHING(key){
         console.log(key)
@@ -264,6 +294,20 @@ export default class OM0105 extends React.PureComponent{
 
 		// TODO: 
 
+    }
+
+    openAnkenDetail(){
+        const anknId = this.props.anknId
+
+        this.setState({
+            isMtmrDetailPopupShown: true,
+        })
+    }
+
+    onPopupCloseClick(){
+        this.setState({
+            isMtmrDetailPopupShown: false
+        })
     }
 
     render(){
@@ -345,9 +389,9 @@ export default class OM0105 extends React.PureComponent{
                                 <Typography variant="h5">依頼者</Typography>
                                 {
                                     [
-                                        { type: INPUT_FIELD_TYPE_TEXT, id: "kishNm", label: "会社名" },
+                                        { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNm", label: "会社名" },
                                     ]
-                                        .map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={"会社名XXX"} />))
+                                        .map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this.state.mtmrIriInf[v.id]} />))
                                 }
                             </Paper>
 
@@ -356,26 +400,26 @@ export default class OM0105 extends React.PureComponent{
 
                                 {
                                     [
-                                        { type: INPUT_FIELD_TYPE_RADIO, id: "nmtType", label: "荷物種別",
+                                        { type: INPUT_FIELD_TYPE_RADIO, id: "nmtTypeCd", label: "荷物種別",
                                         items: [
-                                            { value: "0", label: "種別0"},
-                                            { value: "1", label: "種別1"},
+                                            { value: "001", label: "種別0"},
+                                            { value: "002", label: "種別1"},
                                         ]
                                         },
                                         { type: BREAK_LINE },
                                         { type: INPUT_FIELD_TYPE_TEXT, id: "nmtNm", label: "荷物名", },
                                         { type: BREAK_LINE },
-                                        { type: INPUT_FIELD_TYPE_TEXT, id: "snpoUnitloadNsgt", label: "寸法（ユニットロード or 荷姿）" },
-                                        { type: INPUT_FIELD_TYPE_TEXT, id: "juryoUnitloadNsgt", label: "重量（ユニットロード or 荷姿）" },
-                                        { type: INPUT_FIELD_TYPE_TEXT, id: "kosuUnitloadNsgt", label: "個数（ユニットロード or 荷姿）" },
+                                        { type: INPUT_FIELD_TYPE_TEXT, id: "snpo", label: "寸法（ユニットロード or 荷姿）" },
+                                        { type: INPUT_FIELD_TYPE_TEXT, id: "juryo", label: "重量（ユニットロード or 荷姿）" },
+                                        { type: INPUT_FIELD_TYPE_TEXT, id: "kosu", label: "個数（ユニットロード or 荷姿）" },
                                     
                                     ]
-                                        .map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={"会社名XXX"} />))
+                                        .map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this.state.mtmrIriInf[v.id]} />))
                                 }
 
                             </Paper>
 
-                            <Button variant="outlined" color="primary" onClick={this.onOpenIriDetailClick}>詳細</Button>
+                            <Button variant="outlined" color="primary" onClick={this.openAnkenDetail}>詳細</Button>
                         </Paper>
                     </Grid>
 
@@ -395,12 +439,12 @@ export default class OM0105 extends React.PureComponent{
                             <Typography variant="h6">日時・場所</Typography>
                             {
                                 [
-                                    { type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboDatetime", label: "集荷希望日時" },
-                                    { type: INPUT_FIELD_TYPE_TEXT, id: "hisoKiboDatetime", label: "配送希望日時" },
+                                    { type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboNtj", label: "集荷希望日時" },
+                                    { type: INPUT_FIELD_TYPE_TEXT, id: "hisoKiboNtj", label: "配送希望日時" },
                                 ]
-                                    .map((v, i)=> (<FieldItem key={`rt-item-${i}`} {...v} xs={12} md={4} value={this.state[v.id]} />))
+                                    .map((v, i)=> (<FieldItem key={`rt-item-${i}`} {...v} xs={12} md={4} value={this.state.mtmrIriInf[v.id]} />))
                             }
-                            <Button variant="outlined" color="primary" onClick={this.onOpenIriDetailClick}>詳細</Button>
+                            <Button variant="outlined" color="primary" onClick={this.openAnkenDetail}>詳細</Button>
                         </Paper>
                     </Grid>
 
@@ -422,9 +466,9 @@ export default class OM0105 extends React.PureComponent{
                                     { type: INPUT_FIELD_TYPE_TEXT, id: "sntJokn", label: "その他条件"},
                                     { type: INPUT_FIELD_TYPE_TEXT, id: "kiboKngk", label: "希望金額"}
                                 ]
-                                    .map((v, i)=> (<FieldItem key={`mtmr-kngk-item-${i}`} {...v} xs={12} md={4} value={this.state[v.id]} />))
+                                    .map((v, i)=> (<FieldItem key={`mtmr-kngk-item-${i}`} {...v} xs={12} md={4} value={this.state.mtmrIriInf[v.id]} />))
                             }
-                            <Button variant="outlined" color="primary" onClick={this.onOpenIriDetailClick}>詳細</Button>
+                            <Button variant="outlined" color="primary" onClick={this.openAnkenDetail}>詳細</Button>
                         </Paper>
                     </Grid>
 
@@ -438,41 +482,25 @@ export default class OM0105 extends React.PureComponent{
                 </Grid>
 
 
+                <Modal
+                    open={this.state.isMtmrDetailPopupShown}
+                    onClose={this.onPopupCloseClick}
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                >
+                    {
+                        <div style={getModalStyle()} className="contents-wrap">
 
+                            <OM0103
+                                ankenId={_.get(this.props, "location.state.anknId")}
+                                openAsUpd={true}
+                                style={{ height: "100%", overflowY: "scroll", padding: "8px", backgroundColor: "#fff" }}
+                            />
 
+                        </div>
 
-    <React.Fragment>
-      {/* <Button variant="outlined" color="primary" onClick={this.onOpenIriDetailClick}>
-        Open max-width dialog
-      </Button> */}
-      <Dialog
-        fullWidth={600}
-        maxWidth={600}
-        open={this.state.isMtmrIriDetailOpen}
-        onClose={this.onCloseIriDetailClick}
-        aria-labelledby="max-width-dialog-title"
-      >
-        <DialogTitle id="max-width-dialog-title">依頼内容</DialogTitle>
-        <DialogContent>
-          {/* <DialogContentText>
-            You can set my maximum width and whether to adapt or not.
-          </DialogContentText> */}
-
-          {
-              getMtmtIriAllContents(this, true)
-          }
-
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.onCloseIriDetailClick} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </React.Fragment>
-
-
-
+                    }
+                </Modal>
 
             </div>
         )
