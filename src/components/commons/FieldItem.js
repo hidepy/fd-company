@@ -14,11 +14,13 @@ import {
     MuiPickersUtilsProvider,
     KeyboardTimePicker,
     KeyboardDatePicker,
+    KeyboardDateTimePicker,
   } from '@material-ui/pickers';
 
 import {
     INPUT_FIELD_TYPE_TEXT,
     INPUT_FIELD_TYPE_DATE,
+    INPUT_FIELD_TYPE_DATETIME,
     INPUT_FIELD_TYPE_SELECT,
     INPUT_FIELD_TYPE_CHECKBOX,
     INPUT_FIELD_TYPE_CHECKBOXES,
@@ -76,20 +78,37 @@ const FieldItem = (props)=> {
     }
 
     if(type === INPUT_FIELD_TYPE_DATE){
+
         return(
             <KeyboardDatePicker
                 className="field-item"
                 disableToolbar
                 variant="inline"
                 format="yyyy/MM/dd"
-                // margin="normal"
-                // id="date-picker-inline"
-                // label="Date picker inline"
-                // value={selectedDate}
-                // onChange={handleDateChange}
                 KeyboardButtonProps={{
                     'aria-label': 'change date',
                 }}
+                InputLabelProps={{
+                    shrink: true,
+                }}
+                {...rest}
+            />
+        )
+    }
+
+    if(type === INPUT_FIELD_TYPE_DATETIME){
+        return(
+            <KeyboardDateTimePicker
+                className="field-item"
+                disableToolbar
+                variant="inline"
+                KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                }}
+                InputLabelProps={{
+                    shrink: true,
+                }}
+                ampm={false}
                 {...rest}
             />
         )

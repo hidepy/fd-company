@@ -22,11 +22,14 @@ import {
     INPUT_FIELD_TYPE_RADIO,
     INPUT_FIELD_TYPE_BUTTON,
     OUTPUT_FIELD_TYPE_TEXT,
-    BREAK_LINE
+    BREAK_LINE,
+    BUTTON_OPERATION_TYPE__UPDATE,
+    INPUT_FIELD_TYPE_DATETIME
 } from "../../constants/common"
 import {
     showAlertMsg,
     onTextChange,
+    onDateChange,
     onSelectChange,
     onRadioChange,
     showErrMsg,
@@ -57,7 +60,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Chip from '@material-ui/core/Chip';
 import FetchUtils from '../../utils/FetchUtils'
 import { API_MTMR_DETAIL } from '../../constants/apiPath'
-import { ERR_MSG__FETCH } from '../../constants/message'
+import { ERR_MSG__FETCH, SUCCESS_MSG__HZN, ERR_MSG__HZN } from '../../constants/message'
 import _ from "lodash"
 
 
@@ -116,6 +119,7 @@ export default class OM0105 extends React.PureComponent{
 
         this.onHznClick = this.onHznClick.bind(this)
         this.onTextChange = onTextChange(this)
+        this.onDateChange = onDateChange(this)
         this.onSelectChange = onSelectChange(this)
         this.onRadioChange = onRadioChange(this)
         this.TODO_YOU_DEFINE_SOMETHING = this.TODO_YOU_DEFINE_SOMETHING.bind(this)
@@ -143,9 +147,9 @@ export default class OM0105 extends React.PureComponent{
         ]
 
         this.itemDef4rtInf = [
-            { type: INPUT_FIELD_TYPE_TEXT, id: "shukNtj", label: "集荷日時", onChange: this.onTextChange("shukNtj")},
+            { type: INPUT_FIELD_TYPE_DATETIME, id: "shukNtj", label: "集荷日時", onChange: this.onDateChange("shukNtj")},
 			{ type: INPUT_FIELD_TYPE_TEXT, id: "shukSk", label: "集荷先", onChange: this.onTextChange("shukSk")},
-			{ type: INPUT_FIELD_TYPE_TEXT, id: "hisoNtj", label: "配送日時", onChange: this.onTextChange("hisoNtj")},
+			{ type: INPUT_FIELD_TYPE_DATETIME, id: "hisoNtj", label: "配送日時", onChange: this.onDateChange("hisoNtj")},
 			{ type: INPUT_FIELD_TYPE_TEXT, id: "hisoSk", label: "配送先", onChange: this.onTextChange("hisoSk")},
         ]
 
@@ -189,7 +193,7 @@ export default class OM0105 extends React.PureComponent{
         ]
 
         this.itemDef4footer = [
-			{ type: INPUT_FIELD_TYPE_BUTTON, id: "entry", label: "登録", color: "secondary", onChange: this.TODO_YOU_DEFINE_SOMETHING},
+			{ type: INPUT_FIELD_TYPE_BUTTON, id: "entry", label: "登録", color: "secondary", onChange: this.onHznClick},
 			{ type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrshDL", label: "見積書DL", color: "primary", onChange: this.TODO_YOU_DEFINE_SOMETHING},
         ]
 
@@ -290,15 +294,93 @@ export default class OM0105 extends React.PureComponent{
         alert("保存しました")
     }
 
-    onHznClick(){
+/**
+     * 保存ボタン押下時処理
+     * @param {*} opType 保存ボタン押下種別(デフォルトは新規)
+     */
+    async onHznClick(){
 
-		// TODO: 
+        // 送信パラメータ全体
+        const params = {}
+
+        console.log(this.state.mtmrIriInf)
+
+        // パラメータ明細
+        const paramsMisi = Object.keys(mtmrIriStates).reduce((p, key)=> {
+            return {
+                ...p,
+                [key]: this.state[key]
+            }
+        }, {})        
+
+        // TODO: ゴミ項目 一旦値セット
+        paramsMisi["ankn"] = this.state.ankn || "GM"
+        paramsMisi["juchuFlg"] = this.state.juchuFlg || false
+
+        paramsMisi["trhkSkTntoshNm"] = this.state.trhkSkTntoshNm || "000"
+        paramsMisi["nmtTypeCd"] = this.state.nmtTypeCd || "000"
+        paramsMisi["knsiKhCd"] = this.state.knsiKhCd || "000"
+        paramsMisi["unitloadTypeCd"] = this.state.unitloadTypeCd || "000"
+        paramsMisi["kknbtUmCd"] = this.state.kknbtUmCd || "000"
+        paramsMisi["nsgtTypeCd"] = this.state.nsgtTypeCd || "000"
+        paramsMisi["snpo"] = this.state.snpo || "000"
+        paramsMisi["juryo"] = this.state.juryo || "000"
+        paramsMisi["kosu"] = this.state.kosu || "000"
+        paramsMisi["shukKiboNtj"] = this.state.shukKiboNtj || "" + (new Date()).toISOString()
+        paramsMisi["hisoKiboNtj"] = this.state.hisoKiboNtj || "" + (new Date()).toISOString()
+        paramsMisi["kiboKngk"] = this.state.kiboKngk || "000"
+        paramsMisi["calcHohoCd"] = this.state.calcHohoCd || "000"
+        paramsMisi["trkTypeCd"] = this.state.trkTypeCd || "000"
+        paramsMisi["juryotaiCd"] = this.state.juryotaiCd || "000"
+        paramsMisi["kyoritaiCd"] = this.state.kyoritaiCd || "000"
+
+        // // TODO: 暫定
+         params["ankn_sts_cd"] = "003" // 見積回答済
+
+        // // TODO: 依頼元入力種別を固定で「001」セット
+        params["irimt_input_type_cd"] = "001"
+        
+        // // TODO: 案件番号を一旦テキトーに値セット
+        params["ankn_no"] = "ankenno000"
+
+        params["trhkSkKishId"] = _.get(this.state.mtmrIriInf, "trhkSkKishId")
+        params["trhkSkKishNm"] = _.get(this.state.mtmrIriInf, "trhkSkKishNm")
+        params["trhkSkKishNmKn"] = _.get(this.state.mtmrIriInf, "trhkSkKishNmKn")
+
+        // params["trn_ankn_misi"] = [ paramsMisi ]
+        // TODO: 暫定
+        params["anknStsCd"] = "001"
+        paramsMisi["anknStsCd"] = "001"
+
+        // TODO: 依頼元入力種別を固定で「001」セット
+        params["irimtInputTypeCd"] = "001"
+        
+        // TODO: 案件番号を一旦テキトーに値セット
+        params["anknNo"] = "ankenno000"
+
+        // params["trhkSkKish"] = paramsKish
+        params["trnAnknMisi"] = [ paramsMisi ]
+
+        console.log(params)
+
+        // 見積回答新規でも更新でも、PUTでコールする
+        const res = await FetchUtils.put2FdApi(`${API_MTMR_DETAIL}`, _.get(this.props, "location.state.anknId"), params)     
+
+        console.log(res)
+
+        if(res.success){
+            showAlertMsg(SUCCESS_MSG__HZN)
+        }
+        else{
+            showErrMsg(ERR_MSG__HZN + "\n" + JSON.stringify(_.get(res, "data", {})))
+        }
+
+        
+        
 
     }
 
     openAnkenDetail(){
-        const anknId = this.props.anknId
-
         this.setState({
             isMtmrDetailPopupShown: true,
         })
@@ -439,8 +521,8 @@ export default class OM0105 extends React.PureComponent{
                             <Typography variant="h6">日時・場所</Typography>
                             {
                                 [
-                                    { type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboNtj", label: "集荷希望日時" },
-                                    { type: INPUT_FIELD_TYPE_TEXT, id: "hisoKiboNtj", label: "配送希望日時" },
+                                    { type: INPUT_FIELD_TYPE_DATETIME, id: "shukKiboNtj", label: "集荷希望日時", format: "yyyy/MM/dd HH:mm" },
+                                    { type: INPUT_FIELD_TYPE_DATETIME, id: "hisoKiboNtj", label: "配送希望日時", format: "yyyy/MM/dd HH:mm" },
                                 ]
                                     .map((v, i)=> (<FieldItem key={`rt-item-${i}`} {...v} xs={12} md={4} value={this.state.mtmrIriInf[v.id]} />))
                             }

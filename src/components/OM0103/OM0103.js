@@ -14,6 +14,7 @@ import FieldItem from "../commons/FieldItem"
 import {
     showAlertMsg,
     onTextChange,
+    onDateChange,
     onSelectChange,
     onRadioChange,
     convCamelKeyObj2SnakeKeyObj,
@@ -125,6 +126,7 @@ export default class OM0103 extends React.Component{
         this.onHznClick = this.onHznClick.bind(this)
         this.onUpdClick = this.onUpdClick.bind(this)
         this.onTextChange = onTextChange(this)
+        this.onDateChange = onDateChange(this)
         this.onSelectChange = onSelectChange(this)
         this.onRadioChange = onRadioChange(this)
         this.TODO_YOU_DEFINE_SOMETHING = function(){} // TODO: 

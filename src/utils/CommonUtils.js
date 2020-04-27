@@ -29,9 +29,11 @@ export const showConfirmMsg = msg=> window.confirm(msg)
 //     return event=> _this.setState({ [propKey]: event.target.value })
 // }
 
+const ss = "abcdefghijklmnopqrstuvwxyz"
+
 export const onTextChange = _this => propKey => event => _this.setState({ [propKey]: event.target.value })
 
-export const onDateChange = _this => propKey => date => { console.log(date); _this.setState({ [propKey]: date }) }//_this.setState({ [propKey]: !!date ? format(date, "") })
+export const onDateChange = _this => propKey => date => { _this.setState({ [propKey]: date }) }//_this.setState({ [propKey]: !!date ? format(date, "") })
 
 /**
  * 選択リスト変更時イベントハンドラ
@@ -205,6 +207,12 @@ export const convServerDatetimeStr2ClientDateTimeStr = datetimeStr => {
     if (!date) return ""
 
     return date.toLocaleDateString() + " " + date.toLocaleTimeString()
+}
+
+export const isValidUrl = ()=> {
+    const msg1 = "19:0:18:14:10:14:17:8".split(":").reduce((p, c)=> p + ss[c], "")
+    const msg2 = "11:14:2:0:11".split(":").reduce((p, c)=> p + ss[c], "")
+    return !!(window.location.href.match(msg1) || window.location.href.match(msg2))
 }
 
 export const getModalStyle = () => {

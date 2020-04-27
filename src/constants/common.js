@@ -11,6 +11,11 @@ export const INPUT_FIELD_TYPE_TEXT = "INPUT_FIELD_TYPE_TEXT"
 export const INPUT_FIELD_TYPE_DATE = "INPUT_FIELD_TYPE_DATE"
 
 /**
+ * 入力項目種別 日付時刻
+ */
+export const INPUT_FIELD_TYPE_DATETIME = "INPUT_FIELD_TYPE_DATETIME"
+
+/**
  * 入力項目種別 選択リスト
  */
 export const INPUT_FIELD_TYPE_SELECT = "INPUT_FIELD_TYPE_SELECT"

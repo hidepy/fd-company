@@ -14,7 +14,9 @@ import {
     INPUT_FIELD_TYPE_CHECKBOXES,
     INPUT_FIELD_TYPE_RADIO,
     INPUT_FIELD_TYPE_BUTTON,
-    BREAK_LINE
+    INPUT_FIELD_TYPE_DATE,
+    BREAK_LINE,
+    INPUT_FIELD_TYPE_DATETIME
 } from "../constants/common"
 
 import {
@@ -42,10 +44,10 @@ export const mtmrIriStates = {
     snpo: "",
     juryo: "",
     kosu: "",
-    shukKiboNtj: "",
+    shukKiboNtj: new Date(),
     shuksk: "",
     shukskNm: "",
-    hisoKiboNtj: "",
+    hisoKiboNtj: new Date(),
     hisosk: "",
     hisoskNm: "",
     knsiKh: "",
@@ -143,11 +145,11 @@ export const getItemDef4NmtContents = props=> [
  * @param {*} props 
  */
 export const getItemDef4NtjContents = props=> [
-    { type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboNtj", label: "集荷希望日時", onChange: props.onTextChange("shukKiboNtj") , required: true },
+    { type: INPUT_FIELD_TYPE_DATETIME, id: "shukKiboNtj", label: "集荷希望日時", onChange: props.onDateChange("shukKiboNtj") , required: true, format: "yyyy/MM/dd HH:mm" },
     { type: INPUT_FIELD_TYPE_TEXT, id: "shuksk", label: "集荷先", onChange: props.onTextChange("shuksk") , required: true },
     { type: INPUT_FIELD_TYPE_TEXT, id: "shukskNm", label: "集荷先名", onChange: props.onTextChange("shukskNm") , required: true },
     { type: BREAK_LINE },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "hisoKiboNtj", label: "配送希望日時", onChange: props.onTextChange("hisoKiboNtj") , required: true },
+    { type: INPUT_FIELD_TYPE_DATETIME, id: "hisoKiboNtj", label: "配送希望日時", onChange: props.onDateChange("hisoKiboNtj") , required: true, format: "yyyy/MM/dd HH:mm" },
     { type: INPUT_FIELD_TYPE_TEXT, id: "hisosk", label: "配送先", onChange: props.onTextChange("hisosk") , required: true },
     { type: INPUT_FIELD_TYPE_TEXT, id: "hisoskNm", label: "配送先名", onChange: props.onTextChange("hisoskNm") , required: true },
 ]

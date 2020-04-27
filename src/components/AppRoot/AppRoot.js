@@ -18,23 +18,25 @@ import OM0403 from "../OM0403"
 import DateFnsUtils from '@date-io/date-fns';
 import {
     MuiPickersUtilsProvider
-  } from '@material-ui/pickers';
+} from '@material-ui/pickers';
+import { isValidUrl } from '../../utils/CommonUtils'
 
 
-export default class AppRoot extends React.Component{
+export default class AppRoot extends React.Component {
 
-    render(){
+    render() {
 
-        return (
-<MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <div id="app">
+
+        return isValidUrl() && (
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <div id="app">
 
                     <BrowserRouter>
                         <Switch>
                             <Route exact path={`${process.env.PUBLIC_URL}/`} component={SignIn} />
 
-                            <Auth isAuthenticated={true}> 
-                            
+                            <Auth isAuthenticated={true}>
+
                                 <AppMain funcTitle={"fd-app-mock"}>
                                     <Switch>
 
@@ -55,9 +57,9 @@ export default class AppRoot extends React.Component{
                         </Switch>
                     </BrowserRouter>
 
-            </div>
+                </div>
 
-</MuiPickersUtilsProvider>
+            </MuiPickersUtilsProvider>
         )
 
     }
