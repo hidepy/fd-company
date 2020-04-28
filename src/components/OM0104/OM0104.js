@@ -95,21 +95,14 @@ export default class OM0104 extends React.Component {
         this.itemDef4SearchedList = [{
             type: OUTPUT_FIELD_TYPE_TABLE, id: "mtmrLst", label: "見積一覧",
             headerDef: [
-                // { type: OUTPUT_FIELD_TYPE_LINK, id: "anknNo", label: "見積・受注No.", onChange: function(){ console.log(this);_openAnkenDetail(this.value) }, style: { width: "100px" } },
                 { type: OUTPUT_FIELD_TYPE_LINK, id: "anknNo", label: "見積・受注No.", onChange: this.onMtmrNoClick, style: { width: "100px" } },
                 { type: INPUT_FIELD_TYPE_TEXT, id: "anknStsCdDesc01", label: "ステータス", onChange: this.onTextChange("anknStsCd") },
-                // { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKish__trhkSkKishNm", label: "会社名", onChange: this.onTextChange("trhkSkKish__trhkSkKishNm") },
                 { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNm", label: "会社名", onChange: this.onTextChange("trhkSkKishNm") },
                 { type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboNtj", label: "集荷希望日時", onChange: this.onTextChange("shukKiboNtj"), withConvServerDatetimeStr2ClientDateTimeStr: true},
                 { type: INPUT_FIELD_TYPE_TEXT, id: "shukskNm", label: "集荷先名", onChange: this.onTextChange("shukskNm") },
                 { type: INPUT_FIELD_TYPE_TEXT, id: "hisoKiboNtj", label: "配送希望日時", onChange: this.onTextChange("hisoKiboNtj"), withConvServerDatetimeStr2ClientDateTimeStr: true},
                 { type: INPUT_FIELD_TYPE_TEXT, id: "hisoskNm", label: "配送先名", onChange: this.onTextChange("hisoskNm") },
                 { type: INPUT_FIELD_TYPE_TEXT, id: "gokeKngk", label: "金額", onChange: this.onTextChange("gokeKngk") },
-                // { type: INPUT_FIELD_TYPE_ICON_LINK, icon: (<GetAppIcon />), id: "seikyushoDL", label: "請求書DL", onChange: this.mytest, color: "primary" },
-                // { type: INPUT_FIELD_TYPE_BUTTON_LINK, id: "mtmrIriShsi", label: "修正", onChange: this.onMtmrIriShsiClick, color: "primary" },
-                // { type: INPUT_FIELD_TYPE_BUTTON_LINK, id: "mtmrKito", label: "見積回答", onChange: this.onMtmrKitoClick, color: "primary" },
-                // { type: INPUT_FIELD_TYPE_ICON_LINK, icon: (<DeleteIcon />), id: "skj", label: "", onChange: this.onSkjClick, color: "primary" },
-                // { type: INPUT_FIELD_TYPE_ICON_LINK, icon: (<GetAppIcon />), id: "chohyoDl", label: "", onChange: this.onChohyoDlClick, color: "primary" },
                 { customComponent: (
                     <div className="hoge-sample">
                         <LinkButton label="修正" onChange={this.onMtmrIriShsiClick} color="primary" />
@@ -123,10 +116,6 @@ export default class OM0104 extends React.Component {
             ],
             items: []
         }]
-    }
-
-    mytest(event) {
-        console.log(event, this)
     }
 
     getRowIdByBindParam(event){

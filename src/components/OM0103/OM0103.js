@@ -380,6 +380,12 @@ export default class OM0103 extends React.Component{
         )
     }
 
+    
+
+    /**
+     * フッタボタン(戻る/次へ/確定)押下時のページ制御処理
+     * @param {*} state 
+     */
     getFooterButtonByState(state){
         switch(state){
             case this.PAGE_STATE_DEF.IRISH_PAGE:
