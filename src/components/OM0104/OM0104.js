@@ -95,7 +95,7 @@ export default class OM0104 extends React.Component {
         this.itemDef4SearchedList = [{
             type: OUTPUT_FIELD_TYPE_TABLE, id: "mtmrLst", label: "見積一覧",
             headerDef: [
-                { type: OUTPUT_FIELD_TYPE_LINK, id: "anknNo", label: "見積・受注No.", onChange: this.onMtmrNoClick, style: { width: "100px" } },
+                { type: OUTPUT_FIELD_TYPE_LINK, id: "anknNo", label: "見積・受注No.", onChange: this.onMtmrNoClick, style: { width: "100px" } }, 
                 { type: INPUT_FIELD_TYPE_TEXT, id: "anknStsCdDesc01", label: "ステータス", onChange: this.onTextChange("anknStsCd") },
                 { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNm", label: "会社名", onChange: this.onTextChange("trhkSkKishNm") },
                 { type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboNtj", label: "集荷希望日時", onChange: this.onTextChange("shukKiboNtj"), withConvServerDatetimeStr2ClientDateTimeStr: true},

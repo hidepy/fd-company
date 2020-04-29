@@ -122,7 +122,7 @@ export default class OM0103 extends React.Component{
         console.log(convCamelKeyObj2SnakeKeyObj(mtmrIriStates))
 
 
-        this.updatePageState = this.updatePageState.bind(this)
+        this.updatePageState = this.updatePageState.bind(this) 
         this.onHznClick = this.onHznClick.bind(this)
         this.onUpdClick = this.onUpdClick.bind(this)
         this.onTextChange = onTextChange(this)
