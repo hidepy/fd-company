@@ -230,3 +230,20 @@ export const getModalStyle = () => {
     };
 }
 
+
+/**
+ * storeのmstCdMapをもとに、mstCdで与えられたキーに一致する選択肢用arrを返却する
+ * @param {*} mstCd 
+ * @param {*} mstCdMap 
+ * @param {*} labelPropKey 
+ */
+export const getMstCdSelectionFromMap = (mstCd, mstCdMap = {}, labelPropKey = "cdDesc01")=> {
+
+    const map = _.get(mstCdMap, `[${mstCd}]`)
+
+    if(!map) return []
+
+    return Object.keys(map)
+        .reduce((p, c)=> [...p, { value: map[c].cd, label: map[c][labelPropKey] }], [])
+}
+

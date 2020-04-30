@@ -32,7 +32,7 @@ import { API_ANKN } from '../../constants/apiPath';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import OM0103 from "../OM0103"
+import OM0103 from "../../containers/OM0103"
 import { Button } from '@material-ui/core';
 import CommonButton from '../commons/CommonButton';
 import CommonIconButton from "../commons/CommonIconButton"

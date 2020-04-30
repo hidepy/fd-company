@@ -11,7 +11,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Modal from '@material-ui/core/Modal';
-import OM0103 from "../OM0103"
+import OM0103 from "../../containers/OM0103"
 
 
 import {

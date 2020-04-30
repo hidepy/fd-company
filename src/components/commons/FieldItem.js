@@ -88,7 +88,7 @@ const FieldItem = (props)=> {
                 KeyboardButtonProps={{
                     'aria-label': 'change date',
                 }}
-                InputLabelProps={{
+                inputlabelprops={{
                     shrink: true,
                 }}
                 {...rest}
@@ -105,7 +105,7 @@ const FieldItem = (props)=> {
                 KeyboardButtonProps={{
                     'aria-label': 'change date',
                 }}
-                InputLabelProps={{
+                inputlabelprops={{
                     shrink: true,
                 }}
                 ampm={false}
@@ -115,7 +115,7 @@ const FieldItem = (props)=> {
     }
 
 
-    return (<Component {...rest} InputLabelProps={{
+    return (<Component {...rest} inputlabelprops={{
         shrink: true,
       }} className={"field-item"} value={rest.value || ""} />) // TODO: ""でいいのか...
 }

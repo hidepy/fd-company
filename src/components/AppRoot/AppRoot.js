@@ -4,17 +4,18 @@ import Auth from "./Auth"
 
 import AppMain from "../AppMain"
 
-import OM0103 from "../OM0103"
+import OM0103 from "../../containers/OM0103"
 import OM0104 from "../../containers/OM0104"
-import OM0105 from "../OM0105"
+import OM0105 from "../../containers/OM0105"
+import OM0401 from '../../containers/OM0401'
+import OM0402 from '../../containers/OM0402'
+import OM0403 from "../../containers/OM0403"
 
 import SignIn from "../SignIn"
 import Portal from "../Portal"
 
 import "./AppRoot.scss"
-import OM0401 from '../OM0401'
-import OM0402 from '../OM0402'
-import OM0403 from "../OM0403"
+
 import DateFnsUtils from '@date-io/date-fns';
 import {
     MuiPickersUtilsProvider
@@ -23,6 +24,18 @@ import { isValidUrl } from '../../utils/CommonUtils'
 
 
 export default class AppRoot extends React.Component {
+
+    async componentDidMount(){
+        // 共通データの取得 TODO: コード取得が終わるまでは画面操作不可にする
+        const res = await this.props.getMstCdLst()
+
+        console.log(res)
+
+        // データready OKの場合にapp readyフラグを更新
+        if(res.success){
+            this.props.setIsAppReady(true)
+        }
+    }
 
     render() {
 
@@ -35,7 +48,7 @@ export default class AppRoot extends React.Component {
                         <Switch>
                             <Route exact path={`${process.env.PUBLIC_URL}/`} component={SignIn} />
 
-                            <Auth isAuthenticated={true}>
+                            <Auth isAuthenticated={true && this.props.AppRoot.isAppReady}>
 
                                 <AppMain funcTitle={"fd-app-mock"}>
                                     <Switch>

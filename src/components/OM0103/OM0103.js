@@ -70,57 +70,7 @@ export default class OM0103 extends React.Component{
             pageState: this.props.openAsUpd ? this.PAGE_STATE_DEF.UPD_ALL_PAGE : this.PAGE_STATE_DEF.IRISH_PAGE,
 
             ...mtmrIriStates
-
-			// dataTrkm: "",
-			// onsiInput: "",
-			// mailTrkm: "",
-			// fileTrkm: "",
-			// kishCd: "",
-			// kishNm: "",
-			// kishNmKn: "",
-			// yubnNo: "",
-			// address: "",
-			// tntoshNm: "",
-			// tntoshNmKn: "",
-			// telNo: "",
-			// mail: "",
-			// next: "",
-			// nmtType: "",
-			// nmtNm: "",
-			// unitload: "",
-			// nisgtKonpoKeti: "",
-			// nisgtSnt: "",
-			// snpoUnitloadNsgt: "",
-			// juryoUnitloadNsgt: "",
-			// kosuUnitloadNsgt: "",
-			// shukKiboDatetime: "",
-			// shukSk: "",
-			// shukSkNm: "",
-			// hisoKiboDatetime: "",
-			// hisoSk: "",
-			// hisoSkNm: "",
-			// knsiKh: "",
-			// tmksnKh: "",
-			// noiUm: "",
-			// kknbtInk: "",
-			// tmkmKh: "",
-			// tnorsYh: "",
-			// tnirYh: "",
-			// lblHrYh: "",
-			// ykmtYh: "",
-			// ttmtYh: "",
-			// hiSgyoYh: "",
-			// sntJokn: "",
-			// kiboKngk: "",
-			// confirm: "",
-			// edit: "",
-			// entry: "",
         }
-
-
-        console.log(mtmrIriStates)
-        console.log(convCamelKeyObj2SnakeKeyObj(mtmrIriStates))
-
 
         this.updatePageState = this.updatePageState.bind(this)
         this.onHznClick = this.onHznClick.bind(this)
@@ -130,6 +80,8 @@ export default class OM0103 extends React.Component{
         this.onSelectChange = onSelectChange(this)
         this.onRadioChange = onRadioChange(this)
         this.TODO_YOU_DEFINE_SOMETHING = function(){} // TODO: 
+
+        console.log(this)
 
         this.itemDef4PageHeader = getItemDef4PageHeader(this)
 
@@ -501,7 +453,6 @@ export default class OM0103 extends React.Component{
     }
 
     render(){
-
 
         return (
             <div className="OM0103-wrapper inner-wrapper" style={this.props.style}>
