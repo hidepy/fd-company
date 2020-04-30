@@ -41,7 +41,7 @@ import {
     getSisnMtmrIri
 } from "../../utils/MtmrIriUtils"
 import {
-    INPUT_AREA_TITLE_ARR
+    INPUT_AREA_TITLE_ARR, ANKN_STS_CD__MTMR_TORK_SM
 } from "../../constants/MtmrIri"
 import { BUTTON_OPERATION_TYPE__ENTRY, BUTTON_OPERATION_TYPE__UPDATE } from '../../constants/common';
 import { API_MTMR_DETAIL } from '../../constants/apiPath';
@@ -176,6 +176,7 @@ export default class OM0103 extends React.Component{
         // paramsKish["trhkSkKishNm"] = this.state.trhkSkKishNm || "hogehoge"
         // paramsKish["trhkSkKishNmKn"] = this.state.trhkSkKishNmKn || "hogehoge"
         
+        // TODO: 正しい値のセットなど...
 
         // TODO: ゴミ項目 一旦値セット
         paramsMisi["ankn"] = this.state.ankn || "GM"
@@ -190,17 +191,13 @@ export default class OM0103 extends React.Component{
         paramsMisi["snpo"] = this.state.snpo || "000"
         paramsMisi["juryo"] = this.state.juryo || "000"
         paramsMisi["kosu"] = this.state.kosu || "000"
-        paramsMisi["shukKiboNtj"] = this.state.shukKiboNtj || "" + (new Date()).toISOString()
-        paramsMisi["hisoKiboNtj"] = this.state.hisoKiboNtj || "" + (new Date()).toISOString()
+        paramsMisi["shukKiboNtj"] = (this.state.shukKiboNtj || (new Date())).toISOString()
+        paramsMisi["hisoKiboNtj"] = (this.state.hisoKiboNtj || (new Date())).toISOString()
         paramsMisi["kiboKngk"] = this.state.kiboKngk || "000"
         paramsMisi["calcHohoCd"] = this.state.calcHohoCd || "000"
         paramsMisi["trkTypeCd"] = this.state.trkTypeCd || "000"
         paramsMisi["juryotaiCd"] = this.state.juryotaiCd || "000"
         paramsMisi["kyoritaiCd"] = this.state.kyoritaiCd || "000"
-
-        
-
-        
 
         // // TODO: 暫定
         // params["ankn_sts_cd"] = "001"
@@ -217,8 +214,8 @@ export default class OM0103 extends React.Component{
 
         // params["trn_ankn_misi"] = [ paramsMisi ]
         // TODO: 暫定
-        params["anknStsCd"] = "001"
-        paramsMisi["anknStsCd"] = "001"
+        params["anknStsCd"] = ANKN_STS_CD__MTMR_TORK_SM
+        paramsMisi["anknStsCd"] = ANKN_STS_CD__MTMR_TORK_SM
 
         // TODO: 依頼元入力種別を固定で「001」セット
         params["irimtInputTypeCd"] = "001"
@@ -236,26 +233,6 @@ export default class OM0103 extends React.Component{
             ? await FetchUtils.put2FdApi(`${API_MTMR_DETAIL}`, this.props.ankenId, params)
                 : await FetchUtils.post2FdApi(`${API_MTMR_DETAIL}`, params)
 
-
-        // // UPDATEの場合は更新としてPUT
-        // if(opType === BUTTON_OPERATION_TYPE__UPDATE){
-        //     console.log("更新")
-
-        //     const res = await FetchUtils.put2FdApi(`${API_MTMR_DETAIL}hogehoge`, this.props.ankenId, params)
-
-        //     console.log(res)
-
-
-        // }
-        // // それ以外は新規登録
-        // else{
-        //     console.log("新規登録")
-
-        //     const res = await FetchUtils.post2FdApi(`${API_MTMR_DETAIL}`, params)
-
-        //     console.log(res)
-        // }
-        
         console.log(res)
 
         if(res.success){
@@ -263,10 +240,7 @@ export default class OM0103 extends React.Component{
         }
         else{
             showErrMsg(ERR_MSG__HZN + "\n" + JSON.stringify(_.get(res, "data", {})))
-        }
-
-        
-        
+        } 
 
     }
 
@@ -357,7 +331,6 @@ export default class OM0103 extends React.Component{
             if(!msg) successCallback()
             else showErrMsg(msg)
         }
-
     }
 
 
@@ -405,7 +378,7 @@ export default class OM0103 extends React.Component{
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={this.updatePageState(this.PAGE_STATE_DEF.HISO_JOKN)}
+                            onClick={this.pageSwitchCommonFlow(this.itemDef4NtjContents, this.updatePageState(this.PAGE_STATE_DEF.HISO_JOKN))}
                         >
                             次へ
                         </Button>
@@ -423,7 +396,7 @@ export default class OM0103 extends React.Component{
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={this.updatePageState(this.PAGE_STATE_DEF.CONFIRM_PAGE)}
+                                onClick={this.pageSwitchCommonFlow(this.itemDef4HisoJknContents, this.updatePageState(this.PAGE_STATE_DEF.CONFIRM_PAGE))}
                             >
                                 次へ
                             </Button>

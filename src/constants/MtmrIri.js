@@ -32,3 +32,15 @@ export const INPUT_AREA_TITLE_HISO_JKN = "配送条件"
  * 入力エリアタイトル配列
  */
 export const INPUT_AREA_TITLE_ARR = [INPUT_AREA_TITLE_IRISH, INPUT_AREA_TITLE_NMT, INPUT_AREA_TITLE_NTJ, INPUT_AREA_TITLE_HISO_JKN]
+
+
+
+/**
+ * 案件ステータス 見積登録済
+ */
+export const ANKN_STS_CD__MTMR_TORK_SM = "002"
+
+/**
+ * 案件ステータス 見積回答済
+ */
+export const ANKN_STS_CD__MTMR_KITO_SM = "003"

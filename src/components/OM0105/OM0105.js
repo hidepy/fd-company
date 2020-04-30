@@ -71,6 +71,7 @@ import FetchUtils from '../../utils/FetchUtils'
 import { API_MTMR_DETAIL } from '../../constants/apiPath'
 import { ERR_MSG__FETCH, SUCCESS_MSG__HZN, ERR_MSG__HZN } from '../../constants/message'
 import _ from "lodash"
+import { ANKN_STS_CD__MTMR_KITO_SM } from '../../constants/MtmrIri'
 
 
 
@@ -131,21 +132,9 @@ export default class OM0105 extends React.PureComponent{
         this.onDateChange = onDateChange(this)
         this.onSelectChange = onSelectChange(this)
         this.onRadioChange = onRadioChange(this)
-        this.TODO_YOU_DEFINE_SOMETHING = this.TODO_YOU_DEFINE_SOMETHING.bind(this)
         this.onTruckAddButtonClick = this.onTruckAddButtonClick.bind(this)
         this.onSwitchTruckTypeButtonClick = this.onSwitchTruckTypeButtonClick.bind(this)
         this.onTruckDeleteButtonClick = this.onTruckDeleteButtonClick.bind(this)
-        
-
-        // this.itemDef4Head = [
-        //     // { type: INPUT_FIELD_TYPE_RADIO, id: "tiouKh", label: "対応可否", onChange: this.onRadioChange("tiouKh"),
-        //     //     items: [{"value":"0","label":"可"},{"value":"1","label":"否"}]
-        //     // },
-        //     { type: BREAK_LINE },
-        //     { type: INPUT_FIELD_TYPE_RADIO, id: "calcHoho", label: "計算方法", onChange: this.onRadioChange("calcHoho"), 
-        //         items: [{"value":"0","label":"車両貸し"},{"value":"1","label":"混載"}]
-        //     },
-        // ]
 
         this.itemDef4trkInf = [
             { type: INPUT_FIELD_TYPE_RADIO, id: "calcHoho", label: "計算方法", onChange: this.onRadioChange("calcHoho"), 
@@ -203,7 +192,7 @@ export default class OM0105 extends React.PureComponent{
 
         this.itemDef4footer = [
 			{ type: INPUT_FIELD_TYPE_BUTTON, id: "entry", label: "登録", color: "secondary", onChange: this.onHznClick},
-			{ type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrshDL", label: "見積書DL", color: "primary", onChange: this.TODO_YOU_DEFINE_SOMETHING},
+			{ type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrshDL", label: "見積書DL", color: "primary", onChange: function(){}},
         ]
 
         // 見積依頼用
@@ -231,8 +220,6 @@ export default class OM0105 extends React.PureComponent{
             if(res.success){
                 const anknData = _.get(res, "data", {})
 
-                //const trhkskKishData = _.get(anknData, "trhkSkKish", {})
-
                 const mtmrMisiData = getSisnMtmrIri(_.get(anknData, "trnAnknMisi"))
 
                 this.setState({
@@ -249,7 +236,6 @@ export default class OM0105 extends React.PureComponent{
 
         }
 
-        
     }
 
     /**
@@ -296,13 +282,6 @@ export default class OM0105 extends React.PureComponent{
 
     }
 
-    // TODO: 
-    TODO_YOU_DEFINE_SOMETHING(key){
-        console.log(key)
-        console.log(this.state)
-        alert("保存しました")
-    }
-
 /**
      * 保存ボタン押下時処理
      * @param {*} opType 保存ボタン押下種別(デフォルトは新規)
@@ -344,7 +323,7 @@ export default class OM0105 extends React.PureComponent{
         paramsMisi["kyoritaiCd"] = this.state.kyoritaiCd || "000"
 
         // // TODO: 暫定
-         params["ankn_sts_cd"] = "003" // 見積回答済
+         params["ankn_sts_cd"] = ANKN_STS_CD__MTMR_KITO_SM // 見積回答済
 
         // // TODO: 依頼元入力種別を固定で「001」セット
         params["irimt_input_type_cd"] = "001"
@@ -384,9 +363,6 @@ export default class OM0105 extends React.PureComponent{
             showErrMsg(ERR_MSG__HZN + "\n" + JSON.stringify(_.get(res, "data", {})))
         }
 
-        
-        
-
     }
 
     openAnkenDetail(){
@@ -418,13 +394,6 @@ export default class OM0105 extends React.PureComponent{
                     <Grid item xs={7}>
                         <Paper>
                             <Typography variant="h5"><EditIcon />回答作成</Typography>
-
-                            {/* <Paper className="input-items-wrapper">
-                                {
-                                    this.itemDef4Head.map((v, i)=> (<FieldItem key={`head-item-${i}`} {...v} xs={12} md={4} value={this.state[v.id]} />))
-                                }
-                            </Paper> */}
-            
 
                             <Paper className="input-items-wrapper">
                                 <Typography variant="h6">トラック情報</Typography>
