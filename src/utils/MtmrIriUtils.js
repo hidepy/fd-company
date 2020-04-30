@@ -1,3 +1,13 @@
+// ======================================================================
+// Project Name    : fd-app(on github hidepy)
+// Creation Date   : 2020/04/30
+// 
+// Copyright © 2020 hideyuki.kawamura. All rights reserved.
+// 
+// This source code or any portion thereof must not be  
+// reproduced or used in any manner whatsoever.
+// ======================================================================
+
 // 見積関連Utils(型定義/helper)
 //   ⇒ 本来は分けるべきかとも思えど...constではないし...helperという雰囲気でもないし...
 

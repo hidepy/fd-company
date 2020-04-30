@@ -1,3 +1,12 @@
+// ======================================================================
+// Project Name    : fd-app(on github hidepy)
+// Creation Date   : 2020/04/30
+// 
+// Copyright © 2020 hideyuki.kawamura. All rights reserved.
+// 
+// This source code or any portion thereof must not be  
+// reproduced or used in any manner whatsoever.
+// ======================================================================
 
 import {
     API_BASE_URI, HTTP_METHOD__GET, HTTP_METHOD__POST, HTTP_METHOD__DELETE, HTTP_METHOD__PUT

@@ -1,6 +1,16 @@
-import { format } from 'date-fns'
+// ======================================================================
+// Project Name    : fd-app(on github hidepy)
+// Creation Date   : 2020/04/30
+// 
+// Copyright © 2020 hideyuki.kawamura. All rights reserved.
+// 
+// This source code or any portion thereof must not be  
+// reproduced or used in any manner whatsoever.
+// ======================================================================
+
 import KeyCaseConvUtils from "./KeyCaseConvUtils"
 import _ from "lodash"
+import { FORM_CHECK_MSG__REQUIRE_ERR } from '../constants/message'
 
 /**
  * 表示ダイアログのwrapper (メッセージ表示方法の変更対応を見据えて)TODO: 
@@ -18,6 +28,9 @@ export const showErrMsg = msg=> window.alert(msg)
  * @param {*} msg 
  */
 export const showConfirmMsg = msg=> window.confirm(msg)
+
+
+export const isEmpty = v=> !(!!v || v === 0)
 
 /**
  * 入力テキスト変更時イベントハンドラ
@@ -245,5 +258,25 @@ export const getMstCdSelectionFromMap = (mstCd, mstCdMap = {}, labelPropKey = "c
 
     return Object.keys(map)
         .reduce((p, c)=> [...p, { value: map[c].cd, label: map[c][labelPropKey] }], [])
+}
+
+
+export const checkFormInputs = (state, formDefArr)=> {
+
+    const res = (formDefArr || [])
+        .map(formDef=> {
+            // 必須チェック
+            if(!!formDef.required && isEmpty(state[formDef.id])){
+                return { ...formDef, err: true, msg: FORM_CHECK_MSG__REQUIRE_ERR.replace("$1", formDef.label), type: "required" }
+            }
+
+            return { err: false }
+        })
+        .filter(v=> !!v.err)
+        .map(v=> v.msg)
+        .join("\n")
+
+    return res
+
 }
 

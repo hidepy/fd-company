@@ -1,3 +1,12 @@
+// ======================================================================
+// Project Name    : fd-app(on github hidepy)
+// Creation Date   : 2020/04/30
+// 
+// Copyright © 2020 hideyuki.kawamura. All rights reserved.
+// 
+// This source code or any portion thereof must not be  
+// reproduced or used in any manner whatsoever.
+// ======================================================================
 
 import React from 'react'
 import PropTypes from "prop-types"
@@ -19,6 +28,7 @@ import {
     onRadioChange,
     convCamelKeyObj2SnakeKeyObj,
     showErrMsg,
+    checkFormInputs,
 } from "../../utils/CommonUtils"
 import {
     getItemDef4PageHeader,
@@ -80,8 +90,6 @@ export default class OM0103 extends React.Component{
         this.onSelectChange = onSelectChange(this)
         this.onRadioChange = onRadioChange(this)
         this.TODO_YOU_DEFINE_SOMETHING = function(){} // TODO: 
-
-        console.log(this)
 
         this.itemDef4PageHeader = getItemDef4PageHeader(this)
 
@@ -335,6 +343,25 @@ export default class OM0103 extends React.Component{
     
 
     /**
+     * ページ内遷移時共通ロジック
+     * @param {*} pageDefArr 
+     * @param {*} successCallback 
+     */
+    pageSwitchCommonFlow(pageDefArr, successCallback){
+
+        return ()=> {
+            // formエラーチェック
+            const msg = checkFormInputs(this.state, pageDefArr)
+            
+            // 問題なしで後続の処理実施
+            if(!msg) successCallback()
+            else showErrMsg(msg)
+        }
+
+    }
+
+
+    /**
      * フッタボタン(戻る/次へ/確定)押下時のページ制御処理
      * @param {*} state 
      */
@@ -345,7 +372,7 @@ export default class OM0103 extends React.Component{
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={this.updatePageState(this.PAGE_STATE_DEF.NMT_PAGE)}
+                        onClick={this.pageSwitchCommonFlow(this.itemDef4IrishContents, this.updatePageState(this.PAGE_STATE_DEF.NMT_PAGE))}
                     >
                         次へ
                     </Button>
@@ -361,7 +388,7 @@ export default class OM0103 extends React.Component{
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={this.updatePageState(this.PAGE_STATE_DEF.NTJ_BSH)}
+                            onClick={this.pageSwitchCommonFlow(this.itemDef4NmtContents, this.updatePageState(this.PAGE_STATE_DEF.NTJ_BSH))}
                         >
                             次へ
                         </Button>
