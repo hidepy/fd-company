@@ -36,6 +36,11 @@ export const INPUT_AREA_TITLE_ARR = [INPUT_AREA_TITLE_IRISH, INPUT_AREA_TITLE_NM
 
 
 /**
+ * 案件ステータス 見積未登録
+ */
+export const ANKN_STS_CD__MTMR_MI_TORK = "001"
+
+/**
  * 案件ステータス 見積登録済
  */
 export const ANKN_STS_CD__MTMR_TORK_SM = "002"

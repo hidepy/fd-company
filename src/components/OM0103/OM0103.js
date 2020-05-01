@@ -41,7 +41,7 @@ import {
     getSisnMtmrIri
 } from "../../utils/MtmrIriUtils"
 import {
-    INPUT_AREA_TITLE_ARR, ANKN_STS_CD__MTMR_TORK_SM
+    INPUT_AREA_TITLE_ARR, ANKN_STS_CD__MTMR_TORK_SM, ANKN_STS_CD__MTMR_MI_TORK
 } from "../../constants/MtmrIri"
 import { BUTTON_OPERATION_TYPE__ENTRY, BUTTON_OPERATION_TYPE__UPDATE } from '../../constants/common';
 import { API_MTMR_DETAIL } from '../../constants/apiPath';
@@ -214,8 +214,8 @@ export default class OM0103 extends React.Component{
 
         // params["trn_ankn_misi"] = [ paramsMisi ]
         // TODO: 暫定
-        params["anknStsCd"] = ANKN_STS_CD__MTMR_TORK_SM
-        paramsMisi["anknStsCd"] = ANKN_STS_CD__MTMR_TORK_SM
+        params["anknStsCd"] = ANKN_STS_CD__MTMR_MI_TORK
+        paramsMisi["anknStsCd"] = ANKN_STS_CD__MTMR_MI_TORK
 
         // TODO: 依頼元入力種別を固定で「001」セット
         params["irimtInputTypeCd"] = "001"

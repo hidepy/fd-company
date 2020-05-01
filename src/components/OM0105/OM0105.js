@@ -71,7 +71,7 @@ import FetchUtils from '../../utils/FetchUtils'
 import { API_MTMR_DETAIL } from '../../constants/apiPath'
 import { ERR_MSG__FETCH, SUCCESS_MSG__HZN, ERR_MSG__HZN } from '../../constants/message'
 import _ from "lodash"
-import { ANKN_STS_CD__MTMR_KITO_SM } from '../../constants/MtmrIri'
+import { ANKN_STS_CD__MTMR_KITO_SM, ANKN_STS_CD__MTMR_TORK_SM } from '../../constants/MtmrIri'
 
 
 
@@ -323,7 +323,7 @@ export default class OM0105 extends React.PureComponent{
         paramsMisi["kyoritaiCd"] = this.state.kyoritaiCd || "000"
 
         // // TODO: 暫定
-         params["ankn_sts_cd"] = ANKN_STS_CD__MTMR_KITO_SM // 見積回答済
+         params["ankn_sts_cd"] = ANKN_STS_CD__MTMR_TORK_SM // 見積登録済
 
         // // TODO: 依頼元入力種別を固定で「001」セット
         params["irimt_input_type_cd"] = "001"
