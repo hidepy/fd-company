@@ -129,9 +129,9 @@ export default class UragRekPaper extends React.Component {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="jisseki" stackId="a" fill="#113399" />
-          <Bar dataKey="mikomi" stackId="a" fill="#3388bb" />
-          <Bar dataKey="mokuhyo" stackId="a" fill="#aaccff" />
+          <Bar name="実績" dataKey="jisseki" stackId="a" fill="#113399" />
+          <Bar name="見込" dataKey="mikomi" stackId="a" fill="#3388bb" />
+          <Bar name="目標" dataKey="mokuhyo" stackId="a" fill="#aaccff" />
         </BarChart>
 
         <div>

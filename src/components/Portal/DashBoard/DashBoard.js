@@ -33,6 +33,10 @@ import Deposits from './Deposits';
 import Orders from './Orders';
 import Title from "./Title"
 import UragRekPaper from "./UragRekPaper"
+import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } from 'recharts';
+import { getModalStyle } from '../../../utils/CommonUtils';
+import Modal from '@material-ui/core/Modal';
+import DashBoardOnedayDetail from './DashBoardOnedayDetail';
 
 
 const drawerWidth = 240;
@@ -114,11 +118,20 @@ const useStyles = makeStyles(theme => ({
   fixedHeight: {
     height: 240,
   },
+
+
+
+  modal: {
+    height: "100%",
+    overflowY: "scroll",
+    padding: "8px",
+    backgroundColor: "rgb(255, 255, 255)",
+  }
 }));
 
 export default function DashBoard(props) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -127,7 +140,26 @@ export default function DashBoard(props) {
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
+
+
+  const data = [...Array.from(new Array(31)).keys()]
+    .map(i => {
+
+      const day = i + 1
+
+      return {
+        name: "" + day + "日",
+        urag: Math.random() * 10000,
+        hiyo: Math.random() * 10000 * 0.85,
+      }
+    })
+
+  const onUragHiyoClick = (data, i) => {
+    setOpen(true)
+  }
+
   return (
+
     <div className={classes.root}>
 
       <Container maxWidth="lg" className={classes.container}>
@@ -164,132 +196,57 @@ export default function DashBoard(props) {
               <UragRekPaper title={"今月の利益"} />
             </Paper>
           </Grid>
-          
-{/* 
-          <Grid item xs={12} md={4} lg={4}>
-            <Paper className={fixedHeightPaper}>
-              <React.Fragment>
-                <Title>今月の売上</Title>
-                <Typography component="p" variant="h4">
-                  198,798円
-                    </Typography>
-                <Typography color="textSecondary" className={classes.depositContext}>
-                  2019/12/30
-                    </Typography>
-                <div>
-                  <Link color="primary" href="javascript:;">
-                    詳細を見る
-                      </Link>
-                </div>
-              </React.Fragment>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12} md={4} lg={4}>
-            <Paper className={fixedHeightPaper}>
-              <React.Fragment>
-                <Title>今月の利益</Title>
-                <Typography component="p" variant="h4">
-                  198,798円
-                    </Typography>
-                <Typography color="textSecondary" className={classes.depositContext}>
-                  2019/12/30
-                    </Typography>
-                <div>
-                  <Link color="primary" href="javascript:;">
-                    詳細を見る
-                      </Link>
-                </div>
-              </React.Fragment>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12} md={4} lg={4}>
-            <Paper className={fixedHeightPaper}>
-              <React.Fragment>
-                <Title>今月の利益</Title>
-                <Typography component="p" variant="h4">
-                  198,798円
-                  </Typography>
-                <Typography color="textSecondary" className={classes.depositContext}>
-                  2019/12/30
-                  </Typography>
-                <div>
-                  <Link color="primary" href="javascript:;">
-                    詳細を見る
-                    </Link>
-                </div>
-              </React.Fragment>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12} md={4} lg={4}>
-            <Paper className={fixedHeightPaper}>
-              <React.Fragment>
-                <Title>今月の売上</Title>
-                <Typography component="p" variant="h4">
-                  398,798円
-                  </Typography>
-                <Typography color="textSecondary" className={classes.depositContext}>
-                  2019/12/30
-                  </Typography>
-                <div>
-                  <Link color="primary" href="javascript:;">
-                    詳細を見る
-                    </Link>
-                </div>
-              </React.Fragment>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12} md={4} lg={4}>
-            <Paper className={fixedHeightPaper}>
-              <React.Fragment>
-                <Title>今月の費用</Title>
-                <Typography component="p" variant="h4">
-                  200,000円
-                  </Typography>
-                <Typography color="textSecondary" className={classes.depositContext}>
-                  2019/12/30
-                  </Typography>
-                <div>
-                  <Link color="primary" href="javascript:;">
-                    詳細を見る
-                    </Link>
-                </div>
-              </React.Fragment>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={6}>
-            <Paper className={fixedHeightPaper}>
-              <Chart
-                title={"本日"}
-                yaxisLabel={"売上(円)"}
-              />
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={6}>
-            <Paper className={fixedHeightPaper}>
-              <Chart
-                title={"昨日"}
-                yaxisLabel={"売上(円)"}
-              />
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12} md={12} lg={12}>
-            <Paper className={fixedHeightPaper}>
-              <Orders />
-            </Paper>
-          </Grid> */}
 
         </Grid>
 
+        <Grid container spacing={3}>
+
+          <Grid item xs={12} md={12} lg={12}>
+
+            <Paper className={classes.paper}>
+              <React.Fragment>
+                <Title>日次の売上/費用</Title>
+
+                <div style={{ textAlign: "center" }}>
+                  <BarChart width={1100} height={250} data={data}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar name="売上" dataKey="urag" fill="#8884d8" onClick={onUragHiyoClick} />
+                    <Bar name="費用" dataKey="hiyo" fill="#82ca9d" />
+                  </BarChart>
+                </div>
+
+              </React.Fragment>
+            </Paper>
+
+          </Grid>
+
+        </Grid>
+
+
+        <Modal
+          open={open}
+          onClose={()=> setOpen(false)}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+          {
+            <div style={getModalStyle()} className="contents-wrap">
+
+              <div className={classes.modal}>
+                <DashBoardOnedayDetail />
+              </div>
+
+            </div>
+
+          }
+        </Modal>
+
       </Container>
 
-      {/* </main> */}
     </div>
   );
 }
