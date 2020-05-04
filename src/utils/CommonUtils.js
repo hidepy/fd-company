@@ -206,7 +206,7 @@ export const convServerDatetimeStr2ClientDateObj = datetimeStr => {
 
     try {
         res = new Date(datetimeStr)
-    } catch{
+    } catch(e){
         return null
     }
 

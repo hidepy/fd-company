@@ -29,6 +29,7 @@ import {
     convCamelKeyObj2SnakeKeyObj,
     showErrMsg,
     checkFormInputs,
+    convServerDatetimeStr2ClientDateObj,
 } from "../../utils/CommonUtils"
 import {
     getItemDef4PageHeader,
@@ -125,12 +126,16 @@ export default class OM0103 extends React.Component{
                 //const trhkskKishData = _.get(anknData, "trhkSkKish", {})
 
                 const mtmrMisiData = getSisnMtmrIri(_.get(anknData, "trnAnknMisi"))
+                const shukKiboNtj = convServerDatetimeStr2ClientDateObj(mtmrMisiData.shukKiboNtj)
+                const hisoKiboNtj = convServerDatetimeStr2ClientDateObj(mtmrMisiData.hisoKiboNtj)
 
                 this.setState({
                     //...trhkskKishData,
                     ...anknData,
-                    ...mtmrMisiData
-                })
+                    ...mtmrMisiData,
+                    shukKiboNtj,
+                    hisoKiboNtj
+                }, ()=> console.log(this.state))
             }
             else{
                 showErrMsg(ERR_MSG__FETCH)
@@ -178,11 +183,15 @@ export default class OM0103 extends React.Component{
         
         // TODO: 正しい値のセットなど...
 
+        console.log(this.state.shukKiboNtj)
+
         // TODO: ゴミ項目 一旦値セット
         paramsMisi["ankn"] = this.state.ankn || "GM"
         paramsMisi["juchuFlg"] = this.state.juchuFlg || false
 
         paramsMisi["trhkSkTntoshNm"] = this.state.trhkSkTntoshNm || "000"
+        paramsMisi["trhkSkTntoshTelNo"] = this.state.trhkSkTntoshTelNo
+        paramsMisi["trhkSkTntoshMail"] = this.state.trhkSkTntoshMail
         paramsMisi["nmtTypeCd"] = this.state.nmtTypeCd || "000"
         paramsMisi["knsiKhCd"] = this.state.knsiKhCd || "000"
         paramsMisi["unitloadTypeCd"] = this.state.unitloadTypeCd || "000"
@@ -199,18 +208,13 @@ export default class OM0103 extends React.Component{
         paramsMisi["juryotaiCd"] = this.state.juryotaiCd || "000"
         paramsMisi["kyoritaiCd"] = this.state.kyoritaiCd || "000"
 
-        // // TODO: 暫定
-        // params["ankn_sts_cd"] = "001"
-
-        // // TODO: 依頼元入力種別を固定で「001」セット
-        // params["irimt_input_type_cd"] = "001"
-        
-        // // TODO: 案件番号を一旦テキトーに値セット
-        // params["ankn_no"] = "ankenno000"
-
         params["trhkSkKishId"] = this.state.trhkSkKishId
+        params["trhkSkKishNo"] = this.state.trhkSkKishNo
         params["trhkSkKishNm"] = this.state.trhkSkKishNm
         params["trhkSkKishNmKn"] = this.state.trhkSkKishNmKn
+        params["trhkSkKishZipNo"] = this.state.trhkSkKishZipNo
+        params["trhkSkKishAddress"] = this.state.trhkSkKishAddress
+        // trhk_sk_tntosh_tel_no, trhk_sk_tntosh_mail
 
         // params["trn_ankn_misi"] = [ paramsMisi ]
         // TODO: 暫定
@@ -221,7 +225,7 @@ export default class OM0103 extends React.Component{
         params["irimtInputTypeCd"] = "001"
         
         // TODO: 案件番号を一旦テキトーに値セット
-        params["anknNo"] = "ankenno000"
+        params["anknNo"] = this.state.anknNo || ""
 
         // params["trhkSkKish"] = paramsKish
         params["trnAnknMisi"] = [ paramsMisi ]

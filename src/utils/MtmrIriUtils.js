@@ -103,14 +103,14 @@ export const getItemDef4IrishContents = _this=>  [
     { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNm", label: "会社名", onChange: _this.onTextChange("trhkSkKishNm") , required: true },
     { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNmKn", label: "会社名（カナ）", onChange: _this.onTextChange("trhkSkKishNmKn") , required: true },
     { type: BREAK_LINE },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "zipNo", label: "郵便番号", onChange: _this.onTextChange("zipNo") , required: true },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "address", label: "所在地", onChange: _this.onTextChange("address") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishZipNo", label: "郵便番号", onChange: _this.onTextChange("trhkSkKishZipNo") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishAddress", label: "所在地", onChange: _this.onTextChange("trhkSkKishAddress") , required: true },
     { type: BREAK_LINE },
     { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkTntoshNm", label: "担当者名", onChange: _this.onTextChange("trhkSkTntoshNm") , required: true },
     { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkTntoshNmKn", label: "担当者名（カナ）", onChange: _this.onTextChange("trhkSkTntoshNmKn") , required: true },
     { type: BREAK_LINE },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkTelNo", label: "電話番号", onChange: _this.onTextChange("trhkSkTelNo") , required: true },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkMail", label: "メール", onChange: _this.onTextChange("trhkSkMail") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkTntoshTelNo", label: "電話番号", onChange: _this.onTextChange("trhkSkTntoshTelNo") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkTntoshMail", label: "メール", onChange: _this.onTextChange("trhkSkTntoshMail") , required: true },
 ]
 
 /**
@@ -237,7 +237,7 @@ export const getItemDef4HisoJknContents = _this=> [
             { value: "1", label: "否" },
         ]
     },
-    { type: INPUT_FIELD_TYPE_RADIO, id: "hisgyoYh", label: "はい作業要否", onChange: _this.onRadioChange("hiSgyoYh"), required: true,
+    { type: INPUT_FIELD_TYPE_RADIO, id: "hisgyoYh", label: "はい作業要否", onChange: _this.onRadioChange("hisgyoYh"), required: true,
         items: [
             { value: "0", label: "要" },
             { value: "1", label: "否" },

@@ -37,7 +37,7 @@ import {
 } from "../../utils/CommonUtils"
 import _ from "lodash"
 import FetchUtils from '../../utils/FetchUtils';
-import { API_ANKN } from '../../constants/apiPath';
+import { API_ANKN, API_ANKN_L } from '../../constants/apiPath';
 
 import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -97,7 +97,7 @@ export default class OM0104 extends React.Component {
             },
             { type: INPUT_FIELD_TYPE_TEXT, id: "ftreeTxtKnskRn", label: "フリーテキスト検索欄", onChange: this.onTextChange("ftreeTxtKnskRn") },
             { type: INPUT_FIELD_TYPE_BUTTON, id: "knskBtn", label: "検索ボタン", onChange: this.searchMtmrLst, color: "primary" },
-            { type: INPUT_FIELD_TYPE_BUTTON_LINK, id: "mtmrIriTork", label: "見積依頼の登録", onChange: this.onMove2MtmrIriTork },
+            { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrIriTork", label: "見積依頼の登録", onChange: this.onMove2MtmrIriTork },
         ]
 
         // const _openAnkenDetail = this.openAnkenDetail.bind(this)
@@ -105,9 +105,9 @@ export default class OM0104 extends React.Component {
         this.itemDef4SearchedList = [{
             type: OUTPUT_FIELD_TYPE_TABLE, id: "mtmrLst", label: "見積一覧",
             headerDef: [
-                { type: OUTPUT_FIELD_TYPE_LINK, id: "anknNo", label: "見積・受注No.", onChange: this.onMtmrNoClick, style: { width: "100px" } },
-                { type: INPUT_FIELD_TYPE_TEXT, id: "anknStsCdDesc01", label: "ステータス", onChange: this.onTextChange("anknStsCd") },
-                { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNm", label: "会社名", onChange: this.onTextChange("trhkSkKishNm") },
+                { type: OUTPUT_FIELD_TYPE_LINK, id: "ankn__anknNo", label: "見積・受注No.", onChange: this.onMtmrNoClick, style: { width: "100px" } },
+                { type: INPUT_FIELD_TYPE_TEXT, id: "ankn__anknStsCdDesc01", label: "ステータス", onChange: this.onTextChange("anknStsCd") },
+                { type: INPUT_FIELD_TYPE_TEXT, id: "ankn__trhkSkKishNm", label: "会社名", onChange: this.onTextChange("ankn__trhkSkKishNm") },
                 { type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboNtj", label: "集荷希望日時", onChange: this.onTextChange("shukKiboNtj"), withConvServerDatetimeStr2ClientDateTimeStr: true},
                 { type: INPUT_FIELD_TYPE_TEXT, id: "shukskNm", label: "集荷先名", onChange: this.onTextChange("shukskNm") },
                 { type: INPUT_FIELD_TYPE_TEXT, id: "hisoKiboNtj", label: "配送希望日時", onChange: this.onTextChange("hisoKiboNtj"), withConvServerDatetimeStr2ClientDateTimeStr: true},
@@ -221,14 +221,16 @@ export default class OM0104 extends React.Component {
 
     async searchMtmrLst() {
 
-        const res = await FetchUtils.getFromFdApi(API_ANKN)
+        // const res = await FetchUtils.getFromFdApi(API_ANKN)
+        const res = await FetchUtils.getFromFdApi(API_ANKN_L)
 
         // fetch successなら
         if(res.success){
             // plainizeした値をセット
             this.setState({
-                // mtmrList: convNestedArrProp2Plain(_.get(res, "data"), ["trhkSkKish"]) || []
-                mtmrList: _.get(res, "data", [])
+                // mtmrList: _.get(res, "data", [])
+                 mtmrList: convNestedArrProp2Plain(_.get(res, "data"), ["ankn"]) || []
+                
             })
         }
         else{
