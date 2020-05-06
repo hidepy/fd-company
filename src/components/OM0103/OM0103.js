@@ -16,6 +16,7 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
+import Modal from '@material-ui/core/Modal';
 
 import Paper from '@material-ui/core/Paper'
 import HznButton from "../commons/HznButton"
@@ -30,6 +31,7 @@ import {
     showErrMsg,
     checkFormInputs,
     convServerDatetimeStr2ClientDateObj,
+    getModalStyle,
 } from "../../utils/CommonUtils"
 import {
     getItemDef4PageHeader,
@@ -48,9 +50,9 @@ import { BUTTON_OPERATION_TYPE__ENTRY, BUTTON_OPERATION_TYPE__UPDATE } from '../
 import { API_MTMR_DETAIL } from '../../constants/apiPath';
 import FetchUtils from '../../utils/FetchUtils';
 import _ from "lodash"
-import { SUCCESS_MSG__HZN, ERR_MSG__FETCH, ERR_MSG__HZN } from '../../constants/message';
+import { SUCCESS_MSG__HZN, ERR_MSG__FETCH, ERR_MSG__HZN, MSG__OM0103_TORKGO_POPUP } from '../../constants/message';
 
-export default class OM0103 extends React.Component{
+export default class OM0103 extends React.Component {
 
     static contextTypes = {
         router: PropTypes.object
@@ -61,7 +63,7 @@ export default class OM0103 extends React.Component{
         openAsUpd: PropTypes.bool, // 本画面の起動方式 更新参照画面として開く場合はtrue
     }
 
-    constructor(props){
+    constructor(props) {
 
         super(props)
 
@@ -79,10 +81,13 @@ export default class OM0103 extends React.Component{
         this.state = {
             // pageStateは, 新規 or 更新の場合で変わる
             pageState: this.props.openAsUpd ? this.PAGE_STATE_DEF.UPD_ALL_PAGE : this.PAGE_STATE_DEF.IRISH_PAGE,
+            isTorkgoPopupShown: false,
+            responseAnknId: "",
 
             ...mtmrIriStates
         }
 
+        this.onTorkgoPopupCloseClick = this.onTorkgoPopupCloseClick.bind(this)
         this.updatePageState = this.updatePageState.bind(this)
         this.onHznClick = this.onHznClick.bind(this)
         this.onUpdClick = this.onUpdClick.bind(this)
@@ -90,7 +95,7 @@ export default class OM0103 extends React.Component{
         this.onDateChange = onDateChange(this)
         this.onSelectChange = onSelectChange(this)
         this.onRadioChange = onRadioChange(this)
-        this.TODO_YOU_DEFINE_SOMETHING = function(){} // TODO: 
+        this.TODO_YOU_DEFINE_SOMETHING = function () { } // TODO: 
 
         this.itemDef4PageHeader = getItemDef4PageHeader(this)
 
@@ -105,11 +110,11 @@ export default class OM0103 extends React.Component{
 
     }
 
-    async componentDidMount(){
+    async componentDidMount() {
 
         // デフォルト値設定
 
-        if(this.props.openAsUpd){
+        if (this.props.openAsUpd) {
 
             const ankenId = this.props.ankenId
 
@@ -117,10 +122,10 @@ export default class OM0103 extends React.Component{
 
             // APIコール
             const res = await FetchUtils.getFromFdApi(`${API_MTMR_DETAIL}/${ankenId}`)
-            
+
             console.log(res)
 
-            if(res.success){
+            if (res.success) {
                 const anknData = _.get(res, "data", {})
 
                 //const trhkskKishData = _.get(anknData, "trhkSkKish", {})
@@ -135,14 +140,14 @@ export default class OM0103 extends React.Component{
                     ...mtmrMisiData,
                     shukKiboNtj,
                     hisoKiboNtj
-                }, ()=> console.log(this.state))
+                }, () => console.log(this.state))
             }
-            else{
+            else {
                 showErrMsg(ERR_MSG__FETCH)
             }
 
         }
-        else{
+        else {
             this.setState({
                 knsiKh: "0",
                 tmksnKh: "0",
@@ -161,16 +166,25 @@ export default class OM0103 extends React.Component{
     }
 
     /**
+     * 登録後ポップアップクローズハンドラ
+     */
+    onTorkgoPopupCloseClick(){
+        this.setState({
+            isTorkgoPopupShown: false,
+        })
+    }
+
+    /**
      * 保存ボタン押下時処理
      * @param {*} opType 保存ボタン押下種別(デフォルトは新規)
      */
-    async onHznClick(opType = BUTTON_OPERATION_TYPE__UPDATE){
+    async onHznClick(opType = BUTTON_OPERATION_TYPE__UPDATE) {
 
         // 送信パラメータ全体
         const params = {}
 
         // パラメータ明細
-        const paramsMisi = Object.keys(mtmrIriStates).reduce((p, key)=> {
+        const paramsMisi = Object.keys(mtmrIriStates).reduce((p, key) => {
             return {
                 ...p,
                 [key]: this.state[key]
@@ -180,7 +194,7 @@ export default class OM0103 extends React.Component{
         // const paramsKish = {}
         // paramsKish["trhkSkKishNm"] = this.state.trhkSkKishNm || "hogehoge"
         // paramsKish["trhkSkKishNmKn"] = this.state.trhkSkKishNmKn || "hogehoge"
-        
+
         // TODO: 正しい値のセットなど...
 
         console.log(this.state.shukKiboNtj)
@@ -223,35 +237,39 @@ export default class OM0103 extends React.Component{
 
         // TODO: 依頼元入力種別を固定で「001」セット
         params["irimtInputTypeCd"] = "001"
-        
+
         // TODO: 案件番号を一旦テキトーに値セット
         params["anknNo"] = this.state.anknNo || ""
 
         // params["trhkSkKish"] = paramsKish
-        params["trnAnknMisi"] = [ paramsMisi ]
+        params["trnAnknMisi"] = [paramsMisi]
 
 
         console.log(params)
 
         const res = (opType === BUTTON_OPERATION_TYPE__UPDATE)
             ? await FetchUtils.put2FdApi(`${API_MTMR_DETAIL}`, this.props.ankenId, params)
-                : await FetchUtils.post2FdApi(`${API_MTMR_DETAIL}`, params)
+            : await FetchUtils.post2FdApi(`${API_MTMR_DETAIL}`, params)
 
         console.log(res)
 
-        if(res.success){
-            showAlertMsg(SUCCESS_MSG__HZN)
+        if (res.success) {
+            // showAlertMsg(SUCCESS_MSG__HZN)
+            this.setState({
+                isTorkgoPopupShown: true,
+                responseAnknId: _.get(res, "data.anknId")
+            })
         }
-        else{
+        else {
             showErrMsg(ERR_MSG__HZN + "\n" + JSON.stringify(_.get(res, "data", {})))
-        } 
+        }
 
     }
 
     /**
      * 更新ボタン押下時処理
      */
-    onUpdClick(){
+    onUpdClick() {
         this.onHznClick(BUTTON_OPERATION_TYPE__UPDATE)
     }
 
@@ -259,25 +277,25 @@ export default class OM0103 extends React.Component{
      * ページ状態によって表示するコンテンツを制御
      * @param {object} state 
      */
-    getPageByState(this_state){
+    getPageByState(this_state) {
 
         const pageState = this_state.pageState
 
-        switch(pageState){
+        switch (pageState) {
             case this.PAGE_STATE_DEF.IRISH_PAGE:
                 return (
                     <Paper className="page-contents-wrapper">
                         {
-                            this.itemDef4IrishContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this_state[v.id]} />))
+                            this.itemDef4IrishContents.map((v, i) => (<FieldItem key={i} {...v} xs={12} md={4} value={this_state[v.id]} />))
                         }
                     </Paper>
-                )  
+                )
 
             case this.PAGE_STATE_DEF.NMT_PAGE:
                 return (
                     <Paper className="page-contents-wrapper">
                         {
-                            this.itemDef4NmtContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this_state[v.id]} />))
+                            this.itemDef4NmtContents.map((v, i) => (<FieldItem key={i} {...v} xs={12} md={4} value={this_state[v.id]} />))
                         }
                     </Paper>
                 )
@@ -286,19 +304,19 @@ export default class OM0103 extends React.Component{
                 return (
                     <Paper className="page-contents-wrapper">
                         {
-                            this.itemDef4NtjContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this_state[v.id]} />))
+                            this.itemDef4NtjContents.map((v, i) => (<FieldItem key={i} {...v} xs={12} md={4} value={this_state[v.id]} />))
                         }
                     </Paper>
                 )
 
-                case this.PAGE_STATE_DEF.HISO_JOKN:
-                    return (
-                        <Paper className="page-contents-wrapper">
-                            {
-                                this.itemDef4HisoJknContents.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this_state[v.id]} />))
-                            }
-                        </Paper>
-                    )
+            case this.PAGE_STATE_DEF.HISO_JOKN:
+                return (
+                    <Paper className="page-contents-wrapper">
+                        {
+                            this.itemDef4HisoJknContents.map((v, i) => (<FieldItem key={i} {...v} xs={12} md={4} value={this_state[v.id]} />))
+                        }
+                    </Paper>
+                )
 
             case this.PAGE_STATE_DEF.CONFIRM_PAGE:
                 return getMtmtIriAllContents(this, true)
@@ -308,7 +326,7 @@ export default class OM0103 extends React.Component{
         }
     }
 
-    getInpageTitle(state){
+    getInpageTitle(state) {
         return (
             <Typography variant="h6" gutterBottom>
                 {
@@ -318,21 +336,21 @@ export default class OM0103 extends React.Component{
         )
     }
 
-    
+
 
     /**
      * ページ内遷移時共通ロジック
      * @param {*} pageDefArr 
      * @param {*} successCallback 
      */
-    pageSwitchCommonFlow(pageDefArr, successCallback){
+    pageSwitchCommonFlow(pageDefArr, successCallback) {
 
-        return ()=> {
+        return () => {
             // formエラーチェック
             const msg = checkFormInputs(this.state, pageDefArr)
-            
+
             // 問題なしで後続の処理実施
-            if(!msg) successCallback()
+            if (!msg) successCallback()
             else showErrMsg(msg)
         }
     }
@@ -342,8 +360,8 @@ export default class OM0103 extends React.Component{
      * フッタボタン(戻る/次へ/確定)押下時のページ制御処理
      * @param {*} state 
      */
-    getFooterButtonByState(state){
-        switch(state){
+    getFooterButtonByState(state) {
+        switch (state) {
             case this.PAGE_STATE_DEF.IRISH_PAGE:
                 return (
                     <Button
@@ -355,7 +373,7 @@ export default class OM0103 extends React.Component{
                     </Button>
                 )
             case this.PAGE_STATE_DEF.NMT_PAGE:
-                return(
+                return (
                     <React.Fragment>
                         <Button
                             onClick={this.updatePageState(this.PAGE_STATE_DEF.IRISH_PAGE)}
@@ -372,7 +390,7 @@ export default class OM0103 extends React.Component{
                     </React.Fragment>
                 )
             case this.PAGE_STATE_DEF.NTJ_BSH:
-                return(
+                return (
                     <React.Fragment>
                         <Button
                             onClick={this.updatePageState(this.PAGE_STATE_DEF.NMT_PAGE)}
@@ -389,24 +407,24 @@ export default class OM0103 extends React.Component{
                     </React.Fragment>
 
                 )
-                case this.PAGE_STATE_DEF.HISO_JOKN:
-                    return(
-                        <React.Fragment>
-                            <Button
-                                onClick={this.updatePageState(this.PAGE_STATE_DEF.NTJ_BSH)}
-                            >
-                                戻る
+            case this.PAGE_STATE_DEF.HISO_JOKN:
+                return (
+                    <React.Fragment>
+                        <Button
+                            onClick={this.updatePageState(this.PAGE_STATE_DEF.NTJ_BSH)}
+                        >
+                            戻る
                             </Button>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={this.pageSwitchCommonFlow(this.itemDef4HisoJknContents, this.updatePageState(this.PAGE_STATE_DEF.CONFIRM_PAGE))}
-                            >
-                                次へ
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={this.pageSwitchCommonFlow(this.itemDef4HisoJknContents, this.updatePageState(this.PAGE_STATE_DEF.CONFIRM_PAGE))}
+                        >
+                            次へ
                             </Button>
-                        </React.Fragment>
-    
-                    )
+                    </React.Fragment>
+
+                )
             case this.PAGE_STATE_DEF.CONFIRM_PAGE:
                 return (
                     <React.Fragment>
@@ -427,7 +445,7 @@ export default class OM0103 extends React.Component{
 
             case this.PAGE_STATE_DEF.UPD_ALL_PAGE:
                 return (
-                    <div style={{textAlign: "center"}}>
+                    <div style={{ textAlign: "center" }}>
                         <Button
                             variant="contained"
                             color="primary"
@@ -437,7 +455,7 @@ export default class OM0103 extends React.Component{
                         </Button>
                     </div>
                 )
-                
+
         }
     }
 
@@ -445,43 +463,43 @@ export default class OM0103 extends React.Component{
      * ページ状態を更新する
      * @param {string} state 
      */
-    updatePageState(state){
-        return ()=> {
+    updatePageState(state) {
+        return () => {
 
             document.getElementsByTagName("main")[0].scrollTo(0, 0)
-            
+
             this.setState({
                 pageState: state
             })
         }
     }
 
-    render(){
+    render() {
 
         return (
             <div className="OM0103-wrapper inner-wrapper" style={this.props.style}>
                 <Paper className="page-header-wrapper">
 
                     <Typography variant="h5" gutterBottom>
-                            見積登録
+                        見積登録
                     </Typography>
 
                     {
                         this.state.pageState !== this.PAGE_STATE_DEF.UPD_ALL_PAGE
-                            && (
-                                <Stepper activeStep={Number(this.state.pageState)}>
-                                    {
-                                        this.PAGE_STATE_TITLE_ARR.map(label => (
-                                            <Step key={label}>
-                                                <StepLabel>{label}</StepLabel>
-                                            </Step>
-                                        ))
-                                    }
-                                </Stepper>
-                            )
+                        && (
+                            <Stepper activeStep={Number(this.state.pageState)}>
+                                {
+                                    this.PAGE_STATE_TITLE_ARR.map(label => (
+                                        <Step key={label}>
+                                            <StepLabel>{label}</StepLabel>
+                                        </Step>
+                                    ))
+                                }
+                            </Stepper>
+                        )
                     }
 
-                    { this.props.ankenId }
+                    {this.props.ankenId}
 
                     <React.Fragment>
 
@@ -490,7 +508,7 @@ export default class OM0103 extends React.Component{
                         }
 
                         {
-                            this.itemDef4PageHeader.map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this.state[v.id]} />))
+                            this.itemDef4PageHeader.map((v, i) => (<FieldItem key={i} {...v} xs={12} md={4} value={this.state[v.id]} />))
                         }
 
                         {
@@ -498,16 +516,37 @@ export default class OM0103 extends React.Component{
                             this.getPageByState(this.state)
                         }
 
-                        <div style={{textAlign: "right"}}>
-                        {
-                            this.getFooterButtonByState(this.state.pageState)
-                        }
+                        <div style={{ textAlign: "right" }}>
+                            {
+                                this.getFooterButtonByState(this.state.pageState)
+                            }
                         </div>
 
                     </React.Fragment>
                 </Paper>
 
-                
+                <Modal
+                    open={this.state.isTorkgoPopupShown}
+                    onClose={this.onTorkgoPopupCloseClick}
+                >
+                    {
+                        <div style={{...getModalStyle(), height: "auto"}} className="contents-wrap">
+
+                            <div className="inner-popup" style={{backgroundColor: "#fff", margin: "64px;"}}>
+                                <p style={{padding: "32px", fontWeight: "bold"}}>
+                                    { MSG__OM0103_TORKGO_POPUP }
+                                </p>
+                                
+                                <Button variant="contained" style={{margin: "16px"}} onClick={(()=> {this.props.history.goBack()}).bind(this)}>一覧へ戻る</Button>
+
+                                <Button variant="contained" style={{margin: "16px"}} onClick={(()=> {this.props.history.push(`${process.env.PUBLIC_URL}/OM0105`, {anknId: this.state.responseAnknId})}).bind(this)}>見積回答を作成</Button>
+                            </div>
+
+                        </div>
+
+                    }
+                </Modal>
+
             </div>
         )
     }

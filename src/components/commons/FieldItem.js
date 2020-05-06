@@ -60,6 +60,7 @@ const FieldItem = (props)=> {
 
     const { type, customComponent, ...rest } = props 
     const Component = INPUT_TYPE_DEF[type] || (()=> <span />)
+    const className = `field-item ${props.className ? props.className : ""}`
 
     if(!!customComponent){
         const CC = props.customComponent
@@ -78,7 +79,7 @@ const FieldItem = (props)=> {
     }
 
     if(type === OUTPUT_FIELD_TYPE_TEXT){
-        return (<TextField className="field-item" disabled={true} {...rest} value={rest.value || undefined} />)
+        return (<TextField className={className} disabled={true} {...rest} value={rest.value || undefined} />)
     }
 
     if(type === OUTPUT_FIELD_TYPE_TABLE){
@@ -91,7 +92,7 @@ const FieldItem = (props)=> {
 
         return(
             <KeyboardDatePicker
-                className="field-item"
+                className={className}
                 disableToolbar
                 variant="inline"
                 format="yyyy/MM/dd"
@@ -109,7 +110,7 @@ const FieldItem = (props)=> {
     if(type === INPUT_FIELD_TYPE_DATETIME){
         return(
             <KeyboardDateTimePicker
-                className="field-item"
+                className={className}
                 disableToolbar
                 variant="inline"
                 KeyboardButtonProps={{
@@ -127,7 +128,7 @@ const FieldItem = (props)=> {
 
     return (<Component {...rest} inputlabelprops={{
         shrink: true,
-      }} className={"field-item"} value={rest.value || ""} />) // TODO: ""でいいのか...
+      }} className={className} value={rest.value || ""} />) // TODO: ""でいいのか...
 }
 
 export default FieldItem

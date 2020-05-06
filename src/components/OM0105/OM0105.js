@@ -43,6 +43,7 @@ import {
     onRadioChange,
     showErrMsg,
     getModalStyle,
+    getMstCdSelectionFromMap,
 } from "../../utils/CommonUtils"
 
 import "./OM0105.scss"
@@ -69,9 +70,10 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Chip from '@material-ui/core/Chip';
 import FetchUtils from '../../utils/FetchUtils'
 import { API_MTMR_DETAIL } from '../../constants/apiPath'
-import { ERR_MSG__FETCH, SUCCESS_MSG__HZN, ERR_MSG__HZN } from '../../constants/message'
+import { ERR_MSG__FETCH, SUCCESS_MSG__HZN, ERR_MSG__HZN, MSG__OM0105_TORKGO_POPUP } from '../../constants/message'
 import _ from "lodash"
 import { ANKN_STS_CD__MTMR_KITO_SM, ANKN_STS_CD__MTMR_TORK_SM } from '../../constants/MtmrIri'
+import { MST_KEY__CALC_HOHO_CD, MST_KEY__TRK_TYPE_CD } from '../../constants/MstCdKey'
 
 
 
@@ -88,6 +90,9 @@ export default class OM0105 extends React.PureComponent{
 
         this.state = {
             isMtmrDetailPopupShown: false,
+            isFtiSgyoOpen: false,
+            isTorkgoPopupShown: false,
+            responseAnknId: "",
 
             mtmrIriInf: {
                 ...mtmrIriStates
@@ -96,7 +101,7 @@ export default class OM0105 extends React.PureComponent{
             truckInfLst: [],
             tiouKh: "0",
             calcHoho: "0",
-			truckType: "0",
+			truckType: "",
 			disu: "",
 			add: "",
 			shukNtj: "",
@@ -127,6 +132,7 @@ export default class OM0105 extends React.PureComponent{
 			mtmrshDL: "",
         }
 
+        this.onFtiSgyoUtwkClick = this.onFtiSgyoUtwkClick.bind(this)
         this.onHznClick = this.onHznClick.bind(this)
         this.onTextChange = onTextChange(this)
         this.onDateChange = onDateChange(this)
@@ -138,7 +144,8 @@ export default class OM0105 extends React.PureComponent{
 
         this.itemDef4trkInf = [
             { type: INPUT_FIELD_TYPE_RADIO, id: "calcHoho", label: "計算方法", onChange: this.onRadioChange("calcHoho"), 
-                items: [{"value":"0","label":"車両貸し"},{"value":"1","label":"混載"}]
+                //items: [{"value":"0","label":"車両貸し"},{"value":"1","label":"混載"}]
+                items: getMstCdSelectionFromMap(MST_KEY__CALC_HOHO_CD, this.props.AppRoot.mstCdMap)
             },
             { type: INPUT_FIELD_TYPE_TEXT, id: "disu", label: "台数", onChange: this.onTextChange("disu")},
 			{ type: INPUT_FIELD_TYPE_BUTTON, id: "add", label: "追加", onChange: this.onTruckAddButtonClick, style: {margin: "16px"} },
@@ -153,9 +160,10 @@ export default class OM0105 extends React.PureComponent{
 
         this.itemDef4mtmrKngk = [
             { type: OUTPUT_FIELD_TYPE_TEXT, id: "untn", label: "運賃", disabled: true },
-			{ type: INPUT_FIELD_TYPE_SELECT, id: "juryoOb", label: "重量帯", onChange: this.onSelectChange("juryoOb")},
-			{ type: INPUT_FIELD_TYPE_SELECT, id: "kyoriOb", label: "距離帯", onChange: this.onSelectChange("kyoriOb")},
-			{ type: INPUT_FIELD_TYPE_TEXT, id: "nnryoScg", label: "燃料サーチャージ", onChange: this.onTextChange("nnryoScg")},
+            { type: BREAK_LINE },
+			{ type: INPUT_FIELD_TYPE_SELECT, id: "juryoOb", label: "重量帯", onChange: this.onSelectChange("juryoOb"), style: { width: "200px" } },
+			{ type: INPUT_FIELD_TYPE_SELECT, id: "kyoriOb", label: "距離帯", onChange: this.onSelectChange("kyoriOb"), style: { width: "200px" } },
+			{ type: INPUT_FIELD_TYPE_TEXT, id: "nnryoScg", label: "燃料サーチャージ", onChange: this.onTextChange("nnryoScg"), style: { width: "200px" } },
 			{ type: INPUT_FIELD_TYPE_TEXT, id: "tmkmRyo", label: "積込み料", onChange: this.onTextChange("tmkmRyo")},
             { type: INPUT_FIELD_TYPE_RADIO, id: "tmkmUm", label: "積込み有無", onChange: this.onRadioChange("tmkmUm"), 
                 items: [{"value":"0","label":"有"},{"value":"1","label":"無"}]
@@ -166,18 +174,21 @@ export default class OM0105 extends React.PureComponent{
                 items: [{"value":"0","label":"有"},{"value":"1","label":"無"}]
             },
             { type: BREAK_LINE },
-			{ type: INPUT_FIELD_TYPE_TEXT, id: "ftiSgyoRyo", label: "附帯作業料", onChange: this.onTextChange("ftiSgyoRyo")},
-            { type: INPUT_FIELD_TYPE_RADIO, id: "tnirUm", label: "棚入れ有無", onChange: this.onRadioChange("tnirUm"), 
+            { type: INPUT_FIELD_TYPE_TEXT, id: "ftiSgyoRyo", label: "附帯作業料", onChange: this.onTextChange("ftiSgyoRyo")},
+            { type: INPUT_FIELD_TYPE_BUTTON, id: "ftiSgyoUtwk", label: "付帯作業内訳", onChange: this.onFtiSgyoUtwkClick },
+            { type: INPUT_FIELD_TYPE_RADIO, id: "tnirUm", label: "棚入れ有無", onChange: this.onRadioChange("tnirUm"), className: "ftiSgyoUtwk margin-left",
                 items: [{"value":"0","label":"有"},{"value":"1","label":"無"}]
             },
-			{ type: INPUT_FIELD_TYPE_RADIO, id: "lblHrUm", label: "ラベル貼り有無", onChange: this.onRadioChange("lblHrUm")},
-            { type: INPUT_FIELD_TYPE_RADIO, id: "ykmtUm", label: "横持ち有無", onChange: this.onRadioChange("ykmtUm"),
+            { type: INPUT_FIELD_TYPE_RADIO, id: "lblHrUm", label: "ラベル貼り有無", onChange: this.onRadioChange("lblHrUm"), className: "ftiSgyoUtwk",
                 items: [{"value":"0","label":"有"},{"value":"1","label":"無"}]
             },
-            { type: INPUT_FIELD_TYPE_RADIO, id: "ttmtUm", label: "縦持ち有無", onChange: this.onRadioChange("ttmtUm"), 
+            { type: INPUT_FIELD_TYPE_RADIO, id: "ykmtUm", label: "横持ち有無", onChange: this.onRadioChange("ykmtUm"), className: "ftiSgyoUtwk margin-left",
                 items: [{"value":"0","label":"有"},{"value":"1","label":"無"}]
             },
-            { type: INPUT_FIELD_TYPE_RADIO, id: "hisgyoUm", label: "はい作業有無", onChange: this.onRadioChange("hisgyoUm"), 
+            { type: INPUT_FIELD_TYPE_RADIO, id: "ttmtUm", label: "縦持ち有無", onChange: this.onRadioChange("ttmtUm"), className: "ftiSgyoUtwk",
+                items: [{"value":"0","label":"有"},{"value":"1","label":"無"}]
+            },
+            { type: INPUT_FIELD_TYPE_RADIO, id: "hisgyoUm", label: "はい作業有無", onChange: this.onRadioChange("hisgyoUm"), className: "ftiSgyoUtwk margin-left",
                 items: [{"value":"0","label":"有"},{"value":"1","label":"無"}]
             },
             { type: BREAK_LINE },
@@ -201,7 +212,7 @@ export default class OM0105 extends React.PureComponent{
         this.itemDef4NtjContents = getItemDef4NtjContents(this).map(v=> { return { ...v, disabled: true} })
         this.itemDef4HisoJknContents = getItemDef4HisoJknContents(this)
 
-        this.onPopupCloseClick = this.onPopupCloseClick.bind(this)
+        this.onMtmrDetailPopupCloseClick = this.onMtmrDetailPopupCloseClick.bind(this)
         this.openAnkenDetail = this.openAnkenDetail.bind(this)
     }
 
@@ -239,6 +250,17 @@ export default class OM0105 extends React.PureComponent{
     }
 
     /**
+     * 
+     * @param {*} event 
+     */
+    onFtiSgyoUtwkClick(event){
+        console.log("called")
+        this.setState({
+            isFtiSgyoOpen: !this.state.isFtiSgyoOpen
+        })
+    }
+
+    /**
      * トラック情報削除ボタン押下時
      * @param {*} truckInf 
      * @param {*} i 
@@ -257,7 +279,6 @@ export default class OM0105 extends React.PureComponent{
      * @param {*} truckType 
      */
     onSwitchTruckTypeButtonClick(truckType){
-        console.log(truckType)
         this.setState({
             truckType: truckType
         }, ()=> console.log(this.state))
@@ -268,11 +289,13 @@ export default class OM0105 extends React.PureComponent{
      */
     onTruckAddButtonClick(){
         
-        // 入力がそろってなければ虫
+        // 入力がそろってなければ無視
         if(!this.state.disu || !this.state.truckType) return
 
+        const truckTypeLabel = _.get(this.props.AppRoot, `mstCdMap[${MST_KEY__TRK_TYPE_CD}][${this.state.truckType}].cdDesc01`, "")
+
         const truckInfLst = this.state.truckInfLst || []
-        truckInfLst.push({ truckType: this.state.truckType, disu: this.state.disu })
+        truckInfLst.push({ truckType: this.state.truckType, truckTypeLabel, disu: this.state.disu })
 
         this.setState({
             truckInfLst: truckInfLst,
@@ -282,7 +305,7 @@ export default class OM0105 extends React.PureComponent{
 
     }
 
-/**
+    /**
      * 保存ボタン押下時処理
      * @param {*} opType 保存ボタン押下種別(デフォルトは新規)
      */
@@ -357,12 +380,25 @@ export default class OM0105 extends React.PureComponent{
         console.log(res)
 
         if(res.success){
-            showAlertMsg(SUCCESS_MSG__HZN)
+            // showAlertMsg(SUCCESS_MSG__HZN)
+            this.setState({
+                isTorkgoPopupShown: true,
+                responseAnknId: _.get(res, "data.anknId")
+            })
         }
         else{
             showErrMsg(ERR_MSG__HZN + "\n" + JSON.stringify(_.get(res, "data", {})))
         }
 
+    }
+
+    /**
+     * 登録後ポップアップクローズハンドラ
+     */
+    onTorkgoPopupCloseClick(){
+        this.setState({
+            isTorkgoPopupShown: false,
+        })
     }
 
     openAnkenDetail(){
@@ -371,7 +407,7 @@ export default class OM0105 extends React.PureComponent{
         })
     }
 
-    onPopupCloseClick(){
+    onMtmrDetailPopupCloseClick(){
         this.setState({
             isMtmrDetailPopupShown: false
         })
@@ -391,7 +427,7 @@ export default class OM0105 extends React.PureComponent{
                     alignItems="stretch"
                 >
 
-                    <Grid item xs={7}>
+                    <Grid item xs={8}>
                         <Paper>
                             <Typography variant="h5"><EditIcon />回答作成</Typography>
 
@@ -400,22 +436,22 @@ export default class OM0105 extends React.PureComponent{
 
                                 <div>
                                 {
-                                    [{"value":"0","label":"2t"},{"value":"1","label":"4t"},{"value":"2","label":"10t"}]
-                                        .map((v, i)=> (
-                                            <Fab 
-                                                key={i} 
-                                                size="small" 
-                                                color={("" + i) === this.state.truckType ? "primary" : "default"} 
-                                                aria-label="add" 
-                                                variant="extended" 
-                                                style={{width: "128px", height: "64px", margin: "8px"}}
-                                                onClick={()=> this.onSwitchTruckTypeButtonClick(v.value)}
-                                            >
-                                                <LocalShippingIcon />
-                                                <span>{v.label}</span>
-                                            </Fab>
-
-                                        ))
+                                    getMstCdSelectionFromMap(MST_KEY__TRK_TYPE_CD, this.props.AppRoot.mstCdMap)
+                                        .map((v, i)=> {
+                                            return (
+                                                <Fab 
+                                                    key={i} 
+                                                    size="small" 
+                                                    color={v.value === this.state.truckType ? "primary" : "default"} 
+                                                    aria-label="add" 
+                                                    variant="extended" 
+                                                    style={{width: "128px", height: "64px", margin: "8px"}}
+                                                    onClick={()=> this.onSwitchTruckTypeButtonClick(v.value)}
+                                                >
+                                                    <LocalShippingIcon />
+                                                    <span>{v.label}</span>
+                                                </Fab>
+                                        )})
                                 }
 
                                 {
@@ -429,7 +465,7 @@ export default class OM0105 extends React.PureComponent{
                                         .map((v, i)=> (
                                             <Chip
                                                 icon={<LocalShippingIcon />}
-                                                label={` Xトントラック ${v.disu}台`}
+                                                label={` ${v.truckTypeLabel} ${v.disu}台`}
                                                 onDelete={()=> this.onTruckDeleteButtonClick(v, i)}
                                                 color="primary"
                                             />
@@ -439,7 +475,7 @@ export default class OM0105 extends React.PureComponent{
                         </Paper>
                     </Grid>
 
-                    <Grid item xs={5}>
+                    <Grid item xs={4}>
                         <Paper className="iri-niyo-wrapper">
                             <Typography variant="h5"><DescriptionIcon />依頼内容</Typography>
                             {/* {
@@ -484,7 +520,7 @@ export default class OM0105 extends React.PureComponent{
                     </Grid>
 
 
-                    <Grid item xs={7}>
+                    <Grid item xs={8}>
                         <Paper className="input-items-wrapper">
                             <Typography variant="h6">ルート情報</Typography>
                             {
@@ -494,7 +530,7 @@ export default class OM0105 extends React.PureComponent{
                     </Grid>
 
 
-                    <Grid item xs={5}>
+                    <Grid item xs={4}>
                         <Paper className="input-items-wrapper">
                             <Typography variant="h6">日時・場所</Typography>
                             {
@@ -508,8 +544,8 @@ export default class OM0105 extends React.PureComponent{
                         </Paper>
                     </Grid>
 
-                    <Grid item xs={7}>
-                        <Paper className="input-items-wrapper">
+                    <Grid item xs={8}>
+                        <Paper className={`input-items-wrapper ${!this.state.isFtiSgyoOpen ? "ftisgyo-no-disp" : ""}`}>
                             <Typography variant="h6">見積金額</Typography> 
                             {
                                 this.itemDef4mtmrKngk.map((v, i)=> (<FieldItem key={`mtmr-kngk-item-${i}`} {...v} xs={12} md={4} value={this.state[v.id]} />))
@@ -518,7 +554,7 @@ export default class OM0105 extends React.PureComponent{
                     </Grid>
                     
 
-                    <Grid item xs={5}>
+                    <Grid item xs={4}>
                         <Paper className="input-items-wrapper">
                             <Typography variant="h6">配送条件</Typography> 
                             {
@@ -544,7 +580,7 @@ export default class OM0105 extends React.PureComponent{
 
                 <Modal
                     open={this.state.isMtmrDetailPopupShown}
-                    onClose={this.onPopupCloseClick}
+                    onClose={this.onMtmrDetailPopupCloseClick}
                     aria-labelledby="simple-modal-title"
                     aria-describedby="simple-modal-description"
                 >
@@ -556,6 +592,30 @@ export default class OM0105 extends React.PureComponent{
                                 openAsUpd={true}
                                 style={{ height: "100%", overflowY: "scroll", padding: "8px", backgroundColor: "#fff" }}
                             />
+
+                        </div>
+
+                    }
+                </Modal>
+
+                <Modal
+                    open={this.state.isTorkgoPopupShown}
+                    onClose={this.onTorkgoPopupCloseClick}
+                >
+                    {
+                        <div style={{...getModalStyle(), height: "auto"}} className="contents-wrap">
+
+                            <div className="inner-popup" style={{backgroundColor: "#fff", margin: "64px;"}}>
+                                <p style={{padding: "32px", fontWeight: "bold"}}>
+                                    { MSG__OM0105_TORKGO_POPUP }
+                                </p>
+                                
+                                <Button variant="contained" style={{margin: "16px"}} onClick={(()=> {this.props.history.goBack()}).bind(this)}>一覧へ戻る</Button>
+
+                                <Button variant="contained" disabled style={{margin: "16px"}} onClick={(()=> {} ).bind(this)}>見積書DL</Button>
+
+                                <Button variant="contained" disabled style={{margin: "16px"}} onClick={(()=> {this.props.history.push(`${process.env.PUBLIC_URL}/OM0105`, {anknId: this.state.responseAnknId})}).bind(this)}>見積回答を作成</Button>
+                            </div>
 
                         </div>
 

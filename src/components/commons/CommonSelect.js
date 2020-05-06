@@ -25,7 +25,7 @@ export default function CommonSelect(props){
     })
 
     return (
-        <FormControl className={"field-item common-select"} {...breakpoints}>
+        <FormControl className={"field-item common-select"} {...breakpoints} style={props.style}>
             <InputLabel htmlFor={props.id}>{props.label}</InputLabel>
 
             <Select

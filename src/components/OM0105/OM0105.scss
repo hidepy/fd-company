@@ -21,6 +21,17 @@
         }
     }
 
+    .ftisgyo-no-disp .ftiSgyoUtwk{
+        display: none;
+    }
+    .ftisgyo-no-disp #ftiSgyoUtwk{
+        background-color: #303f9f;
+        color: #fff;
+    }
+    .ftiSgyoUtwk.margin-left{
+        margin-left: 96px !important;
+    }
+
     .footer-buttons{
         text-align: center;
         
