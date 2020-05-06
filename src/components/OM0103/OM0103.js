@@ -481,7 +481,7 @@ export default class OM0103 extends React.Component {
                 <Paper className="page-header-wrapper">
 
                     <Typography variant="h5" gutterBottom>
-                        見積登録
+                        見積依頼の登録
                     </Typography>
 
                     {

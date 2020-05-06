@@ -9,14 +9,14 @@
 // ======================================================================
 
 /**
- * 入力エリアタイトル 依頼者の入力
+ * 入力エリアタイトル 依頼者
  */
-export const INPUT_AREA_TITLE_IRISH = "依頼者の入力"
+export const INPUT_AREA_TITLE_IRISH = "依頼者"
 
 /**
- * 入力エリアタイトル 荷物の入力
+ * 入力エリアタイトル 荷物
  */
-export const INPUT_AREA_TITLE_NMT = "荷物の入力"
+export const INPUT_AREA_TITLE_NMT = "荷物"
 
 /**
  * 入力エリアタイトル 日時/場所

@@ -105,14 +105,14 @@ export default class OM0104 extends React.Component {
         this.itemDef4SearchedList = [{
             type: OUTPUT_FIELD_TYPE_TABLE, id: "mtmrLst", label: "見積一覧",
             headerDef: [
-                { type: OUTPUT_FIELD_TYPE_LINK, id: "ankn__anknNo", label: "見積・受注No.", onChange: this.onMtmrNoClick, style: { width: "100px" } },
-                { type: INPUT_FIELD_TYPE_TEXT, id: "ankn__anknStsCdDesc01", label: "ステータス", onChange: this.onTextChange("anknStsCd") },
-                { type: INPUT_FIELD_TYPE_TEXT, id: "ankn__trhkSkKishNm", label: "会社名", onChange: this.onTextChange("ankn__trhkSkKishNm") },
-                { type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboNtj", label: "集荷希望日時", onChange: this.onTextChange("shukKiboNtj"), withConvServerDatetimeStr2ClientDateTimeStr: true},
-                { type: INPUT_FIELD_TYPE_TEXT, id: "shukskNm", label: "集荷先名", onChange: this.onTextChange("shukskNm") },
-                { type: INPUT_FIELD_TYPE_TEXT, id: "hisoKiboNtj", label: "配送希望日時", onChange: this.onTextChange("hisoKiboNtj"), withConvServerDatetimeStr2ClientDateTimeStr: true},
-                { type: INPUT_FIELD_TYPE_TEXT, id: "hisoskNm", label: "配送先名", onChange: this.onTextChange("hisoskNm") },
-                { type: INPUT_FIELD_TYPE_TEXT, id: "gokeKngk", label: "金額", onChange: this.onTextChange("gokeKngk") },
+                { type: OUTPUT_FIELD_TYPE_LINK, id: "ankn__anknNo", label: "案件No.", onChange: this.onMtmrNoClick, style: { width: "100px" } },
+                { type: INPUT_FIELD_TYPE_TEXT, id: "ankn__anknStsCdDesc01", label: "ステータス", onChange: this.onTextChange("anknStsCd"), style: { width: "120px" } },
+                { type: INPUT_FIELD_TYPE_TEXT, id: "ankn__trhkSkKishNm", label: "会社名", onChange: this.onTextChange("ankn__trhkSkKishNm"), style: { width: "120px" } },
+                { type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboNtj", label: "集荷日時", onChange: this.onTextChange("shukKiboNtj"), withConvServerDatetimeStr2ClientDateTimeStr: true},
+                { type: INPUT_FIELD_TYPE_TEXT, id: "shukskNm", label: "集荷先名", onChange: this.onTextChange("shukskNm"), style: { width: "120px" } },
+                { type: INPUT_FIELD_TYPE_TEXT, id: "hisoKiboNtj", label: "配送日時", onChange: this.onTextChange("hisoKiboNtj"), withConvServerDatetimeStr2ClientDateTimeStr: true},
+                { type: INPUT_FIELD_TYPE_TEXT, id: "hisoskNm", label: "配送先名", onChange: this.onTextChange("hisoskNm"), style: { width: "120px" } },
+                { type: INPUT_FIELD_TYPE_TEXT, id: "gokeKngk", label: "金額", onChange: this.onTextChange("gokeKngk"), style: { width: "100px" } },
                 { customComponent: (
                     <div className="hoge-sample">
                         <LinkButton label="修正" onChange={this.onMtmrIriShsiClick} color="primary" />
@@ -272,7 +272,7 @@ export default class OM0104 extends React.Component {
                 <Paper className="input-items-wrapper">
                     <React.Fragment>
                         <Typography variant="h5" gutterBottom>
-                            見積一覧
+                            見積・受注案件一覧
                         </Typography>
 
                         {

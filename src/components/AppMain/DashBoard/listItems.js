@@ -6,6 +6,7 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import LabelIcon from '@material-ui/icons/Label';
 
 import {Link} from "react-router-dom";
 
@@ -15,36 +16,36 @@ export const mainListItems = (props)=> {
     <div>
       <ListItem button>
         <ListItemIcon>
-          <DashboardIcon />
+          <AssignmentIcon />
         </ListItemIcon>
         {/* <ListItemText primary="ポータル" /> */}
         <div className="MuiListItemText-root">
           <span className="MuiTypography-root MuiListItemText-primary MuiTypography-body1">
-            <Link to={`${process.env.PUBLIC_URL}/portal`}>ポータル</Link>
+            <Link to={`${process.env.PUBLIC_URL}/portal`}>ダッシュボード</Link>
           </span>
         </div>
       </ListItem>
-      <ListItem button>
+      {/*<ListItem button>
         <ListItemIcon>
           <ShoppingCartIcon />
         </ListItemIcon>
         {/* <ListItemText primary="OM0103-見積依頼の登録(物事)" /> */}
 
-        <div className="MuiListItemText-root">
+        {/*<div className="MuiListItemText-root">
           <span className="MuiTypography-root MuiListItemText-primary MuiTypography-body1">
             <Link to={`${process.env.PUBLIC_URL}/OM0103`}>OM0103-見積依頼の登録(物事)</Link>
           </span>
         </div>
 
-      </ListItem>
+      </ListItem>*/}
       <ListItem button>
         <ListItemIcon>
-          <ShoppingCartIcon />
+          <LabelIcon />
         </ListItemIcon>
         {/* <ListItemText primary="OM0104-見積一覧の確認(物事)" /> */}
         <div className="MuiListItemText-root">
           <span className="MuiTypography-root MuiListItemText-primary MuiTypography-body1">
-            <Link to={`${process.env.PUBLIC_URL}/OM0104`}>OM0104-見積一覧の確認(物事)</Link>
+            <Link to={`${process.env.PUBLIC_URL}/OM0104`}>見積・受注</Link>
           </span>
         </div>
       </ListItem>
@@ -60,15 +61,15 @@ export const mainListItems = (props)=> {
       </ListItem> */}
       <ListItem button>
         <ListItemIcon>
-          <ShoppingCartIcon />
+          <LabelIcon />
         </ListItemIcon>
         <div className="MuiListItemText-root">
           <span className="MuiTypography-root MuiListItemText-primary MuiTypography-body1">
-            <Link to={`${process.env.PUBLIC_URL}/OM0401`}>OM0401-請求一覧</Link>
+            <Link to={`${process.env.PUBLIC_URL}/OM0401`}>請求</Link>
           </span>
         </div>
       </ListItem>
-      <ListItem button>
+      {/*<ListItem button>
         <ListItemIcon>
           <ShoppingCartIcon />
         </ListItemIcon>
@@ -77,7 +78,7 @@ export const mainListItems = (props)=> {
             <Link to={`${process.env.PUBLIC_URL}/OM0402`}>OM0402-請求書作成</Link>
           </span>
         </div>
-      </ListItem>
+      </ListItem>*/}
 
     </div>
   )

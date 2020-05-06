@@ -151,11 +151,12 @@ export const getItemDef4NmtContents = _this=> [
             { value: "5", label: "その他"},
         ]*/
     },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "nsgtSnt", label: "荷姿（その他）", onChange: _this.onTextChange("nsgtSnt") },
     { type: BREAK_LINE },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "snpo", label: "寸法（ユニットロード or 荷姿）", onChange: _this.onTextChange("snpo") , required: true },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "juryo", label: "重量（ユニットロード or 荷姿）", onChange: _this.onTextChange("juryo") , required: true },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "kosu", label: "個数（ユニットロード or 荷姿）", onChange: _this.onTextChange("kosu") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "nsgtSnt", label: "荷姿（その他の場合入力）", onChange: _this.onTextChange("nsgtSnt") },
+    { type: BREAK_LINE },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "snpo", label: "寸法", onChange: _this.onTextChange("snpo") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "juryo", label: "重量", onChange: _this.onTextChange("juryo") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "kosu", label: "個数", onChange: _this.onTextChange("kosu") , required: true },
 ]
 
 /**

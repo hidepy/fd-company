@@ -143,10 +143,6 @@ export default class OM0105 extends React.PureComponent{
         this.onTruckDeleteButtonClick = this.onTruckDeleteButtonClick.bind(this)
 
         this.itemDef4trkInf = [
-            { type: INPUT_FIELD_TYPE_RADIO, id: "calcHoho", label: "計算方法", onChange: this.onRadioChange("calcHoho"), 
-                //items: [{"value":"0","label":"車両貸し"},{"value":"1","label":"混載"}]
-                items: getMstCdSelectionFromMap(MST_KEY__CALC_HOHO_CD, this.props.AppRoot.mstCdMap)
-            },
             { type: INPUT_FIELD_TYPE_TEXT, id: "disu", label: "台数", onChange: this.onTextChange("disu")},
 			{ type: INPUT_FIELD_TYPE_BUTTON, id: "add", label: "追加", onChange: this.onTruckAddButtonClick, style: {margin: "16px"} },
         ]
@@ -159,10 +155,16 @@ export default class OM0105 extends React.PureComponent{
         ]
 
         this.itemDef4mtmrKngk = [
+            { type: INPUT_FIELD_TYPE_RADIO, id: "calcHoho", label: "計算方法", onChange: this.onRadioChange("calcHoho"), 
+                //items: [{"value":"0","label":"車両貸し"},{"value":"1","label":"混載"}]
+                items: getMstCdSelectionFromMap(MST_KEY__CALC_HOHO_CD, this.props.AppRoot.mstCdMap)
+            },
+            { type: BREAK_LINE },
+			{ type: INPUT_FIELD_TYPE_SELECT, id: "kyoriOb", label: "距離帯", onChange: this.onSelectChange("kyoriOb"), style: { width: "200px" } },
+            { type: INPUT_FIELD_TYPE_SELECT, id: "juryoOb", label: "重量帯", onChange: this.onSelectChange("juryoOb"), style: { width: "200px" } },
+            { type: BREAK_LINE },
             { type: OUTPUT_FIELD_TYPE_TEXT, id: "untn", label: "運賃", disabled: true },
             { type: BREAK_LINE },
-			{ type: INPUT_FIELD_TYPE_SELECT, id: "juryoOb", label: "重量帯", onChange: this.onSelectChange("juryoOb"), style: { width: "200px" } },
-			{ type: INPUT_FIELD_TYPE_SELECT, id: "kyoriOb", label: "距離帯", onChange: this.onSelectChange("kyoriOb"), style: { width: "200px" } },
 			{ type: INPUT_FIELD_TYPE_TEXT, id: "nnryoScg", label: "燃料サーチャージ", onChange: this.onTextChange("nnryoScg"), style: { width: "200px" } },
 			{ type: INPUT_FIELD_TYPE_TEXT, id: "tmkmRyo", label: "積込み料", onChange: this.onTextChange("tmkmRyo")},
             { type: INPUT_FIELD_TYPE_RADIO, id: "tmkmUm", label: "積込み有無", onChange: this.onRadioChange("tmkmUm"), 
@@ -505,9 +507,9 @@ export default class OM0105 extends React.PureComponent{
                                         { type: BREAK_LINE },
                                         { type: INPUT_FIELD_TYPE_TEXT, id: "nmtNm", label: "荷物名", },
                                         { type: BREAK_LINE },
-                                        { type: INPUT_FIELD_TYPE_TEXT, id: "snpo", label: "寸法（ユニットロード or 荷姿）" },
-                                        { type: INPUT_FIELD_TYPE_TEXT, id: "juryo", label: "重量（ユニットロード or 荷姿）" },
-                                        { type: INPUT_FIELD_TYPE_TEXT, id: "kosu", label: "個数（ユニットロード or 荷姿）" },
+                                        { type: INPUT_FIELD_TYPE_TEXT, id: "snpo", label: "寸法" },
+                                        { type: INPUT_FIELD_TYPE_TEXT, id: "juryo", label: "重量" },
+                                        { type: INPUT_FIELD_TYPE_TEXT, id: "kosu", label: "個数" },
                                     
                                     ]
                                         .map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} value={this.state.mtmrIriInf[v.id]} />))

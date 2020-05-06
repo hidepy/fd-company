@@ -59,7 +59,7 @@ export default class AppRoot extends React.Component {
 
                             <Auth isAuthenticated={true && this.props.AppRoot.isAppReady}>
 
-                                <AppMain funcTitle={"fd-app-mock"}>
+                                <AppMain funcTitle={"Ascend Logi"}>
                                     <Switch>
 
                                         <Route path={`${process.env.PUBLIC_URL}/portal`} component={Portal} />
