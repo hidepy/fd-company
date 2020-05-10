@@ -40,6 +40,7 @@ import {
     INPUT_AREA_TITLE_HISO_JKN
 } from "../constants/MtmrIri"
 import { getMstCdSelectionFromMap } from './CommonUtils'
+import TrhkskMstPopup from '../components/fd-commons/TrhkskMstPopup'
 
 export const mtmrIriStates = {
     trhkSkKishNo: "",
@@ -99,7 +100,9 @@ export const getItemDef4PageHeader = _this=> [
  * @param {*} _this 
  */
 export const getItemDef4IrishContents = _this=>  [
-    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishId", label: "会社コード", onChange: _this.onTextChange("trhkSkKishId"), required: true },
+    { customComponent: <TrhkskMstPopup onSelectCallback={_this.onTrhkskSelectCallback} /> },
+    // { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishId", label: "会社コード", onChange: _this.onTextChange("trhkSkKishId"), required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNo", label: "会社コード", onChange: _this.onTextChange("trhkSkKishNo"), required: true },
     { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNm", label: "会社名", onChange: _this.onTextChange("trhkSkKishNm") , required: true },
     { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNmKn", label: "会社名（カナ）", onChange: _this.onTextChange("trhkSkKishNmKn") , required: true },
     { type: BREAK_LINE },

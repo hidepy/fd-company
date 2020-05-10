@@ -51,6 +51,7 @@ import { API_MTMR_DETAIL } from '../../constants/apiPath';
 import FetchUtils from '../../utils/FetchUtils';
 import _ from "lodash"
 import { SUCCESS_MSG__HZN, ERR_MSG__FETCH, ERR_MSG__HZN, MSG__OM0103_TORKGO_POPUP } from '../../constants/message';
+import TrhkskMstPopup from '../fd-commons/TrhkskMstPopup';
 
 export default class OM0103 extends React.Component {
 
@@ -87,6 +88,7 @@ export default class OM0103 extends React.Component {
             ...mtmrIriStates
         }
 
+        this.onTrhkskSelectCallback = this.onTrhkskSelectCallback.bind(this)
         this.onTorkgoPopupCloseClick = this.onTorkgoPopupCloseClick.bind(this)
         this.updatePageState = this.updatePageState.bind(this)
         this.onHznClick = this.onHznClick.bind(this)
@@ -163,6 +165,43 @@ export default class OM0103 extends React.Component {
             })
         }
 
+    }
+
+
+    onTrhkskSelectCallback(trhkskItem){
+        console.log(trhkskItem)
+
+        this.setState({
+            trhkSkKishId: trhkskItem.trhkSkKishId,
+            trhkSkKishNo: trhkskItem.trhkSkKishNo,
+            trhkSkKishNm: trhkskItem.trhkSkKishNm,
+            trhkSkKishNmKn: trhkskItem.trhkSkKishNmKn,
+            trhkSkKishZipNo: trhkskItem.trhkSkKishZipNo,
+            trhkSkKishAddress: trhkskItem.trhkSkKishAddress,
+        })
+/*
+trhkSkKishAddress: "東京都ほげ区ふが一丁目"
+trhkSkKishId: "392b476d-9485-4fd0-b541-64e742c56bba"
+trhkSkKishNm: "株式会社屈斜路物流"
+trhkSkKishNmKn: "カブシキガイシャホゲラ"
+trhkSkKishNo: "K00000001"
+trhkSkKishTelNo: "03-0000-0000"
+trhkSkKishZipNo: "000-0000"
+*/
+        /*
+    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNo", label: "会社コード", onChange: _this.onTextChange("trhkSkKishNo"), required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNm", label: "会社名", onChange: _this.onTextChange("trhkSkKishNm") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNmKn", label: "会社名（カナ）", onChange: _this.onTextChange("trhkSkKishNmKn") , required: true },
+    { type: BREAK_LINE },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishZipNo", label: "郵便番号", onChange: _this.onTextChange("trhkSkKishZipNo") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishAddress", label: "所在地", onChange: _this.onTextChange("trhkSkKishAddress") , required: true },
+    { type: BREAK_LINE },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkTntoshNm", label: "担当者名", onChange: _this.onTextChange("trhkSkTntoshNm") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkTntoshNmKn", label: "担当者名（カナ）", onChange: _this.onTextChange("trhkSkTntoshNmKn") , required: true },
+    { type: BREAK_LINE },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkTntoshTelNo", label: "電話番号", onChange: _this.onTextChange("trhkSkTntoshTelNo") , required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkTntoshMail", label: "メール", onChange: _this.onTextChange("trhkSkTntoshMail") , required: true },
+        */
     }
 
     /**

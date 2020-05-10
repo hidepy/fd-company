@@ -11,7 +11,7 @@
 import {
     API_BASE_URI, HTTP_METHOD__GET, HTTP_METHOD__POST, HTTP_METHOD__DELETE, HTTP_METHOD__PUT
 } from "../constants/httpRequest" 
-import { convSnakeKeyObj2CamelKeyObj, convCamelKeyObj2SnakeKeyObj } from "./CommonUtils"
+import { convSnakeKeyObj2CamelKeyObj, convCamelKeyObj2SnakeKeyObj, convObj2QueryString } from "./CommonUtils"
 
 
 export default class FetchUtils{
@@ -30,13 +30,22 @@ export default class FetchUtils{
             }
         }
 
+        let sendUrl = url
+
         // body部が存在する場合はJSON#stringifyして送る
-        if(body) params["body"] = JSON.stringify(body)
+        if(body){
+            if(method === HTTP_METHOD__GET){
+                sendUrl += '?' + convObj2QueryString(body)
+            }
+            else {
+                params["body"] = JSON.stringify(body)
+            }
+        }
 
         let res = { success: false, data: null }
 
         try{
-            res = await fetch(url, params)
+            res = await fetch(sendUrl, params)
                 .then(async httpRes=> {
 
                     let json = null
@@ -55,7 +64,7 @@ export default class FetchUtils{
                 })
         }
         catch(exception){
-            ;
+            console.log(exception)
         }
 
         return res

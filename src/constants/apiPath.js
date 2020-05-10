@@ -15,3 +15,5 @@ export const API_ANKN_L = "/api/v1/trn_ankn_misi_latest"
 export const API_MTMR_DETAIL = "/api/v1/trn_ankn_n"
 
 export const API_MST_CD = "/api/v1/mst_cd"
+
+export const API_TRHKSK_MST = "/api/v1/mst_trhk_sk_kish"

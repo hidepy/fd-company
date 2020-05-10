@@ -280,3 +280,9 @@ export const checkFormInputs = (state, formDefArr)=> {
 
 }
 
+
+/**
+ * オブジェクトをクエリストリングに変換する
+ * @param {*} obj 
+ */
+export const convObj2QueryString = obj=> Object.entries(obj).map((e) => `${e[0]}=${e[1]}`).join('&')
