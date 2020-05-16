@@ -10,6 +10,20 @@
 
 .OM0105-wrapper{
 
+    .top-title-area{
+        padding-bottom: 0 !important;
+        padding-left: 24px !important;
+    }
+
+    .MuiGrid-root > .MuiGrid-item{
+        // height: 100%;
+
+        .MuiPaper-rounded{
+            // height: 94%;
+            height: 99%;
+        }
+    }
+
     .iri-niyo-wrapper{
         #iri-niyo-header{
             padding: 0;

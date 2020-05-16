@@ -112,7 +112,7 @@ export default class FetchUtils{
      * @param {*} apiId 
      */
     static async getFromFdApi(apiId, params){
-        return await FetchUtils.send2FdApi(apiId, HTTP_METHOD__GET, params)
+        return await FetchUtils.send2FdApi(apiId, HTTP_METHOD__GET, params, null)
     }
 
     /**
@@ -120,7 +120,7 @@ export default class FetchUtils{
      * @param {*} apiId 
      */
     static async post2FdApi(apiId, params){
-        return await FetchUtils.send2FdApi(apiId, HTTP_METHOD__POST, params)
+        return await FetchUtils.send2FdApi(apiId, HTTP_METHOD__POST, params, null)
     }
 
     /**

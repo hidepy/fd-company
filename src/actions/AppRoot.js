@@ -35,24 +35,23 @@ function receiveMstCdLst(data){
 }
 
 export const setIsAppReady = (flg)=> {
-    console.log(flg)
     return receiveIsAppReady(flg)
 }
 
-export const searchMtmrList = () => {
+export const searchMstCdLst = () => {
     
     return async dispatch=> {
         const json = await FetchUtils.getFromFdApi(API_MST_CD)
 
         if(json.success){
             dispatch(receiveMstCdLst(json.data)) 
-
-            return json
         }
         else{
             // TODO: 致命的なので、ここでアプリ終了にすべきか
             showErrMsg(ERR_MSG__FETCH)
         }
+
+        return json || { success: false }
         
     }
 

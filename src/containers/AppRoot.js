@@ -10,7 +10,7 @@
 
 import { connect } from "react-redux"
 import App from "../components/AppRoot"
-import { searchMtmrList, setIsAppReady } from "../actions/AppRoot"
+import { searchMstCdLst, setIsAppReady } from "../actions/AppRoot"
 
 // stateを繋ぐ
 function mapStateToProps(state){
@@ -28,8 +28,7 @@ function mapDispatchToProps(dispatch){
      * マスタコードをサーバから取得する
      */
     async getMstCdLst(){
-      const res = await dispatch(searchMtmrList())
-
+      const res = await dispatch(searchMstCdLst())
       return res
     },
 

@@ -32,6 +32,7 @@ import {
     checkFormInputs,
     convServerDatetimeStr2ClientDateObj,
     getModalStyle,
+    isEmpty,
 } from "../../utils/CommonUtils"
 import {
     getItemDef4PageHeader,
@@ -41,7 +42,8 @@ import {
     getItemDef4HisoJknContents,
     getMtmtIriAllContents,
     mtmrIriStates,
-    getSisnMtmrIri
+    getSisnMtmrIri,
+    getMtmrSendParameter
 } from "../../utils/MtmrIriUtils"
 import {
     INPUT_AREA_TITLE_ARR, ANKN_STS_CD__MTMR_TORK_SM, ANKN_STS_CD__MTMR_MI_TORK
@@ -109,7 +111,6 @@ export default class OM0103 extends React.Component {
 
         this.itemDef4HisoJknContents = getItemDef4HisoJknContents(this)
 
-
     }
 
     async componentDidMount() {
@@ -167,10 +168,11 @@ export default class OM0103 extends React.Component {
 
     }
 
-
+    /**
+     * 取引先マスタ選択時のコールバック
+     * @param {*} trhkskItem 
+     */
     onTrhkskSelectCallback(trhkskItem){
-        console.log(trhkskItem)
-
         this.setState({
             trhkSkKishId: trhkskItem.trhkSkKishId,
             trhkSkKishNo: trhkskItem.trhkSkKishNo,
@@ -179,29 +181,6 @@ export default class OM0103 extends React.Component {
             trhkSkKishZipNo: trhkskItem.trhkSkKishZipNo,
             trhkSkKishAddress: trhkskItem.trhkSkKishAddress,
         })
-/*
-trhkSkKishAddress: "東京都ほげ区ふが一丁目"
-trhkSkKishId: "392b476d-9485-4fd0-b541-64e742c56bba"
-trhkSkKishNm: "株式会社屈斜路物流"
-trhkSkKishNmKn: "カブシキガイシャホゲラ"
-trhkSkKishNo: "K00000001"
-trhkSkKishTelNo: "03-0000-0000"
-trhkSkKishZipNo: "000-0000"
-*/
-        /*
-    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNo", label: "会社コード", onChange: _this.onTextChange("trhkSkKishNo"), required: true },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNm", label: "会社名", onChange: _this.onTextChange("trhkSkKishNm") , required: true },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNmKn", label: "会社名（カナ）", onChange: _this.onTextChange("trhkSkKishNmKn") , required: true },
-    { type: BREAK_LINE },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishZipNo", label: "郵便番号", onChange: _this.onTextChange("trhkSkKishZipNo") , required: true },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishAddress", label: "所在地", onChange: _this.onTextChange("trhkSkKishAddress") , required: true },
-    { type: BREAK_LINE },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkTntoshNm", label: "担当者名", onChange: _this.onTextChange("trhkSkTntoshNm") , required: true },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkTntoshNmKn", label: "担当者名（カナ）", onChange: _this.onTextChange("trhkSkTntoshNmKn") , required: true },
-    { type: BREAK_LINE },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkTntoshTelNo", label: "電話番号", onChange: _this.onTextChange("trhkSkTntoshTelNo") , required: true },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkTntoshMail", label: "メール", onChange: _this.onTextChange("trhkSkTntoshMail") , required: true },
-        */
     }
 
     /**
@@ -219,70 +198,43 @@ trhkSkKishZipNo: "000-0000"
      */
     async onHznClick(opType = BUTTON_OPERATION_TYPE__UPDATE) {
 
-        // 送信パラメータ全体
-        const params = {}
+        // // 送信パラメータ全体
+        // const params = {}
 
-        // パラメータ明細
-        const paramsMisi = Object.keys(mtmrIriStates).reduce((p, key) => {
-            return {
-                ...p,
-                [key]: this.state[key]
-            }
-        }, {})
+        // // パラメータ明細 TODO: この方法か、下記の通りキー列挙の方法か...一旦はこっちでいいと思うけど
+        // const paramsMisi = Object.keys(mtmrIriStates).reduce((p, key) => {
+        //     return {
+        //         ...p,
+        //         [key]: this.state[key]
+        //     }
+        // }, {})
 
-        // const paramsKish = {}
-        // paramsKish["trhkSkKishNm"] = this.state.trhkSkKishNm || "hogehoge"
-        // paramsKish["trhkSkKishNmKn"] = this.state.trhkSkKishNmKn || "hogehoge"
+        // // const misiKeys = ["anknStsCd", "juchuFlg", "sisyksnNtj", "trhkSkTntoshNm", "trhkSkTntoshNmKn", "trhkSkTntoshTelNo", "trhkSkTntoshMail", "nmtTypeCd", "knsiKhCd", "unitloadTypeCd", "kknbtUmCd", "nsgtTypeCd", "nsgtSnt", "nmtNm", "snpo", "juryo", "kosu", "shukKiboNtj", "shuksk", "shukskNm", "hisoKiboNtj", "hisosk", "hisoskNm", "tmksnKh", "nioiUm", "tmkmYh", "trorsYh", "tnirYh", "lblHrYh", "ykmtYh", "ttmtYh", "hisgyoYh", "sntJokn", "kiboKngk", "mtmrIriBiko", "tiouKh", "calcHohoCd", "kyori", "shukJiskNtj", "hisoJiskNtj", "untn", "juryotaiCd", "kyoritaiCd", "nnryoScg", "tmkmRyo", "trorsRyo", "ftiSgyoRyo", "sntKngk", "wrbkKngk", "gokeKngk", "msisnZngk", "mtmrKitoBiko"]
+        // // misiKeys.forEach(v=> paramsMisi[v] = this.state[v])
 
-        // TODO: 正しい値のセットなど...
+        // paramsMisi["juchuFlg"] = "0"
+        // paramsMisi["shukKiboNtj"] = (this.state.shukKiboNtj || (new Date())).toISOString()
+        // paramsMisi["hisoKiboNtj"] = (this.state.hisoKiboNtj || (new Date())).toISOString()
 
-        console.log(this.state.shukKiboNtj)
+        // // 希望金額を空に落とす(入っていない場合は)
+        // if(isEmpty(paramsMisi["kiboKngk"])) paramsMisi["kiboKngk"] = null
 
-        // TODO: ゴミ項目 一旦値セット
-        paramsMisi["ankn"] = this.state.ankn || "GM"
-        paramsMisi["juchuFlg"] = this.state.juchuFlg || false
+        // params["trhkSkKishId"] = this.state.trhkSkKishId
+        // params["trhkSkKishNo"] = this.state.trhkSkKishNo
+        // params["trhkSkKishNm"] = this.state.trhkSkKishNm
+        // params["trhkSkKishNmKn"] = this.state.trhkSkKishNmKn
+        // params["trhkSkKishZipNo"] = this.state.trhkSkKishZipNo
+        // params["trhkSkKishAddress"] = this.state.trhkSkKishAddress
+        // paramsMisi["anknStsCd"] = ANKN_STS_CD__MTMR_MI_TORK
+        // params["anknStsCd"] = ANKN_STS_CD__MTMR_MI_TORK
+        // // TODO: 依頼元入力種別を固定で「001」セット
+        // params["irimtInputTypeCd"] = "001"
+        // params["anknNo"] = this.state.anknNo || ""
 
-        paramsMisi["trhkSkTntoshNm"] = this.state.trhkSkTntoshNm || "000"
-        paramsMisi["trhkSkTntoshTelNo"] = this.state.trhkSkTntoshTelNo
-        paramsMisi["trhkSkTntoshMail"] = this.state.trhkSkTntoshMail
-        paramsMisi["nmtTypeCd"] = this.state.nmtTypeCd || "000"
-        paramsMisi["knsiKhCd"] = this.state.knsiKhCd || "000"
-        paramsMisi["unitloadTypeCd"] = this.state.unitloadTypeCd || "000"
-        paramsMisi["kknbtUmCd"] = this.state.kknbtUmCd || "000"
-        paramsMisi["nsgtTypeCd"] = this.state.nsgtTypeCd || "000"
-        paramsMisi["snpo"] = this.state.snpo || "000"
-        paramsMisi["juryo"] = this.state.juryo || "000"
-        paramsMisi["kosu"] = this.state.kosu || "000"
-        paramsMisi["shukKiboNtj"] = (this.state.shukKiboNtj || (new Date())).toISOString()
-        paramsMisi["hisoKiboNtj"] = (this.state.hisoKiboNtj || (new Date())).toISOString()
-        paramsMisi["kiboKngk"] = this.state.kiboKngk || "000"
-        paramsMisi["calcHohoCd"] = this.state.calcHohoCd || "000"
-        paramsMisi["trkTypeCd"] = this.state.trkTypeCd || "000"
-        paramsMisi["juryotaiCd"] = this.state.juryotaiCd || "000"
-        paramsMisi["kyoritaiCd"] = this.state.kyoritaiCd || "000"
+        // params["trnAnknMisi"] = [paramsMisi]
 
-        params["trhkSkKishId"] = this.state.trhkSkKishId
-        params["trhkSkKishNo"] = this.state.trhkSkKishNo
-        params["trhkSkKishNm"] = this.state.trhkSkKishNm
-        params["trhkSkKishNmKn"] = this.state.trhkSkKishNmKn
-        params["trhkSkKishZipNo"] = this.state.trhkSkKishZipNo
-        params["trhkSkKishAddress"] = this.state.trhkSkKishAddress
-        // trhk_sk_tntosh_tel_no, trhk_sk_tntosh_mail
-
-        // params["trn_ankn_misi"] = [ paramsMisi ]
-        // TODO: 暫定
-        params["anknStsCd"] = ANKN_STS_CD__MTMR_MI_TORK
-        paramsMisi["anknStsCd"] = ANKN_STS_CD__MTMR_MI_TORK
-
-        // TODO: 依頼元入力種別を固定で「001」セット
-        params["irimtInputTypeCd"] = "001"
-
-        // TODO: 案件番号を一旦テキトーに値セット
-        params["anknNo"] = this.state.anknNo || ""
-
-        // params["trhkSkKish"] = paramsKish
-        params["trnAnknMisi"] = [paramsMisi]
-
+        // 共通ロジックを使用して送信パラメータを生成
+        const params = getMtmrSendParameter(this.state, ANKN_STS_CD__MTMR_MI_TORK)
 
         console.log(params)
 

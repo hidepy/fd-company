@@ -8,7 +8,7 @@
 // reproduced or used in any manner whatsoever.
 // ======================================================================
 
-export const API_BASE_URI = "http://fd-butsuryu.laccord.xyz"
+export const API_BASE_URI = "https://fd-butsuryu.laccord.xyz"
 
 export const HTTP_METHOD__GET = "GET"
 

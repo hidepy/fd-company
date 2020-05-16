@@ -13,7 +13,7 @@ import { convSnakeKeyObj2CamelKeyObj } from "../utils/CommonUtils"
 
 const initialState = {
     mstCdMap: {},
-    isAppReady: false,
+    isAppReady: !!(window.location.href.match("localhost")), // マスタデータ等取得できた場合にtrue
 }
 
 export default function(state = initialState, action){

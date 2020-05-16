@@ -17,3 +17,5 @@ export const API_MTMR_DETAIL = "/api/v1/trn_ankn_n"
 export const API_MST_CD = "/api/v1/mst_cd"
 
 export const API_TRHKSK_MST = "/api/v1/mst_trhk_sk_kish"
+
+export const API_CLC_UNTN = "/api/v1/clc_untn"

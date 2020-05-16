@@ -108,8 +108,10 @@ class TrhkskMstPopup extends React.Component {
     async onTrhkskSearchClick(){
         const params = {}
 
-        if(this.state.kishNo) params["trhk_sk_kish_no"] = this.state.kishNo
-        if(this.state.kishNm) params["trhk_sk_kish_nm"] = this.state.kishNm
+        // if(this.state.kishNo) params["trhk_sk_kish_no"] = this.state.kishNo
+        // if(this.state.kishNm) params["trhk_sk_kish_nm"] = this.state.kishNm
+        if(this.state.kishNo) params["trhkSkKishNoStartswith"] = this.state.kishNo
+        if(this.state.kishNm) params["trhkSkKishNmStartswith"] = this.state.kishNm
 
         const res = await FetchUtils.getFromFdApi(API_TRHKSK_MST, params)
 
