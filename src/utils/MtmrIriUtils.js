@@ -137,7 +137,7 @@ export const getItemDef4NmtContents = _this => [
     { type: BREAK_LINE },
     {
         type: INPUT_FIELD_TYPE_RADIO, id: "unitloadTypeCd", label: "ユニットロード", onChange: _this.onRadioChange("unitloadTypeCd"), required: true,
-        items: getMstCdSelectionFromMap(MST_KEY__UNITLOAD_TYPE_CD, _this.props.AppRoot.mstCdMap)
+        items: getMstCdSelectionFromMap(MST_KEY__UNITLOAD_TYPE_CD, _this.props.AppRoot.mstCdMap),style: { width: "400px" }
         /*[
             { value: "001", label: "パレット"},
             { value: "002", label: "コンテナ"},
@@ -163,25 +163,7 @@ export const getItemDef4NmtContents = _this => [
     { type: INPUT_FIELD_TYPE_TEXT, id: "snpo", label: "寸法", onChange: _this.onTextChange("snpo"), required: true },
     { type: INPUT_FIELD_TYPE_TEXT, id: "juryo", label: "重量", onChange: _this.onTextChange("juryo"), required: true },
     { type: INPUT_FIELD_TYPE_TEXT, id: "kosu", label: "個数", onChange: _this.onTextChange("kosu"), required: true },
-]
-
-/**
- * 見積 日時/場所/配送条件 入力の定義
- * @param {*} _this 
- */
-export const getItemDef4NtjContents = _this => [
-    { type: INPUT_FIELD_TYPE_DATETIME, id: "shukKiboNtj", label: "集荷希望日時", onChange: _this.onDateChange("shukKiboNtj"), required: true, format: "yyyy/MM/dd HH:mm" },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "shuksk", label: "集荷先", onChange: _this.onTextChange("shuksk"), required: true },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "shukskNm", label: "集荷先名", onChange: _this.onTextChange("shukskNm"), required: true },
     { type: BREAK_LINE },
-    { type: INPUT_FIELD_TYPE_DATETIME, id: "hisoKiboNtj", label: "配送希望日時", onChange: _this.onDateChange("hisoKiboNtj"), required: true, format: "yyyy/MM/dd HH:mm" },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "hisosk", label: "配送先", onChange: _this.onTextChange("hisosk"), required: true },
-    { type: INPUT_FIELD_TYPE_TEXT, id: "hisoskNm", label: "配送先名", onChange: _this.onTextChange("hisoskNm"), required: true },
-]
-
-//{ type: BREAK_LINE },
-
-export const getItemDef4HisoJknContents = _this => [
     {
         type: INPUT_FIELD_TYPE_RADIO, id: "knsiKhCd", label: "混載可否", onChange: _this.onRadioChange("knsiKhCd"), required: true,
         items: getMstCdSelectionFromMap(MST_KEY__KNSI_KH_CD, _this.props.AppRoot.mstCdMap)
@@ -208,6 +190,25 @@ export const getItemDef4HisoJknContents = _this => [
         //     { value: "1", label: "危険物" },
         // ]
     },
+]
+
+/**
+ * 見積 日時/場所/配送条件 入力の定義
+ * @param {*} _this 
+ */
+export const getItemDef4NtjContents = _this => [
+    { type: INPUT_FIELD_TYPE_DATETIME, id: "shukKiboNtj", label: "集荷希望日時", onChange: _this.onDateChange("shukKiboNtj"), required: true, format: "yyyy/MM/dd HH:mm" },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "shuksk", label: "集荷先", onChange: _this.onTextChange("shuksk"), required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "shukskNm", label: "集荷先名", onChange: _this.onTextChange("shukskNm"), required: true },
+    { type: BREAK_LINE },
+    { type: INPUT_FIELD_TYPE_DATETIME, id: "hisoKiboNtj", label: "配送希望日時", onChange: _this.onDateChange("hisoKiboNtj"), required: true, format: "yyyy/MM/dd HH:mm" },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "hisosk", label: "配送先", onChange: _this.onTextChange("hisosk"), required: true },
+    { type: INPUT_FIELD_TYPE_TEXT, id: "hisoskNm", label: "配送先名", onChange: _this.onTextChange("hisoskNm"), required: true },
+]
+
+//{ type: BREAK_LINE },
+
+export const getItemDef4HisoJknContents = _this => [
     {
         type: INPUT_FIELD_TYPE_RADIO, id: "tmkmYh", label: "積込み要否", onChange: _this.onRadioChange("tmkmYh"), required: true,
         items: [
