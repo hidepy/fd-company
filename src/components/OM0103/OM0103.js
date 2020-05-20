@@ -62,7 +62,7 @@ export default class OM0103 extends React.Component {
     }
 
     static propTypes = {
-        ankenId: PropTypes.string, // 前画面からあ渡された案件ID
+        anknId: PropTypes.string, // 前画面からあ渡された案件ID
         openAsUpd: PropTypes.bool, // 本画面の起動方式 更新参照画面として開く場合はtrue
     }
 
@@ -119,12 +119,12 @@ export default class OM0103 extends React.Component {
 
         if (this.props.openAsUpd) {
 
-            const ankenId = this.props.ankenId
+            const anknId = this.props.anknId
 
-            console.log(ankenId)
+            console.log(anknId)
 
             // APIコール
-            const res = await FetchUtils.getFromFdApi(`${API_MTMR_DETAIL}/${ankenId}`)
+            const res = await FetchUtils.getFromFdApi(`${API_MTMR_DETAIL}/${anknId}`)
 
             console.log(res)
 
@@ -239,7 +239,7 @@ export default class OM0103 extends React.Component {
         console.log(params)
 
         const res = (opType === BUTTON_OPERATION_TYPE__UPDATE)
-            ? await FetchUtils.put2FdApi(`${API_MTMR_DETAIL}`, this.props.ankenId, params)
+            ? await FetchUtils.put2FdApi(`${API_MTMR_DETAIL}`, this.props.anknId, params)
             : await FetchUtils.post2FdApi(`${API_MTMR_DETAIL}`, params)
 
         console.log(res)
@@ -490,7 +490,7 @@ export default class OM0103 extends React.Component {
                         )
                     }
 
-                    {this.props.ankenId}
+                    {this.props.anknId}
 
                     <React.Fragment>
 

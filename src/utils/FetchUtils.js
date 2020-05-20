@@ -91,8 +91,14 @@ export default class FetchUtils{
             return { success: false }
         }*/
 
+
+        console.log(body)
+
         // try-catchはsend内でしっかりやっているのでここでは不要
         const bodyKeyConved = convCamelKeyObj2SnakeKeyObj(body)
+
+        console.log(bodyKeyConved)
+
         res = await FetchUtils.send(`${API_BASE_URI}${apiId}${pk ? `/${pk}` : ""}/`, method, bodyKeyConved)
 
         if(!res) return res

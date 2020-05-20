@@ -43,11 +43,13 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import OM0103 from "../../containers/OM0103"
+import OM0105 from "../../containers/OM0105"
 import { Button } from '@material-ui/core';
 import CommonButton from '../commons/CommonButton';
 import CommonIconButton from "../commons/CommonIconButton"
 import LinkButton from '../commons/LinkButton';
 import { ERR_MSG__FETCH, MSG__DELETE_CONFIRM, ERR_MSG__DELETE } from '../../constants/message';
+import { ANKN_STS_CD__MTMR_MI_TORK, ANKN_STS_CD__MTMR_TORK_SM } from '../../constants/MtmrIri';
 
 
 export default class OM0104 extends React.Component {
@@ -66,6 +68,7 @@ export default class OM0104 extends React.Component {
             mtmrList: [],
             isMtmrDetailPopupShown: false,
             selectedMtmrMisiId: "",
+            MtmrDetailPopupFunc: OM0103, // ポップアップで開く画面のfuncId
         }
 
         this.searchMtmrLst = this.searchMtmrLst.bind(this)
@@ -155,13 +158,24 @@ export default class OM0104 extends React.Component {
 
         const rowObj = this.getRowObjByIndex(rowindex)
 
-        this.openAnkenDetail(rowObj.anknId)
+        console.log(rowObj)
+
+        this.openAnkenDetail(rowObj.anknId, rowObj.anknStsCd)
     }
 
-    openAnkenDetail(anknId){
+    getOpenTgtFunc(anknSts){
+        return anknSts === ANKN_STS_CD__MTMR_MI_TORK
+            ? OM0103
+                : anknSts === ANKN_STS_CD__MTMR_TORK_SM
+                    ? OM0105
+                        : OM0103 // TODO: 
+    }
+
+    openAnkenDetail(anknId, anknSts){
         this.setState({
             selectedMtmrMisiId: anknId,
             isMtmrDetailPopupShown: true,
+            MtmrDetailPopupFunc: this.getOpenTgtFunc(anknSts)
         })
     }
 
@@ -266,6 +280,8 @@ export default class OM0104 extends React.Component {
 
     render() {
 
+        const DetailOpenTgtFunc = this.state.MtmrDetailPopupFunc
+
         return (
             <div className="OM0104-wrapper inner-wrapper">
 
@@ -294,8 +310,8 @@ export default class OM0104 extends React.Component {
                     {
                         <div style={getModalStyle()} className="contents-wrap">
 
-                            <OM0103
-                                ankenId={this.state.selectedMtmrMisiId}
+                            <DetailOpenTgtFunc
+                                anknId={this.state.selectedMtmrMisiId}
                                 openAsUpd={true}
                                 style={{ height: "100%", overflowY: "scroll", padding: "8px", backgroundColor: "#fff" }}
                             />

@@ -87,7 +87,7 @@ export default class OM0105 extends React.PureComponent {
 
 
     static propTypes = {
-        ankenId: PropTypes.string, // 前画面から渡された案件ID
+        anknId: PropTypes.string, // 前画面から渡された案件ID
         openAsUpd: PropTypes.bool, // 本画面の起動方式 更新参照画面として開く場合はtrue
     }
 
@@ -236,7 +236,7 @@ export default class OM0105 extends React.PureComponent {
         ]
 
         this.itemDef4footer = [
-            { type: INPUT_FIELD_TYPE_BUTTON, id: "entry", label: "登録", color: "secondary", onChange: this.onHznClick },
+            { type: INPUT_FIELD_TYPE_BUTTON, id: "entry", label: "保存", color: "secondary", onChange: this.onHznClick },
             { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrshDL", label: "見積書DL", color: "primary", onChange: function () { } },
         ]
 
@@ -250,7 +250,9 @@ export default class OM0105 extends React.PureComponent {
 
     async componentDidMount() {
 
-        const anknId = _.get(this.props, "location.state.anknId")
+        const anknId = _.get(this.props, "location.state.anknId") || this.props.anknId
+
+        console.log(this.props)
 
         if (!!anknId) {
             // APIコール
@@ -264,9 +266,8 @@ export default class OM0105 extends React.PureComponent {
                 const mtmrMisiData = getSisnMtmrIri(_.get(anknData, "trnAnknMisi"))
                 const shukKiboNtj = convServerDatetimeStr2ClientDateObj(mtmrMisiData.shukKiboNtj)
                 const hisoKiboNtj = convServerDatetimeStr2ClientDateObj(mtmrMisiData.hisoKiboNtj)
-
-
-
+                const truckInfLst = _.get(mtmrMisiData, "trnTrkRiy", []).map(v=> ({truckType: v.trkTypeCd, truckTypeLabel: v.trkTypeCdDesc01, disu: v.trkDisu}))
+                
                 this.setState({
                     mtmrIriInf: {
                         ...anknData,
@@ -276,6 +277,8 @@ export default class OM0105 extends React.PureComponent {
                     },
                     shukKiboNtj,
                     hisoKiboNtj,
+                    truckInfLst,
+                    ...mtmrMisiData,
                 }, () => console.log(this.state))
             }
             else {
@@ -445,12 +448,12 @@ export default class OM0105 extends React.PureComponent {
                     trkDisu: v.disu
                 }
             })
-        params.trnAnknMisi.trnTrkRiy = trkInfArr;
+        params.trnAnknMisi[0].trnTrkRiy = trkInfArr;
 
         // 配送先情報/金額情報を詰める
         [...this.itemDef4rtInf, ...this.itemDef4mtmrKngk]
             .forEach(v=> {
-                params.trnAnknMisi[v.id] = this.state[v.id]
+                params.trnAnknMisi[0][v.id] = this.state[v.id]
             })
 
         // paramsMisi["juchuFlg"] = "0"
@@ -473,7 +476,7 @@ export default class OM0105 extends React.PureComponent {
 
         console.log(params)
 
-        const anknId = _.get(this.props, "location.state.anknId")
+        const anknId = _.get(this.props, "location.state.anknId") || this.props.anknId
 
         // 見積回答新規でも更新でも、PUTでコールする
         // const res = await FetchUtils.put2FdApi(`${API_MTMR_DETAIL}`, _.get(this.props, "location.state.anknId"), params)
@@ -539,7 +542,7 @@ export default class OM0105 extends React.PureComponent {
         const split = { display: "inline-block", verticalAlign: "top", margin: "6px" }
 
         return (
-            <div className="OM0105-wrapper inner-wrapper">
+            <div className="OM0105-wrapper inner-wrapper" style={this.props.style}>
 
                 <Grid container spacing={3}
                     container
@@ -719,7 +722,7 @@ export default class OM0105 extends React.PureComponent {
                         <div style={getModalStyle()} className="contents-wrap">
 
                             <OM0103
-                                ankenId={_.get(this.props, "location.state.anknId")}
+                                anknId={_.get(this.props, "location.state.anknId") || this.props.anknId}
                                 openAsUpd={true}
                                 style={{ height: "100%", overflowY: "scroll", padding: "8px", backgroundColor: "#fff" }}
                             />
@@ -741,7 +744,7 @@ export default class OM0105 extends React.PureComponent {
                                     {MSG__OM0105_TORKGO_POPUP}
                                 </p>
 
-                                <Button variant="contained" style={{ margin: "16px" }} onClick={(() => { this.props.history.goBack() }).bind(this)}>一覧へ戻る</Button>
+                                <Button variant="contained" style={{ margin: "16px" }} onClick={(() => { this.props.history.push(`${process.env.PUBLIC_URL}/OM0104`, { anknId: this.state.responseAnknId }) }).bind(this) }>一覧へ戻る</Button>
 
                                 <Button variant="contained" disabled style={{ margin: "16px" }} onClick={(() => { }).bind(this)}>見積書DL</Button>
 

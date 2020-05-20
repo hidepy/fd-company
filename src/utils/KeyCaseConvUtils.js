@@ -9,6 +9,7 @@ export default class Utils {
 
   // キーを変換する
   static localizeKeys(object, toStyle = _.camelCase) {
+
     function _localize(obj) {
       // プリミティブ型なら変換しない
       if (Utils.isPrimitive(obj) || obj === null) {
@@ -37,6 +38,7 @@ export default class Utils {
             return dest[toStyle(a)] = _localize(obj[a]);
           }
         });
+
         return dest;
       }
     }
