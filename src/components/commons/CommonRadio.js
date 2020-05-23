@@ -21,7 +21,6 @@ import { isEmpty, isValidUrl, getValidVal, getValidStrVal } from "../../utils/Co
 export default function CommonRadio(props){
     const {value: _value, className, label, name, onChange, disabled, style, required } = props
 
-    // const radioVal = !isEmpty(_value) ? "" + _value : ""
     const radioVal = getValidStrVal(_value)
 
     return (

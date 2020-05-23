@@ -193,36 +193,36 @@ export default class OM0105 extends React.PureComponent {
             { type: INPUT_FIELD_TYPE_TEXT, id: "nnryoScg", label: "燃料サーチャージ", onChange: this.onKngkTextChange("nnryoScg"), style: { width: "200px" } },
             { type: INPUT_FIELD_TYPE_TEXT, id: "tmkmRyo", label: "積込み料", onChange: this.onKngkTextChange("tmkmRyo") },
             {
-                type: INPUT_FIELD_TYPE_RADIO, id: "tmkmUm", label: "積込み有無", onChange: this.onRadioChange("tmkmUm"),
+                type: INPUT_FIELD_TYPE_RADIO, id: "tmkmYh", label: "積込み有無", onChange: this.onRadioChange("tmkmUm"),
                 items: [{ "value": "0", "label": "有" }, { "value": "1", "label": "無" }]
             },
             { type: BREAK_LINE },
-            { type: INPUT_FIELD_TYPE_TEXT, id: "trSRyo", label: "取卸し料", onChange: this.onKngkTextChange("trSRyo") },
+            { type: INPUT_FIELD_TYPE_TEXT, id: "trorsRyo", label: "取卸し料", onChange: this.onKngkTextChange("trSRyo") }, // TODO: 
             {
-                type: INPUT_FIELD_TYPE_RADIO, id: "trSUm", label: "取卸し有無", onChange: this.onRadioChange("trSUm"),
+                type: INPUT_FIELD_TYPE_RADIO, id: "trorsYh", label: "取卸し有無", onChange: this.onRadioChange("trSUm"),
                 items: [{ "value": "0", "label": "有" }, { "value": "1", "label": "無" }]
             },
             { type: BREAK_LINE },
             { type: INPUT_FIELD_TYPE_TEXT, id: "ftiSgyoRyo", label: "附帯作業料", onChange: this.onKngkTextChange("ftiSgyoRyo") },
             { type: INPUT_FIELD_TYPE_BUTTON, id: "ftiSgyoUtwk", label: "付帯作業内訳", onChange: this.onFtiSgyoUtwkClick },
             {
-                type: INPUT_FIELD_TYPE_RADIO, id: "tnirUm", label: "棚入れ有無", onChange: this.onRadioChange("tnirUm"), className: "ftiSgyoUtwk margin-left",
+                type: INPUT_FIELD_TYPE_RADIO, id: "tnirYh", label: "棚入れ要否", onChange: this.onRadioChange("tnirUm"), className: "ftiSgyoUtwk margin-left",
                 items: [{ "value": "0", "label": "有" }, { "value": "1", "label": "無" }]
             },
             {
-                type: INPUT_FIELD_TYPE_RADIO, id: "lblHrUm", label: "ラベル貼り有無", onChange: this.onRadioChange("lblHrUm"), className: "ftiSgyoUtwk",
+                type: INPUT_FIELD_TYPE_RADIO, id: "lblHrYh", label: "ラベル貼り要否", onChange: this.onRadioChange("lblHrUm"), className: "ftiSgyoUtwk",
                 items: [{ "value": "0", "label": "有" }, { "value": "1", "label": "無" }]
             },
             {
-                type: INPUT_FIELD_TYPE_RADIO, id: "ykmtUm", label: "横持ち有無", onChange: this.onRadioChange("ykmtUm"), className: "ftiSgyoUtwk margin-left",
+                type: INPUT_FIELD_TYPE_RADIO, id: "ykmtYh", label: "横持ち要否", onChange: this.onRadioChange("ykmtUm"), className: "ftiSgyoUtwk margin-left",
                 items: [{ "value": "0", "label": "有" }, { "value": "1", "label": "無" }]
             },
             {
-                type: INPUT_FIELD_TYPE_RADIO, id: "ttmtUm", label: "縦持ち有無", onChange: this.onRadioChange("ttmtUm"), className: "ftiSgyoUtwk",
+                type: INPUT_FIELD_TYPE_RADIO, id: "ttmtYh", label: "縦持ち要否", onChange: this.onRadioChange("ttmtUm"), className: "ftiSgyoUtwk",
                 items: [{ "value": "0", "label": "有" }, { "value": "1", "label": "無" }]
             },
             {
-                type: INPUT_FIELD_TYPE_RADIO, id: "hisgyoUm", label: "はい作業有無", onChange: this.onRadioChange("hisgyoUm"), className: "ftiSgyoUtwk margin-left",
+                type: INPUT_FIELD_TYPE_RADIO, id: "hisgyoYh", label: "はい作業要否", onChange: this.onRadioChange("hisgyoUm"), className: "ftiSgyoUtwk margin-left",
                 items: [{ "value": "0", "label": "有" }, { "value": "1", "label": "無" }]
             },
             { type: BREAK_LINE },
@@ -266,6 +266,8 @@ export default class OM0105 extends React.PureComponent {
                 const mtmrMisiData = getSisnMtmrIri(_.get(anknData, "trnAnknMisi"))
                 const shukKiboNtj = convServerDatetimeStr2ClientDateObj(mtmrMisiData.shukKiboNtj)
                 const hisoKiboNtj = convServerDatetimeStr2ClientDateObj(mtmrMisiData.hisoKiboNtj)
+                const shukNtj = convServerDatetimeStr2ClientDateObj(mtmrMisiData.shukNtj)
+                const hisoNtj = convServerDatetimeStr2ClientDateObj(mtmrMisiData.hisoNtj)
                 const truckInfLst = _.get(mtmrMisiData, "trnTrkRiy", []).map(v=> ({truckType: v.trkTypeCd, truckTypeLabel: v.trkTypeCdDesc01, disu: v.trkDisu}))
                 
                 this.setState({
@@ -275,8 +277,10 @@ export default class OM0105 extends React.PureComponent {
                         shukKiboNtj,
                         hisoKiboNtj,
                     },
-                    shukKiboNtj,
-                    hisoKiboNtj,
+                    // shukKiboNtj,
+                    // hisoKiboNtj,
+                    shukNtj: shukNtj || shukKiboNtj,
+                    hisoNtj: hisoNtj || hisoKiboNtj,
                     truckInfLst,
                     ...mtmrMisiData,
                 }, () => console.log(this.state))
