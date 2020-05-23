@@ -15,10 +15,14 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import { isEmpty, isValidUrl, getValidVal, getValidStrVal } from "../../utils/CommonUtils";
 
 
 export default function CommonRadio(props){
     const {value: _value, className, label, name, onChange, disabled, style, required } = props
+
+    // const radioVal = !isEmpty(_value) ? "" + _value : ""
+    const radioVal = getValidStrVal(_value)
 
     return (
     <div className={`MuiFormControl-root ${className}`} style={style || {}}>
@@ -27,7 +31,7 @@ export default function CommonRadio(props){
             <RadioGroup
                 aria-label={name}
                 name={name}
-                value={_value}
+                value={radioVal}
                 onChange={onChange}
                 row
             >

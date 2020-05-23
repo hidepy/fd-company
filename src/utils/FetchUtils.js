@@ -11,7 +11,7 @@
 import {
     API_BASE_URI, HTTP_METHOD__GET, HTTP_METHOD__POST, HTTP_METHOD__DELETE, HTTP_METHOD__PUT
 } from "../constants/httpRequest" 
-import { convSnakeKeyObj2CamelKeyObj, convCamelKeyObj2SnakeKeyObj, convObj2QueryString } from "./CommonUtils"
+import { convSnakeKeyObj2CamelKeyObj, convCamelKeyObj2SnakeKeyObj, convObj2QueryString, isEmpty } from "./CommonUtils"
 
 
 export default class FetchUtils{
@@ -79,21 +79,6 @@ export default class FetchUtils{
 
         let res = {}
 
-        /*try{
-            const bodyKeyConved = convCamelKeyObj2SnakeKeyObj(body)
-            res = await FetchUtils.send(`${API_BASE_URI}${apiId}${pk ? `/${pk}` : ""}/`, method, bodyKeyConved)
-
-            console.log(res)
-        }
-        catch(exception){
-            console.log(exception)
-
-            return { success: false }
-        }*/
-
-
-        console.log(body)
-
         // try-catchはsend内でしっかりやっているのでここでは不要
         const bodyKeyConved = convCamelKeyObj2SnakeKeyObj(body)
 
@@ -107,10 +92,6 @@ export default class FetchUtils{
 
         return keyFormattedRes
 
-        // return {
-        //     data: keyFormattedRes,
-        //     success: true
-        // }
     }
 
     /**

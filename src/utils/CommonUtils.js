@@ -32,6 +32,10 @@ export const showConfirmMsg = msg=> window.confirm(msg)
 
 export const isEmpty = v=> !(!!v || v === 0)
 
+export const getValidVal = v=> !isEmpty(v) ? v : ""
+
+export const getValidStrVal = v=> !isEmpty(v) ? "" + v : ""
+
 /**
  * 入力テキスト変更時イベントハンドラ
  * @param {string} propKey 

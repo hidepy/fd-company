@@ -43,6 +43,7 @@ import {
     OUTPUT_FIELD_TYPE_TABLE,
     BREAK_LINE
 } from "../../constants/common"
+import { getValidVal } from "../../utils/CommonUtils"
 
 const INPUT_TYPE_DEF = {
     [INPUT_FIELD_TYPE_TEXT]: TextField,
@@ -79,7 +80,7 @@ const FieldItem = (props)=> {
     }
 
     if(type === OUTPUT_FIELD_TYPE_TEXT){
-        return (<TextField className={className} disabled={true} {...rest} value={rest.value || undefined} />)
+        return (<TextField className={className} disabled={true} {...rest} value={getValidVal(rest.value)} />)
     }
 
     if(type === OUTPUT_FIELD_TYPE_TABLE){
@@ -128,7 +129,7 @@ const FieldItem = (props)=> {
 
     return (<Component {...rest} inputlabelprops={{
         shrink: true,
-      }} className={className} value={rest.value || ""} />) // TODO: ""でいいのか...
+      }} className={className} value={getValidVal(rest.value)} />)
 }
 
 export default FieldItem

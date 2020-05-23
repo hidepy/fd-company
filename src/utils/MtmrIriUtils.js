@@ -124,13 +124,6 @@ export const getItemDef4NmtContents = _this => [
     {
         type: INPUT_FIELD_TYPE_RADIO, id: "nmtTypeCd", label: "荷物種別", onChange: _this.onRadioChange("nmtTypeCd"), style: { width: "100%" }, required: true,
         items: getMstCdSelectionFromMap(MST_KEY__NMT_TYPE_CD, _this.props.AppRoot.mstCdMap)
-        /*[
-            { value: "0", label: "機械/機械部品"},
-            { value: "1", label: "繊維/衣類"},
-            { value: "2", label: "日用品"},
-            { value: "3", label: "食料品"},
-            { value: "4", label: "その他"},     
-        ]*/
     },
     { type: BREAK_LINE },
     { type: INPUT_FIELD_TYPE_TEXT, id: "nmtNm", label: "荷物名", onChange: _this.onTextChange("nmtNm"), required: true },
@@ -138,24 +131,11 @@ export const getItemDef4NmtContents = _this => [
     {
         type: INPUT_FIELD_TYPE_RADIO, id: "unitloadTypeCd", label: "ユニットロード", onChange: _this.onRadioChange("unitloadTypeCd"), required: true,
         items: getMstCdSelectionFromMap(MST_KEY__UNITLOAD_TYPE_CD, _this.props.AppRoot.mstCdMap),style: { width: "400px" }
-        /*[
-            { value: "001", label: "パレット"},
-            { value: "002", label: "コンテナ"},
-            { value: "003", label: "無し"},       
-        ]*/
     },
     { type: BREAK_LINE },
     {
         type: INPUT_FIELD_TYPE_RADIO, id: "nsgtTypeCd", label: "荷姿（梱包形態）", onChange: _this.onRadioChange("nsgtTypeCd"), required: true,
         items: getMstCdSelectionFromMap(MST_KEY__NSGT_TYPE_CD, _this.props.AppRoot.mstCdMap)
-        /*[
-            { value: "0", label: "段ボール"},
-            { value: "1", label: "折り畳みコンテナ"},
-            { value: "2", label: "通い箱"},
-            { value: "3", label: "袋"},
-            { value: "4", label: "缶"},
-            { value: "5", label: "その他"},
-        ]*/
     },
     { type: BREAK_LINE },
     { type: INPUT_FIELD_TYPE_TEXT, id: "nsgtSnt", label: "荷姿（その他の場合入力）", onChange: _this.onTextChange("nsgtSnt") },
