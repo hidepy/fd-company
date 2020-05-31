@@ -14,7 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper'
 import HznButton from "../commons/HznButton"
 import FieldItem from "../commons/FieldItem"
-import { getModalStyle, convNestedObjProp2Plain, convNestedArrProp2Plain, showErrMsg, showConfirmMsg } from "../../utils/CommonUtils"
+import { getModalStyle, convNestedObjProp2Plain, convNestedArrProp2Plain, showErrMsg, showConfirmMsg, getMstCdSelectionFromMap } from "../../utils/CommonUtils"
 import Modal from '@material-ui/core/Modal';
 import {
     INPUT_FIELD_TYPE_TEXT,
@@ -37,7 +37,7 @@ import {
 } from "../../utils/CommonUtils"
 import _ from "lodash"
 import FetchUtils from '../../utils/FetchUtils';
-import { API_ANKN, API_ANKN_L } from '../../constants/apiPath';
+import { API_ANKN, API_ANKN_L, API_MTMR_DETAIL } from '../../constants/apiPath';
 
 import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -48,8 +48,9 @@ import { Button } from '@material-ui/core';
 import CommonButton from '../commons/CommonButton';
 import CommonIconButton from "../commons/CommonIconButton"
 import LinkButton from '../commons/LinkButton';
-import { ERR_MSG__FETCH, MSG__DELETE_CONFIRM, ERR_MSG__DELETE } from '../../constants/message';
+import { ERR_MSG__FETCH, MSG__DELETE_CONFIRM, ERR_MSG__DELETE, ERR_MSG__HZN } from '../../constants/message';
 import { ANKN_STS_CD__MTMR_MI_TORK, ANKN_STS_CD__MTMR_TORK_SM } from '../../constants/MtmrIri';
+import { MST_KEY__ANKN_STS_CD } from '../../constants/MstCdKey';
 
 
 export default class OM0104 extends React.Component {
@@ -85,6 +86,7 @@ export default class OM0104 extends React.Component {
         this.onMtmrNoClick = this.onMtmrNoClick.bind(this)
         this.onSkjClick = this.onSkjClick.bind(this)
         this.onMtmrKitoClick = this.onMtmrKitoClick.bind(this)
+        // this.onAnknStsChange = this.onAnknStsChange.bind(this)
 
         this.itemDef4SearchCondition = [
             {
@@ -101,15 +103,27 @@ export default class OM0104 extends React.Component {
             { type: INPUT_FIELD_TYPE_TEXT, id: "ftreeTxtKnskRn", label: "フリーテキスト検索欄", onChange: this.onTextChange("ftreeTxtKnskRn") },
             { type: INPUT_FIELD_TYPE_BUTTON, id: "knskBtn", label: "検索ボタン", onChange: this.searchMtmrLst, color: "primary" },
             { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrIriTork", label: "見積依頼の登録", onChange: this.onMove2MtmrIriTork },
+
+
+            { type: INPUT_FIELD_TYPE_SELECT, id: "ankn__anknStsCd", label: "", onChange: this.onAnknStsChange,
+                items: getMstCdSelectionFromMap(MST_KEY__ANKN_STS_CD, this.props.AppRoot.mstCdMap),
+                style: { width: "130px" }
+            },
         ]
 
         // const _openAnkenDetail = this.openAnkenDetail.bind(this)
+
+        const anknStsLst = getMstCdSelectionFromMap(MST_KEY__ANKN_STS_CD, this.props.AppRoot.mstCdMap)
 
         this.itemDef4SearchedList = [{
             type: OUTPUT_FIELD_TYPE_TABLE, id: "mtmrLst", label: "見積一覧",
             headerDef: [
                 { type: OUTPUT_FIELD_TYPE_LINK, id: "ankn__anknNo", label: "案件No.", onChange: this.onMtmrNoClick, style: { width: "100px" } },
-                { type: INPUT_FIELD_TYPE_TEXT, id: "ankn__anknStsCdDesc01", label: "ステータス", onChange: this.onTextChange("anknStsCd"), style: { width: "120px" } },
+                // { type: INPUT_FIELD_TYPE_TEXT, id: "ankn__anknStsCdDesc01", label: "ステータス", onChange: this.onTextChange("anknStsCd"), style: { width: "120px" } },
+                { type: INPUT_FIELD_TYPE_SELECT, id: "ankn__anknStsCd", label: "", useNativeSelect: true, onChange: event=> this.onAnknStsChange(event),
+                    items: anknStsLst,
+                    style: { width: "130px" }
+                },
                 { type: INPUT_FIELD_TYPE_TEXT, id: "ankn__trhkSkKishNm", label: "会社名", onChange: this.onTextChange("ankn__trhkSkKishNm"), style: { width: "120px" } },
                 { type: INPUT_FIELD_TYPE_TEXT, id: "shukKiboNtj", label: "集荷日時", onChange: this.onTextChange("shukKiboNtj"), withConvServerDatetimeStr2ClientDateTimeStr: true},
                 { type: INPUT_FIELD_TYPE_TEXT, id: "shukskNm", label: "集荷先名", onChange: this.onTextChange("shukskNm"), style: { width: "120px" } },
@@ -177,6 +191,46 @@ export default class OM0104 extends React.Component {
             isMtmrDetailPopupShown: true,
             MtmrDetailPopupFunc: this.getOpenTgtFunc(anknSts)
         })
+    }
+
+    async onAnknStsChange(v, v2, v3){
+        console.log("onAnknStsChane Click")
+        console.log(v)
+
+        const rowObj = this.getRowObjByIndex(v.selectOptionals.rowindex)
+
+        console.log(rowObj)
+
+        const params = {
+            anknNo: rowObj.ankn__anknNo,
+            anknStsCd: v.target.value,
+            trnAnknMisi: [
+                {
+                    anknMisiId: rowObj.anknMisiId,
+                    anknStsCd: v.target.value,
+                    kknbt_um_cd: "000",
+                    knsi_kh_cd:  "000",
+                    nmt_type_cd:  "000",
+                    nsgt_type_cd:  "000",
+                    trhk_sk_tntosh_nm:  "000",
+                    unitload_type_cd:  "000",
+                }
+            ]
+        }
+
+        // 案件ステータス更新
+        const res = await FetchUtils.put2FdApi(`${API_MTMR_DETAIL}`, rowObj.anknId, params)
+
+        console.log(res)
+
+        if (res.success) {
+            // データ再検索を実行？ 担保が取れてるなら再取得は不要か...？ TODO: 
+            
+        }
+        else {
+            showErrMsg(ERR_MSG__HZN)
+        }
+
     }
 
     /**

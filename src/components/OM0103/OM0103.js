@@ -198,41 +198,6 @@ export default class OM0103 extends React.Component {
      */
     async onHznClick(opType = BUTTON_OPERATION_TYPE__UPDATE) {
 
-        // // 送信パラメータ全体
-        // const params = {}
-
-        // // パラメータ明細 TODO: この方法か、下記の通りキー列挙の方法か...一旦はこっちでいいと思うけど
-        // const paramsMisi = Object.keys(mtmrIriStates).reduce((p, key) => {
-        //     return {
-        //         ...p,
-        //         [key]: this.state[key]
-        //     }
-        // }, {})
-
-        // // const misiKeys = ["anknStsCd", "juchuFlg", "sisyksnNtj", "trhkSkTntoshNm", "trhkSkTntoshNmKn", "trhkSkTntoshTelNo", "trhkSkTntoshMail", "nmtTypeCd", "knsiKhCd", "unitloadTypeCd", "kknbtUmCd", "nsgtTypeCd", "nsgtSnt", "nmtNm", "snpo", "juryo", "kosu", "shukKiboNtj", "shuksk", "shukskNm", "hisoKiboNtj", "hisosk", "hisoskNm", "tmksnKh", "nioiUm", "tmkmYh", "trorsYh", "tnirYh", "lblHrYh", "ykmtYh", "ttmtYh", "hisgyoYh", "sntJokn", "kiboKngk", "mtmrIriBiko", "tiouKh", "calcHohoCd", "kyori", "shukJiskNtj", "hisoJiskNtj", "untn", "juryotaiCd", "kyoritaiCd", "nnryoScg", "tmkmRyo", "trorsRyo", "ftiSgyoRyo", "sntKngk", "wrbkKngk", "gokeKngk", "msisnZngk", "mtmrKitoBiko"]
-        // // misiKeys.forEach(v=> paramsMisi[v] = this.state[v])
-
-        // paramsMisi["juchuFlg"] = "0"
-        // paramsMisi["shukKiboNtj"] = (this.state.shukKiboNtj || (new Date())).toISOString()
-        // paramsMisi["hisoKiboNtj"] = (this.state.hisoKiboNtj || (new Date())).toISOString()
-
-        // // 希望金額を空に落とす(入っていない場合は)
-        // if(isEmpty(paramsMisi["kiboKngk"])) paramsMisi["kiboKngk"] = null
-
-        // params["trhkSkKishId"] = this.state.trhkSkKishId
-        // params["trhkSkKishNo"] = this.state.trhkSkKishNo
-        // params["trhkSkKishNm"] = this.state.trhkSkKishNm
-        // params["trhkSkKishNmKn"] = this.state.trhkSkKishNmKn
-        // params["trhkSkKishZipNo"] = this.state.trhkSkKishZipNo
-        // params["trhkSkKishAddress"] = this.state.trhkSkKishAddress
-        // paramsMisi["anknStsCd"] = ANKN_STS_CD__MTMR_MI_TORK
-        // params["anknStsCd"] = ANKN_STS_CD__MTMR_MI_TORK
-        // // TODO: 依頼元入力種別を固定で「001」セット
-        // params["irimtInputTypeCd"] = "001"
-        // params["anknNo"] = this.state.anknNo || ""
-
-        // params["trnAnknMisi"] = [paramsMisi]
-
         // 共通ロジックを使用して送信パラメータを生成
         const params = getMtmrSendParameter(this.state, ANKN_STS_CD__MTMR_MI_TORK)
 
@@ -245,7 +210,6 @@ export default class OM0103 extends React.Component {
         console.log(res)
 
         if (res.success) {
-            // showAlertMsg(SUCCESS_MSG__HZN)
             this.setState({
                 isTorkgoPopupShown: true,
                 responseAnknId: _.get(res, "data.anknId")

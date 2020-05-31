@@ -15,6 +15,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 
+
 export default function CommonSelect(props){
 
     const breakpoints = {}
@@ -24,13 +25,17 @@ export default function CommonSelect(props){
         if(!!props[s]) breakpoints[s] = props[s]
     })
 
+    const handler = (event, v2, v3)=> { props.onChange({selectOptionals: {...props}, ...event}) }
+
     return (
         <FormControl className={"field-item common-select"} {...breakpoints} style={props.style}>
             <InputLabel htmlFor={props.id}>{props.label}</InputLabel>
 
             <Select
                 value={props.value}
-                onChange={props.onChange}
+                //onChange={props.onChange}
+                //onChange={myevent.bind(null,"id","name")}
+                onChange={handler}
                 inputProps={{
                     name: props.name || props.id,
                     id: props.id,

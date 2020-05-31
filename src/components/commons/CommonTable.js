@@ -21,7 +21,8 @@ import {
   INPUT_FIELD_TYPE_BUTTON_LINK,
   INPUT_FIELD_TYPE_ICON_LINK,
   INPUT_FIELD_TYPE_CHECKBOX,
-  OUTPUT_FIELD_TYPE_LINK
+  OUTPUT_FIELD_TYPE_LINK,
+  INPUT_FIELD_TYPE_SELECT
 } from "../../constants/common"
 
 import {
@@ -35,6 +36,7 @@ const isInputComponent = type=>
   || type === INPUT_FIELD_TYPE_BUTTON_LINK 
   || type === INPUT_FIELD_TYPE_ICON_LINK 
   || type === INPUT_FIELD_TYPE_CHECKBOX
+  || type === INPUT_FIELD_TYPE_SELECT
   || type === OUTPUT_FIELD_TYPE_LINK
 
 const isCustomComponent = v=> !!v.customComponent
@@ -70,12 +72,16 @@ export default function CommonTable(props){
 
                         if(v.withConvServerDatetimeStr2ClientDateTimeStr) val = convServerDatetimeStr2ClientDateTimeStr(val)
 
+                        const RowCustomComponent = row.rowCustomComponent || null
+
                         return (
                           <TableCell key={index} rowindex={rowIndex} style={{textAlign: v.align || "left", ...v.style}}>
                             {
-                              isInputComponent(v.type) || isCustomComponent(v)
-                                ? (<FieldItem {...v} rowindex={rowIndex} onChange={onChange} type={v.type} value={val} />)
-                                  : val
+                              RowCustomComponent
+                                ? (<RowCustomComponent {...v} {...row} />)
+                                  : isInputComponent(v.type) || isCustomComponent(v)
+                                    ? (<FieldItem {...v} rowindex={rowIndex} onChange={onChange} type={v.type} value={val} />)
+                                      : val
                             }
                           </TableCell>
                         )
