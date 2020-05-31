@@ -101,7 +101,7 @@ export default class OM0104 extends React.Component {
                 ]
             },
             { type: INPUT_FIELD_TYPE_TEXT, id: "ftreeTxtKnskRn", label: "フリーテキスト検索欄", onChange: this.onTextChange("ftreeTxtKnskRn") },
-            { type: INPUT_FIELD_TYPE_BUTTON, id: "knskBtn", label: "検索ボタン", onChange: this.searchMtmrLst, color: "primary" },
+            { type: INPUT_FIELD_TYPE_BUTTON, id: "knskBtn", label: "検索", onChange: this.searchMtmrLst, color: "primary" },
             { type: INPUT_FIELD_TYPE_BUTTON, id: "mtmrIriTork", label: "見積依頼の登録", onChange: this.onMove2MtmrIriTork },
 
 
@@ -222,8 +222,8 @@ export default class OM0104 extends React.Component {
         console.log(res)
 
         if (res.success) {
-            // データ再検索を実行？ 担保が取れてるなら再取得は不要か...？ TODO: 
-            
+            // 一旦再検索を実行する TODO: 
+            this.searchMtmrLst()
         }
         else {
             showErrMsg(ERR_MSG__HZN)
