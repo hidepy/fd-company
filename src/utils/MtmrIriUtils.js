@@ -348,3 +348,30 @@ export const getMtmrSendParameter = (_this_state, anknStsCd) => {
     return params
 
 }
+
+/**
+ * 案件ステータス更新APIコール用のパラメータ整形
+ * @param {*} anknNo 
+ * @param {*} anknStsCd 
+ * @param {*} anknMisiId 
+ */
+export const getAnknStsUpdateParams = (anknNo, anknStsCd, anknMisiId)=> {
+    const params = {
+        anknNo: anknNo,
+        anknStsCd: anknStsCd,
+        trnAnknMisi: [
+            {
+                anknMisiId: anknMisiId,
+                anknStsCd: anknStsCd,
+                kknbt_um_cd: "000", // TODO: 
+                knsi_kh_cd:  "000",
+                nmt_type_cd:  "000",
+                nsgt_type_cd:  "000",
+                trhk_sk_tntosh_nm:  "000",
+                unitload_type_cd:  "000",
+            }
+        ]
+    }
+
+    return params
+}

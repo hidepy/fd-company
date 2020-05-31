@@ -51,7 +51,7 @@ import LinkButton from '../commons/LinkButton';
 import { ERR_MSG__FETCH, MSG__DELETE_CONFIRM, ERR_MSG__DELETE, ERR_MSG__HZN } from '../../constants/message';
 import { ANKN_STS_CD__MTMR_MI_TORK, ANKN_STS_CD__MTMR_TORK_SM } from '../../constants/MtmrIri';
 import { MST_KEY__ANKN_STS_CD } from '../../constants/MstCdKey';
-
+import { getAnknStsUpdateParams } from "../../utils/MtmrIriUtils"
 
 export default class OM0104 extends React.Component {
 
@@ -194,29 +194,27 @@ export default class OM0104 extends React.Component {
     }
 
     async onAnknStsChange(v, v2, v3){
-        console.log("onAnknStsChane Click")
-        console.log(v)
 
         const rowObj = this.getRowObjByIndex(v.selectOptionals.rowindex)
 
-        console.log(rowObj)
-
-        const params = {
-            anknNo: rowObj.ankn__anknNo,
-            anknStsCd: v.target.value,
-            trnAnknMisi: [
-                {
-                    anknMisiId: rowObj.anknMisiId,
-                    anknStsCd: v.target.value,
-                    kknbt_um_cd: "000",
-                    knsi_kh_cd:  "000",
-                    nmt_type_cd:  "000",
-                    nsgt_type_cd:  "000",
-                    trhk_sk_tntosh_nm:  "000",
-                    unitload_type_cd:  "000",
-                }
-            ]
-        }
+        // const params = {
+        //     anknNo: rowObj.ankn__anknNo,
+        //     anknStsCd: v.target.value,
+        //     trnAnknMisi: [
+        //         {
+        //             anknMisiId: rowObj.anknMisiId,
+        //             anknStsCd: v.target.value,
+        //             kknbt_um_cd: "000",
+        //             knsi_kh_cd:  "000",
+        //             nmt_type_cd:  "000",
+        //             nsgt_type_cd:  "000",
+        //             trhk_sk_tntosh_nm:  "000",
+        //             unitload_type_cd:  "000",
+        //         }
+        //     ]
+        // }
+        // 案件sts更新用パラメータ生成
+        const params = getAnknStsUpdateParams(rowObj.ankn__anknNo, v.target.value, rowObj.anknMisiId)
 
         // 案件ステータス更新
         const res = await FetchUtils.put2FdApi(`${API_MTMR_DETAIL}`, rowObj.anknId, params)

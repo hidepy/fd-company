@@ -48,7 +48,7 @@ import {
 } from "../../utils/CommonUtils"
 
 import "./OM0105.scss"
-import { getMtmtIriAllContents, getItemDef4IrishContents, getItemDef4NmtContents, getItemDef4NtjContents, getItemDef4HisoJknContents, mtmrIriStates, getSisnMtmrIri, getMtmrSendParameter } from '../../utils/MtmrIriUtils'
+import { getMtmtIriAllContents, getItemDef4IrishContents, getItemDef4NmtContents, getItemDef4NtjContents, getItemDef4HisoJknContents, mtmrIriStates, getSisnMtmrIri, getMtmrSendParameter, getAnknStsUpdateParams } from '../../utils/MtmrIriUtils'
 import { Typography } from '@material-ui/core'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -73,7 +73,7 @@ import FetchUtils from '../../utils/FetchUtils'
 import { API_MTMR_DETAIL, API_CLC_UNTN } from '../../constants/apiPath'
 import { ERR_MSG__FETCH, SUCCESS_MSG__HZN, ERR_MSG__HZN, MSG__OM0105_TORKGO_POPUP } from '../../constants/message'
 import _ from "lodash"
-import { ANKN_STS_CD__MTMR_KITO_SM, ANKN_STS_CD__MTMR_TORK_SM } from '../../constants/MtmrIri'
+import { ANKN_STS_CD__MTMR_KITO_SM, ANKN_STS_CD__MTMR_TORK_SM, ANKN_STS_CD__JUCHU_SM } from '../../constants/MtmrIri'
 import { MST_KEY__CALC_HOHO_CD, MST_KEY__TRK_TYPE_CD, MST_KEY__NMT_TYPE_CD } from '../../constants/MstCdKey'
 
 
@@ -164,6 +164,7 @@ export default class OM0105 extends React.PureComponent {
         this.onTorkgoPopupCloseClick = this.onTorkgoPopupCloseClick.bind(this)
         this.onMtmrDetailPopupCloseClick = this.onMtmrDetailPopupCloseClick.bind(this)
         this.openAnkenDetail = this.openAnkenDetail.bind(this)
+        this.updateAnknSts2Juchu = this.updateAnknSts2Juchu.bind(this)
 
         this.itemDef4trkInf = [
             { type: INPUT_FIELD_TYPE_TEXT, id: "disu", label: "台数", onChange: this.onTextChange("disu") },
@@ -291,6 +292,33 @@ export default class OM0105 extends React.PureComponent {
 
         }
 
+    }
+
+    /**
+     * 案件のステータスを受注に変更する
+     * @param {*} event 
+     */
+    async updateAnknSts2Juchu(event){
+
+        console.log(this.responseAnknData)
+
+        const anknMisiId = _.get(this.responseAnknData, "trnAnknMisi[0].anknMisiId")
+
+        // 案件sts更新用パラメータ生成
+        const params = getAnknStsUpdateParams(this.responseAnknData.anknNo, ANKN_STS_CD__JUCHU_SM, anknMisiId)
+
+        // 案件ステータス更新
+        const res = await FetchUtils.put2FdApi(`${API_MTMR_DETAIL}`, this.responseAnknData.anknId, params)
+
+        console.log(res)
+
+        if (res.success) {
+            // 一覧画面に戻る
+            this.props.history.push(`${process.env.PUBLIC_URL}/OM0104`)
+        }
+        else {
+            showErrMsg(ERR_MSG__HZN)
+        }
     }
 
     /**
@@ -498,6 +526,8 @@ export default class OM0105 extends React.PureComponent {
                 isTorkgoPopupShown: true,
                 responseAnknId: _.get(res, "data.anknId")
             })
+
+            this.responseAnknData = res.data
         }
         else {
             showErrMsg(ERR_MSG__HZN + "\n" + JSON.stringify(_.get(res, "data", {})))
@@ -752,7 +782,7 @@ export default class OM0105 extends React.PureComponent {
 
                                 <Button variant="contained" disabled style={{ margin: "16px" }} onClick={(() => { }).bind(this)}>見積書DL</Button>
 
-                                <Button variant="contained" disabled style={{ margin: "16px" }} onClick={(() => { this.props.history.push(`${process.env.PUBLIC_URL}/OM0105`, { anknId: this.state.responseAnknId }) }).bind(this)}>受注にする</Button>
+                                <Button variant="contained" style={{ margin: "16px" }} onClick={this.updateAnknSts2Juchu}>受注にする</Button>
                             </div>
 
                         </div>

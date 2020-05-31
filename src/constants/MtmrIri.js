@@ -49,3 +49,13 @@ export const ANKN_STS_CD__MTMR_TORK_SM = "002"
  * 案件ステータス 見積回答済
  */
 export const ANKN_STS_CD__MTMR_KITO_SM = "003"
+
+/**
+ * 案件ステータス 発注済
+ */
+export const ANKN_STS_CD__HACCHU_SM = "004"
+
+/**
+ * 案件ステータス 受注済
+ */
+export const ANKN_STS_CD__JUCHU_SM = "005"
