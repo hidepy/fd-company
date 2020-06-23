@@ -47,11 +47,16 @@ import {
     onSelectChange,
     onRadioChange,
     lpad,
+    convNestedArrProp2Plain,
+    showErrMsg,
 } from "../../utils/CommonUtils"
 import CommonButton from '../commons/CommonButton';
-
+import _ from "lodash"
 import add from 'date-fns/add'
 import { format } from 'date-fns'
+import { API_SEIKYU_LIST } from '../../constants/apiPath';
+import FetchUtils from '../../utils/FetchUtils';
+import { ERR_MSG__FETCH } from '../../constants/message';
 
 
 export default class OM0401 extends React.Component{
@@ -69,7 +74,8 @@ export default class OM0401 extends React.Component{
             kknTo: format(new Date(), "yyyy/MM/dd"),
 			trhkSkKishNm: "",
 			trhkSkCd: "",
-			seikyuSts: "",
+            seikyuSts: "",
+            seikyuList: [],
         }
 
         this.onHznClick = this.onHznClick.bind(this)
@@ -96,19 +102,16 @@ export default class OM0401 extends React.Component{
             id: "seikyuLst",
             label: "請求一覧",
             headerDef: [
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNm", label: "取引先会社名"},
-                // { type: OUTPUT_FIELD_TYPE_TEXT, id: "zipNo", label: "郵便番号"},
-                // { type: OUTPUT_FIELD_TYPE_TEXT, id: "address", label: "住所"},
-                // { type: OUTPUT_FIELD_TYPE_TEXT, id: "telNo", label: "電話番号"},
-                // { type: OUTPUT_FIELD_TYPE_TEXT, id: "mail", label: "メール"},
-                // { type: OUTPUT_FIELD_TYPE_TEXT, id: "tk", label: "月"},
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "seikyuNo", label: "請求No."},
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "hkkoD", label: "発行日"},
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "shriKjt", label: "支払期日"},
+                { type: OUTPUT_FIELD_TYPE_TEXT, id: "trhkSkKish__trhkSkKishNm", label: "取引先会社名"},
+                { type: OUTPUT_FIELD_TYPE_TEXT, id: "seikyushNo", label: "請求No."},
+                { type: OUTPUT_FIELD_TYPE_TEXT, id: "hkkoD", label: "発行日", withConvServerDatetimeStr2ClientDateTimeStr: true},
+                { type: OUTPUT_FIELD_TYPE_TEXT, id: "shriKjt", label: "支払期日", withConvServerDatetimeStr2ClientDateTimeStr: true},
                 { type: OUTPUT_FIELD_TYPE_TEXT, id: "seikyuKngk", label: "請求金額(円)"},
-                { type: INPUT_FIELD_TYPE_BUTTON_LINK, id: "seikyuSts", label: "請求ステータス", onChange: this.TODO_YOU_DEFINE_SOMETHING("seikyuSts"), color: "primary",
-                    items: [{"value":"0","label":"未請求"},{"value":"1","label":"請求中"},{"value":"2","label":"領収"},{"value":"3","label":"領収後処理"},{"value":"4","label":"完了"}]
-                },
+                { type: OUTPUT_FIELD_TYPE_TEXT, id: "seikyuStsCdDesc01", label: "請求ステータス"},
+                // TODO: 
+                // { type: INPUT_FIELD_TYPE_BUTTON_LINK, id: "seikyuStsCdDesc01", label: "請求ステータス", onChange: this.TODO_YOU_DEFINE_SOMETHING("seikyuStsCd"), color: "primary",
+                //     items: [{"value":"0","label":"未請求"},{"value":"1","label":"請求中"},{"value":"2","label":"領収"},{"value":"3","label":"領収後処理"},{"value":"4","label":"完了"}]
+                // },
                 //{ type: INPUT_FIELD_TYPE_BUTTON_LINK, id: "seikyushoDL", label: "請求書DL", onChange: this.TODO_YOU_DEFINE_SOMETHING("seikyushoDL"), color: "primary"},
                 { type: INPUT_FIELD_TYPE_ICON_LINK, icon: (<GetAppIcon />), id: "seikyushoDL", label: "請求書DL", onChange: this.TODO_YOU_DEFINE_SOMETHING("seikyushoDL"), color: "primary"},
                 //{ type: INPUT_FIELD_TYPE_BUTTON_LINK, id: "seikyushoNoKosn", label: "請求書の更新", onChange: this.onMove2SeikyushoSkse, color: "primary"},
@@ -120,36 +123,66 @@ export default class OM0401 extends React.Component{
             
     }
 
-
-    onMove2SeikyushoSkse(event){
-
-        this.props.history.push(`${process.env.PUBLIC_URL}/OM0402`, {seikyushoId: ""})
-
+    componentDidMount(){
+        // 請求書検索
+        this.searchSeikyuList()
     }
 
-    seikyuTableCreator(){
+    /**
+     * 請求書作成画面遷移
+     * @param {*} event 
+     */
+    onMove2SeikyushoSkse(event){
+        this.props.history.push(`${process.env.PUBLIC_URL}/OM0402`, {seikyushoId: ""})
+    }
+
+    /**
+     * 請求書情報検索
+     */
+    async searchSeikyuList(){
+        const res = await FetchUtils.getFromFdApi(API_SEIKYU_LIST)
+
+        console.log(res)
+
+        // fetch successなら
+        if(res.success){
+            // plainizeした値をセット
+            this.setState({
+                seikyuList: convNestedArrProp2Plain(_.get(res, "data"), ["trhkSkKish"]) || []
+            })
+        }
+        else{
+            showErrMsg(ERR_MSG__FETCH)
+        }
+    }
+
+    /**
+     * 請求書テーブル本体の更新
+     * @param {*}} seikyuList 
+     */
+    seikyuTableCreator(seikyuList){
 
         // TODO: テストデータではなく取引先情報を取得してセットするように
-        const _dummyTrhkskSeikyuLst = [...(new Array(10)).keys()]
-        .map(i=> {
-            return {
-                trhkSkKishCd: lpad(i, 10),
-                trhkSkKishNm: "取引先" + i,
-                trhkSkKishCd: lpad(i, 10),
-                trhkSkKishNm: "取引先" + i,
-                mtmrJuchuNo: lpad(i, 10),
-                shosi: "詳細テキスト" + i,
-                kngk: (i + 1) * 10000,
-                seikyubn: (i + 1) * 9000,
-                hisoD: "2020/01/" + lpad(i + 1, 2),
-                hisosk: "配送先" + i,
-                nmtNm: "荷物名" + i,
-                seikyuKngk: (i + 2) * 1234,
-                seikyuNo: "SKN" + lpad(i, 7),
-            }
-        })
+        // const _dummyTrhkskSeikyuLst = [...(new Array(10)).keys()]
+        // .map(i=> {
+        //     return {
+        //         trhkSkKishCd: lpad(i, 10),
+        //         trhkSkKishNm: "取引先" + i,
+        //         trhkSkKishCd: lpad(i, 10),
+        //         trhkSkKishNm: "取引先" + i,
+        //         mtmrJuchuNo: lpad(i, 10),
+        //         shosi: "詳細テキスト" + i,
+        //         kngk: (i + 1) * 10000,
+        //         seikyubn: (i + 1) * 9000,
+        //         hisoD: "2020/01/" + lpad(i + 1, 2),
+        //         hisosk: "配送先" + i,
+        //         nmtNm: "荷物名" + i,
+        //         seikyuKngk: (i + 2) * 1234,
+        //         seikyuNo: "SKN" + lpad(i, 7),
+        //     }
+        // })
 
-        this.itemDef4SearchedList[0].items = _dummyTrhkskSeikyuLst
+        this.itemDef4SearchedList[0].items = seikyuList // _dummyTrhkskSeikyuLst
 
         return this.itemDef4SearchedList
 
@@ -195,7 +228,7 @@ const classes = {}
 
                         {
                             // どうするか...正直propsに入れる必要ない気がしてきた
-                            this.seikyuTableCreator().map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} />))
+                            this.seikyuTableCreator(this.state.seikyuList).map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} />))
                         }
                     </React.Fragment>
                 </Paper>

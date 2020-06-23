@@ -166,7 +166,7 @@ export const convNestedObjProp2Plain = (obj, plainizeKeyArr)=> {
     const tmp = (plainizeKeyArr || [])
         .reduce((p, c)=> {
 
-            const tmpp = obj[c]
+            const tmpp = obj[c] || {}
 
             const rres = Object.keys(tmpp).reduce((pp, cc)=> {
                 const newKey = c + "__" + cc
