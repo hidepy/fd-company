@@ -23,3 +23,5 @@ export const API_CLC_UNTN = "/api/v1/clc_untn"
 
 
 export const API_SEIKYU_LIST = "/api/v1/trn_seikyush_list"
+
+export const API_SEIKYU_DETAIL = "/api/v1/trn_seikyush_n"

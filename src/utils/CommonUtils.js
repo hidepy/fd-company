@@ -79,12 +79,38 @@ export const lpad = (n, keta, padStr = "0") => {
     return (leftStr + nn).slice(-keta)
 }
 
+/**
+ * カンマ区切り文字列に変換する
+ * @param {*} n 
+ */
 export const toCommaStr = n => {
     const val = Number(n)
 
     return isNaN(val) ? val : val.toLocaleString()
 }
 
+/**
+ * カンマ区切り文字列を数値に変換する
+ * @param {*} n 
+ */
+export const convCommaStr2Num = n=> {
+    if(isEmpty(n)) return 0
+
+    return toNum(("" + n).replace(/,/g, ""))
+}
+
+/**
+ * 入力文字を数値に変換する
+ * @param {*} n 
+ */
+export const toNum = n=> {
+
+    console.log(n)
+
+    const val = Number(n)
+
+    return isNaN(val) ? 0 : val
+}
 
 
 

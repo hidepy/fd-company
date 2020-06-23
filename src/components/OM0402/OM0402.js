@@ -34,12 +34,19 @@ import {
     onSelectChange,
     onRadioChange,
     lpad,
-    toCommaStr
+    toCommaStr,
+    convNestedArrProp2Plain,
+    toNum,
+    convCommaStr2Num
 } from "../../utils/CommonUtils"
 import { TextField } from '@material-ui/core';
 import { getModalStyle } from "../../utils/CommonUtils"
 
 import OM0403 from "../OM0403"
+import FetchUtils from '../../utils/FetchUtils';
+import { API_SEIKYU_DETAIL, API_MTMR_DETAIL, API_ANKN_L } from '../../constants/apiPath';
+import _ from "lodash"
+import TrhkskMstPopup from '../fd-commons/TrhkskMstPopup'
 
 export default class OM0402 extends React.Component{
 
@@ -52,13 +59,13 @@ export default class OM0402 extends React.Component{
         super(props)
 
         this.state = {
-			trhkSkKishNm: "",
-			trhkSkCd: "",
-			zipNo: "",
-			address: "",
-			telNo: "",
-			mail: "",
-			seikyuKngkGoke: "198198",
+            trhkSkKishId: "",
+            trhkSkKishNo: "",
+            trhkSkKishNm: "",
+            trhkSkKishNmKn: "",
+            trhkSkKishZipNo: "",
+            trhkSkKishAddress: "",            
+			seikyuKngkGoke: "",
 			mtmrJuchuNo: "",
 			shosi: "",
 			kngk: "",
@@ -69,8 +76,8 @@ export default class OM0402 extends React.Component{
 			hkkoD: "",
 			shriKgn: "",
             biko: "",
-            
             isAnkenDetailPopupShown: false,
+            ankenLst: [],
         }
 
         this.onHznClick = this.onHznClick.bind(this)
@@ -81,14 +88,21 @@ export default class OM0402 extends React.Component{
         this.onPopupCloseClick = this.onPopupCloseClick.bind(this)
         this.TODO_YOU_DEFINE_SOMETHING = function(){} // TODO: 
 
+        this.onTrhkskSelectCallback = this.onTrhkskSelectCallback.bind(this)
+        this.onankenSearchButtonClick = this.onankenSearchButtonClick.bind(this)
+        this.onRowCheckChange = this.onRowCheckChange.bind(this)
+
         this.itemDef4SeikyuskInf = [
+            { customComponent: <TrhkskMstPopup onSelectCallback={this.onTrhkskSelectCallback} /> },
 			{ type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishNm", label: "取引先会社名", onChange: this.onTextChange("trhkSkKishNm")},
-            { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkCd", label: "取引先コード", onChange: this.onTextChange("trhkSkCd")},
+            { type: INPUT_FIELD_TYPE_TEXT, id: "trhkSkKishId", label: "取引先コード", onChange: this.onTextChange("trhkSkCd")},
             { type: BREAK_LINE },
-			{ type: OUTPUT_FIELD_TYPE_TEXT, id: "zipNo", label: "郵便番号"},
-			{ type: OUTPUT_FIELD_TYPE_TEXT, id: "address", label: "住所"},
-			{ type: OUTPUT_FIELD_TYPE_TEXT, id: "telNo", label: "電話番号"},
-            { type: OUTPUT_FIELD_TYPE_TEXT, id: "mail", label: "メール"},
+			{ type: OUTPUT_FIELD_TYPE_TEXT, id: "trhkSkKishZipNo", label: "郵便番号"},
+			{ type: OUTPUT_FIELD_TYPE_TEXT, id: "trhkSkKishAddress", label: "住所"},
+			{ type: OUTPUT_FIELD_TYPE_TEXT, id: "trhkSkKishTelNo", label: "電話番号"},
+            { type: OUTPUT_FIELD_TYPE_TEXT, id: "trhkSkKishMail", label: "メール"},
+            { type: BREAK_LINE },
+            { type: INPUT_FIELD_TYPE_BUTTON, id: "searchankenInfButton", label: "案件検索", onChange: this.onankenSearchButtonClick, color: "primary", style: { width: "120px" } },
         ]
 
         this.itemDef4JuchuInfLst= [{
@@ -99,9 +113,9 @@ export default class OM0402 extends React.Component{
             headerDef: [
                 //{ type: OUTPUT_FIELD_TYPE_TEXT, id: "seikyuKngkGoke", label: "請求金額合計"},
                 { type: INPUT_FIELD_TYPE_CHECKBOX, id: "check", label: "", onChange: this.onRowCheckChange },
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "mtmrJuchuNo", label: "見積・受注No."},
-                { type: OUTPUT_FIELD_TYPE_TEXT, id: "kngk", label: "金額(円)", withComma: true, align: "right" },
-                { type: INPUT_FIELD_TYPE_TEXT, id: "seikyubn", label: "請求分(円)", withComma: true, align: "right", onChange: this.onTextChange("seikyubn")},
+                { type: OUTPUT_FIELD_TYPE_TEXT, id: "ankn__anknNo", label: "見積・受注No."},
+                { type: OUTPUT_FIELD_TYPE_TEXT, id: "gokeKngk", label: "金額(円)", withComma: true, align: "right" },
+                // { type: INPUT_FIELD_TYPE_TEXT, id: "seikyubn", label: "請求分(円)", withComma: true, align: "right", onChange: this.onTextChange("seikyubn")},
                 { type: OUTPUT_FIELD_TYPE_TEXT, id: "hisoD", label: "配送日"},
                 { type: OUTPUT_FIELD_TYPE_TEXT, id: "hisosk", label: "配送先"},
                 { type: OUTPUT_FIELD_TYPE_TEXT, id: "nmtNm", label: "荷物名"},
@@ -118,36 +132,117 @@ export default class OM0402 extends React.Component{
     }
 
 
-    componentDidMount(){
-        console.log("OM0402-")
-        console.log(this)
+    async componentDidMount(){
+        const seikyushId = _.get(this.props, "location.state.seikyushId") || this.props.seikyushId
+
+        if (!!seikyushId) {
+            // APIコール
+            const res = await FetchUtils.getFromFdApi(`${API_SEIKYU_DETAIL}/${seikyushId}`)
+
+            console.log(res)
+        }
+    }
+
+    /**
+     * 取引先マスタ選択時のコールバック
+     * @param {*} trhkskItem 
+     */
+    onTrhkskSelectCallback(trhkskItem){
+        this.setState({
+            trhkSkKishId: trhkskItem.trhkSkKishId,
+            trhkSkKishNo: trhkskItem.trhkSkKishNo,
+            trhkSkKishNm: trhkskItem.trhkSkKishNm,
+            trhkSkKishNmKn: trhkskItem.trhkSkKishNmKn,
+            trhkSkKishZipNo: trhkskItem.trhkSkKishZipNo,
+            trhkSkKishAddress: trhkskItem.trhkSkKishAddress,
+            trhkSkKishTelNo: trhkskItem.trhkSkKishTelNo,
+            trhkSkKishMail: trhkskItem.trhkSkKishZipNo
+        })
+    }
+
+    /**
+     * 案件検索ボタン押下
+     */
+    async onankenSearchButtonClick(){
+        const trhkSkKishId = this.state.trhkSkKishId
+
+        const res = await FetchUtils.getFromFdApi(`${API_ANKN_L}`, { trhkSkKishId })
+
+        console.log(res)
+
+        if(res.success){
+            const ankenLst = convNestedArrProp2Plain(_.get(res, "data"), ["ankn"]) || []
+
+            console.log(ankenLst)
+
+            this.setState({
+                ankenLst
+            })
+        }
+        else {
+            // TODO: 
+        }
     }
 
     onRowCheckChange(event){
-        console.log(event)
-    }
+        const el = event.target
+        const checked = el.checked
+        const rowindex = el.closest("[rowindex]").getAttribute("rowindex")
 
-    juchuTableCreator(){
+        const selectedAnken = { ...this.state.ankenLst[rowindex], isSelected: checked}
 
-        // TODO: テストデータではなく取引先情報を取得してセットするように
-        const _dummyData = [...(new Array(10)).keys()]
-        .map(i=> {
-            return {
-                trhkSkKishCd: lpad(i, 10),
-                trhkSkKishNm: "取引先" + i,
-                mtmrJuchuNo: lpad(i, 10),
-                shosi: "詳細テキスト" + i,
-                kngk: (i + 1) * 10000,
-                seikyubn: (i + 1) * 9000,
-                hisoD: "2020/01/" + lpad(i + 1, 2),
-                hisosk: "配送先" + i,
-                nmtNm: "荷物名" + i,
-            }
+        const newAnkenLst = Object.assign([], this.state.ankenLst)
+        newAnkenLst[rowindex] = selectedAnken
+
+        const seikyuKngkGoke = this.calcSeikyuGkGoke(newAnkenLst)
+
+        this.setState({
+            ankenLst: newAnkenLst,
+            seikyuKngkGoke
         })
 
-        this.itemDef4JuchuInfLst[0].items = _dummyData
+    }
+
+    /**
+     * 請求額合計の計算
+     * @param {*} lst 
+     */
+    calcSeikyuGkGoke(lst){
+        if(!lst) return 0
+
+        const res = lst.reduce((p, c)=> {
+            const kngk = c.isSelected ? convCommaStr2Num(c.gokeKngk) : 0
+            return p + kngk
+        }, 0)
+
+        return res
+    }
+
+    juchuTableCreator(items){
+
+        this.itemDef4JuchuInfLst[0].items = items || []
 
         return this.itemDef4JuchuInfLst
+
+        // TODO: テストデータではなく取引先情報を取得してセットするように
+        // const _dummyData = [...(new Array(10)).keys()]
+        // .map(i=> {
+        //     return {
+        //         trhkSkKishCd: lpad(i, 10),
+        //         trhkSkKishNm: "取引先" + i,
+        //         mtmrJuchuNo: lpad(i, 10),
+        //         shosi: "詳細テキスト" + i,
+        //         kngk: (i + 1) * 10000,
+        //         seikyubn: (i + 1) * 9000,
+        //         hisoD: "2020/01/" + lpad(i + 1, 2),
+        //         hisosk: "配送先" + i,
+        //         nmtNm: "荷物名" + i,
+        //     }
+        // })
+
+        // this.itemDef4JuchuInfLst[0].items = _dummyData
+
+        // return this.itemDef4JuchuInfLst
 
     }
 
@@ -168,9 +263,33 @@ export default class OM0402 extends React.Component{
         })
     }
 
-    onHznClick(){
+    async onHznClick(){
+        /*
+tenant	全角または半角64文字以内で入力
+trhk_sk_kish required	
+trn_ankn
+        */
 
-		// TODO: 
+        const params = {
+            hkkoD: this.state.hkkoD,
+			shriKgn: this.state.shriKgn,
+            biko: this.state.biko,
+            seikyuStsCd: "001", // TODO: 
+            seikyuKngk: this.state.seikyuKngkGoke,
+            // seikyushNo: "",
+            trhkSkKish: {
+                trhkSkKishId: this.state.trhkSkKishId,
+                trhkSkKishNo: this.state.trhkSkKishNo,
+                trhkSkKishNm: this.state.trhkSkKishNm,
+                trhkSkKishNmKn: this.state.trhkSkKishNmKn,
+                trhkSkKishZipNo: this.state.trhkSkKishZipNo,
+                trhkSkKishAddress: this.state.trhkSkKishAddress,                
+            },
+            trnAnkn: {} // TODO: 
+        }
+
+        // APIコールで請求書作成
+        const res = await FetchUtils.post2FdApi(`${API_SEIKYU_DETAIL}`, params)
 
     }
 
@@ -190,11 +309,11 @@ export default class OM0402 extends React.Component{
                     <Typography variant="h5" gutterBottom>受注案件一覧</Typography>
 
                     <div>
-                        <TextField className="field-item" disabled={true} defaultValue={ toCommaStr(this.state.seikyuKngkGoke) } label={"請求額合計(円)"} />
+                        <TextField className="field-item" disabled={true} value={ toCommaStr(this.state.seikyuKngkGoke) } label={"請求額合計(円)"} />
                     </div>
 
                     {
-                        this.juchuTableCreator().map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} />))
+                        this.juchuTableCreator(this.state.ankenLst).map((v, i)=> (<FieldItem key={i} {...v} xs={12} md={4} />))
                     }
                 </Paper>
 
