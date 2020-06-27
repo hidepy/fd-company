@@ -115,9 +115,6 @@ export const toNum = n=> {
 
 
 
-
-
-
 export const conv2Camel = p => {
     //_+小文字を大文字にする(例:_a を A)
     return p.replace(/_./g,
@@ -290,7 +287,7 @@ export const getMstCdSelectionFromMap = (mstCd, mstCdMap = {}, labelPropKey = "c
         .reduce((p, c)=> [...p, { value: map[c].cd, label: map[c][labelPropKey] }], [])
 }
 
-
+// 入力値チェックを行う
 export const checkFormInputs = (state, formDefArr)=> {
 
     const res = (formDefArr || [])
@@ -308,6 +305,19 @@ export const checkFormInputs = (state, formDefArr)=> {
 
     return res
 
+}
+
+// エラーメッセージを構築する
+export const getErrMsg = (res, bindVarArr)=> {
+    // let res = 
+
+    (bindVarArr || [])
+        .forEach((v, i) => {
+            const reg = new RegExp("\\$" + (i + 1))
+            res = res.replace(reg, v)
+        })
+
+    return res
 }
 
 

@@ -26,7 +26,8 @@ import {
     OUTPUT_FIELD_TYPE_TEXT,
     OUTPUT_FIELD_TYPE_TABLE,
     BREAK_LINE,
-    INPUT_FIELD_TYPE_BUTTON_LINK
+    INPUT_FIELD_TYPE_BUTTON_LINK,
+    INPUT_FIELD_TYPE_DATETIME
 } from "../../constants/common"
 import {
     showAlertMsg,
@@ -37,16 +38,21 @@ import {
     toCommaStr,
     convNestedArrProp2Plain,
     toNum,
-    convCommaStr2Num
+    convCommaStr2Num,
+    checkFormInputs,
+    getErrMsg,
+    showErrMsg
 } from "../../utils/CommonUtils"
 import { TextField } from '@material-ui/core';
 import { getModalStyle } from "../../utils/CommonUtils"
 
 import OM0403 from "../OM0403"
 import FetchUtils from '../../utils/FetchUtils';
-import { API_SEIKYU_DETAIL, API_MTMR_DETAIL, API_ANKN_L } from '../../constants/apiPath';
+import { API_SEIKYU_DETAIL, API_MTMR_DETAIL, API_ANKN_L, API_ANKN_JUCHU_L } from '../../constants/apiPath';
 import _ from "lodash"
 import TrhkskMstPopup from '../fd-commons/TrhkskMstPopup'
+import { FORM_CHECK_MSG__NO_SELECT_ERR, SUCCESS_MSG__HZN, ERR_MSG__HZN } from '../../constants/message';
+import { ANKN_STS_CD__JUCHU_SM } from "../../constants/MtmrIri"
 
 export default class OM0402 extends React.Component{
 
@@ -73,8 +79,8 @@ export default class OM0402 extends React.Component{
 			hisoD: "",
 			hisosk: "",
 			nmtNm: "",
-			hkkoD: "",
-			shriKgn: "",
+			hkkoD: new Date(),
+			shriKgn: new Date(),
             biko: "",
             isAnkenDetailPopupShown: false,
             ankenLst: [],
@@ -124,8 +130,8 @@ export default class OM0402 extends React.Component{
         }]
 
         this.itemDef4Footer = [
-			{ type: INPUT_FIELD_TYPE_TEXT, id: "hkkoD", label: "発行日", onChange: this.onTextChange("hkkoD")},
-            { type: INPUT_FIELD_TYPE_TEXT, id: "shriKgn", label: "支払期限", onChange: this.onTextChange("shriKgn")},
+			{ type: INPUT_FIELD_TYPE_DATETIME, id: "hkkoD", label: "発行日", onChange: this.onTextChange("hkkoD"), required: true, format: "yyyy/MM/dd HH:mm" },
+            { type: INPUT_FIELD_TYPE_DATETIME, id: "shriKgn", label: "支払期限", onChange: this.onTextChange("shriKgn"), required: true, format: "yyyy/MM/dd HH:mm" },
             { type: BREAK_LINE },
 			{ type: INPUT_FIELD_TYPE_TEXT, id: "biko", label: "備考", onChange: this.onTextChange("biko"), style: {width: "90%"}},
         ]
@@ -166,7 +172,8 @@ export default class OM0402 extends React.Component{
     async onankenSearchButtonClick(){
         const trhkSkKishId = this.state.trhkSkKishId
 
-        const res = await FetchUtils.getFromFdApi(`${API_ANKN_L}`, { trhkSkKishId })
+        // const res = await FetchUtils.getFromFdApi(`${API_ANKN_L}`, { trhkSkKishId })
+        const res = await FetchUtils.getFromFdApi(`${API_ANKN_JUCHU_L}`, { trhkSkKishId })
 
         console.log(res)
 
@@ -264,32 +271,68 @@ export default class OM0402 extends React.Component{
     }
 
     async onHznClick(){
-        /*
-tenant	全角または半角64文字以内で入力
-trhk_sk_kish required	
-trn_ankn
-        */
+        
+        // 案件選択チェック
+        const hznTgtAnknArr = this.state.ankenLst.filter(v=> v.isSelected)
+
+        if(hznTgtAnknArr.length <= 0){
+            showErrMsg( getErrMsg(FORM_CHECK_MSG__NO_SELECT_ERR, ["受注案件"]))
+            return
+        }
+
+        // formエラーチェック
+        const msg = checkFormInputs(this.state, [...this.itemDef4Footer])
+
+        // エラーがあった場合はメッセージ表示
+        if(!!msg){
+            showErrMsg(msg)
+            return
+        }
+        
+        // ankn_id, ankn_sts_cd, ankn_no
+        const trnAnkn = hznTgtAnknArr.map(v=> {
+            console.log(v)
+
+            return {
+                anknId: v.anknId,
+                anknStsCd: ANKN_STS_CD__JUCHU_SM, // TODO: 正しい案件をセット
+                anknNo: v.anknNo
+            }
+        })
+
+        const hkkoDStr = !!this.state.hkkoD ? this.state.hkkoD.toISOString() : ""
 
         const params = {
-            hkkoD: this.state.hkkoD,
-			shriKgn: this.state.shriKgn,
-            biko: this.state.biko,
-            seikyuStsCd: "001", // TODO: 
-            seikyuKngk: this.state.seikyuKngkGoke,
+            tenant: "123",
             // seikyushNo: "",
-            trhkSkKish: {
-                trhkSkKishId: this.state.trhkSkKishId,
-                trhkSkKishNo: this.state.trhkSkKishNo,
-                trhkSkKishNm: this.state.trhkSkKishNm,
-                trhkSkKishNmKn: this.state.trhkSkKishNmKn,
-                trhkSkKishZipNo: this.state.trhkSkKishZipNo,
-                trhkSkKishAddress: this.state.trhkSkKishAddress,                
-            },
-            trnAnkn: {} // TODO: 
+            hkkoD: hkkoDStr,
+            shriKgn: this.state.shriKgn,
+            seikyuKngk: this.state.seikyuKngkGoke,
+            seikyuStsCd: "001", // TODO: 
+            biko: this.state.biko,
+            trhkSkKish: this.state.trhkSkKishId,
+            // trhkSkKish: {
+            //     trhkSkKishId: this.state.trhkSkKishId,
+            //     trhkSkKishNo: this.state.trhkSkKishNo,
+            //     trhkSkKishNm: this.state.trhkSkKishNm,
+            //     trhkSkKishNmKn: this.state.trhkSkKishNmKn,
+            //     trhkSkKishZipNo: this.state.trhkSkKishZipNo,
+            //     trhkSkKishAddress: this.state.trhkSkKishAddress,                
+            // },
+            trnAnkn
         }
 
         // APIコールで請求書作成
         const res = await FetchUtils.post2FdApi(`${API_SEIKYU_DETAIL}`, params)
+
+        console.log(res)
+
+        if (res.success) {
+            showAlertMsg(SUCCESS_MSG__HZN)
+        }
+        else {
+            showErrMsg(ERR_MSG__HZN + "\n" + JSON.stringify(_.get(res, "data", {})))
+        }
 
     }
 

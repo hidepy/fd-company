@@ -12,6 +12,8 @@ export const API_ANKN = "/api/v1/trn_ankn"
 
 export const API_ANKN_L = "/api/v1/trn_ankn_misi_latest"
 
+export const API_ANKN_JUCHU_L = "/api/v1/trn_ankn_misi_juchu"
+
 export const API_MTMR_DETAIL = "/api/v1/trn_ankn_n"
 
 export const API_MST_CD = "/api/v1/mst_cd"
