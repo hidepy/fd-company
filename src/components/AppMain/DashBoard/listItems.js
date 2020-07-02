@@ -80,6 +80,18 @@ export const mainListItems = (props)=> {
         </div>
       </ListItem>*/}
 
+      <ListItem button>
+        <ListItemIcon>
+          <LabelIcon />
+        </ListItemIcon>
+        {/* <ListItemText primary="OM0104-見積一覧の確認(物事)" /> */}
+        <div className="MuiListItemText-root">
+          <span className="MuiTypography-root MuiListItemText-primary MuiTypography-body1">
+            <Link to={`${process.env.PUBLIC_URL}/OM0305`}>取引先マスタ</Link>
+          </span>
+        </div>
+      </ListItem>
+
     </div>
   )
 };

@@ -94,7 +94,7 @@ export default class OM0401 extends React.Component{
 			      { type: INPUT_FIELD_TYPE_SELECT, id: "seikyuSts", label: "請求ステータス", 
 				      items: [{"value":"0","label":"未請求"},{"value":"1","label":"請求中"},{"value":"2","label":"領収"},{"value":"3","label":"領収後処理"},{"value":"4","label":"完了"}]
             },
-            { type: INPUT_FIELD_TYPE_BUTTON, id: "searchButton", label: "検索", onChange: ()=> alert("検索しました"), color: "primary"}
+            { type: INPUT_FIELD_TYPE_BUTTON, id: "searchButton", label: "検索", onChange: this.searchSeikyuList, color: "primary"}
         ]
 
         this.itemDef4SearchedList = [{

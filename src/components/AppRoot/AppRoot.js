@@ -17,6 +17,8 @@ import AppMain from "../AppMain"
 import OM0103 from "../../containers/OM0103"
 import OM0104 from "../../containers/OM0104"
 import OM0105 from "../../containers/OM0105"
+import OM0301 from "../../containers/OM0301"
+import OM0305 from "../../containers/OM0305"
 import OM0401 from '../../containers/OM0401'
 import OM0402 from '../../containers/OM0402'
 import OM0403 from "../../containers/OM0403"
@@ -66,8 +68,10 @@ export default class AppRoot extends React.Component {
 
                                         <Route path={`${process.env.PUBLIC_URL}/OM0103`} component={OM0103} />
                                         <Route path={`${process.env.PUBLIC_URL}/OM0104`} component={OM0104} />
-
                                         <Route path={`${process.env.PUBLIC_URL}/OM0105`} component={OM0105} />
+
+                                        <Route path={`${process.env.PUBLIC_URL}/OM0301`} component={OM0301} />
+                                        <Route path={`${process.env.PUBLIC_URL}/OM0305`} component={OM0305} />
 
                                         <Route path={`${process.env.PUBLIC_URL}/OM0401`} component={OM0401} />
                                         <Route path={`${process.env.PUBLIC_URL}/OM0402`} component={OM0402} />
