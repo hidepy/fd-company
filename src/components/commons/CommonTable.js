@@ -21,8 +21,10 @@ import {
   INPUT_FIELD_TYPE_BUTTON_LINK,
   INPUT_FIELD_TYPE_ICON_LINK,
   INPUT_FIELD_TYPE_CHECKBOX,
+  INPUT_FIELD_TYPE_CHECKBOX_ORIGINAL,
   OUTPUT_FIELD_TYPE_LINK,
-  INPUT_FIELD_TYPE_SELECT
+  INPUT_FIELD_TYPE_SELECT,
+  INPUT_FIELD_TYPE_RADIO
 } from "../../constants/common"
 
 import {
@@ -36,6 +38,8 @@ const isInputComponent = type=>
   || type === INPUT_FIELD_TYPE_BUTTON_LINK 
   || type === INPUT_FIELD_TYPE_ICON_LINK 
   || type === INPUT_FIELD_TYPE_CHECKBOX
+  || type === INPUT_FIELD_TYPE_CHECKBOX_ORIGINAL
+  || type === INPUT_FIELD_TYPE_RADIO
   || type === INPUT_FIELD_TYPE_SELECT
   || type === OUTPUT_FIELD_TYPE_LINK
 
@@ -46,7 +50,7 @@ export default function CommonTable(props){
   const { headerDef, items } = props
 
     return (
-        <Table size="small" className="common-table">
+        <Table size="small" className={`common-table ${props.tableClassName || ''}`}>
           <TableHead>
             <TableRow>
             {
@@ -80,7 +84,7 @@ export default function CommonTable(props){
                               RowCustomComponent
                                 ? (<RowCustomComponent {...v} {...row} />)
                                   : isInputComponent(v.type) || isCustomComponent(v)
-                                    ? (<FieldItem {...v} rowindex={rowIndex} onChange={onChange} type={v.type} value={val} />)
+                                    ? (<FieldItem {...v} id={`${v.id}-${rowIndex}`} rowindex={rowIndex} onChange={onChange} type={v.type} value={val} />)
                                       : val
                             }
                           </TableCell>

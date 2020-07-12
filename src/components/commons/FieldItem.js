@@ -41,7 +41,8 @@ import {
     OUTPUT_FIELD_TYPE_TEXT,
     OUTPUT_FIELD_TYPE_LINK,
     OUTPUT_FIELD_TYPE_TABLE,
-    BREAK_LINE
+    BREAK_LINE,
+    INPUT_FIELD_TYPE_CHECKBOX_ORIGINAL
 } from "../../constants/common"
 import { getValidVal } from "../../utils/CommonUtils"
 
@@ -86,6 +87,12 @@ const FieldItem = (props)=> {
     if(type === OUTPUT_FIELD_TYPE_TABLE){
         return(
             <Table {...rest} />
+        )
+    }
+
+    if(type === INPUT_FIELD_TYPE_CHECKBOX_ORIGINAL){
+        return (
+            <input type="checkbox" {...rest} />
         )
     }
 
