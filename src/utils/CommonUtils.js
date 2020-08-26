@@ -255,38 +255,6 @@ export const isValidUrl = ()=> {
     return !!(window.location.href.match(msg1) || window.location.href.match(msg2))
 }
 
-export const getModalStyle = () => {
-    const top = 5
-    const left = 5
-
-    return {
-        top: "auto",
-        left: "5%",
-        bottom: "auto",
-        right: "5%",
-        transform: `translate(${top}%, ${left}%)`,
-        width: "90%",
-        height: "680px"
-    };
-}
-
-
-/**
- * storeのmstCdMapをもとに、mstCdで与えられたキーに一致する選択肢用arrを返却する
- * @param {*} mstCd 
- * @param {*} mstCdMap 
- * @param {*} labelPropKey 
- */
-export const getMstCdSelectionFromMap = (mstCd, mstCdMap = {}, labelPropKey = "cdDesc01")=> {
-
-    const map = _.get(mstCdMap, `[${mstCd}]`)
-
-    if(!map) return []
-
-    return Object.keys(map)
-        .reduce((p, c)=> [...p, { value: map[c].cd, label: map[c][labelPropKey] }], [])
-}
-
 // 入力値チェックを行う
 export const checkFormInputs = (state, formDefArr)=> {
 
